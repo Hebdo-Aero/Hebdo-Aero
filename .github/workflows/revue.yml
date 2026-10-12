@@ -1,0 +1,195 @@
+name: Revue hebdomadaire
+
+on:
+  schedule:
+    # Chaque dimanche à 5 h 17 UTC, soit 7 h 17 à Paris l'été et 6 h 17 l'hiver.
+    - cron: "17 5 * * 0"
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Que faire ?"
+        type: choice
+        default: "Numéro de la semaine, vidéo et réseaux"
+        options:
+          - "Numéro de la semaine, vidéo et réseaux"
+          - "Vidéo et réseaux du dernier numéro"
+          - "Écouter les voix disponibles"
+          - "Republier le site seulement"
+      forcer:
+        description: "Rédiger un numéro même si la semaine est déjà couverte"
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths-ignore: ["README.md", "outils/**", "tests/**"]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: revue
+  cancel-in-progress: false
+
+jobs:
+  production:
+    name: Rédaction, vidéo et site
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    outputs:
+      video: ${{ steps.video.outputs.video }}
+      date: ${{ steps.video.outputs.date }}
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
+      PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+    steps:
+      - name: Choisir le mode
+        id: mode
+        run: |
+          case "${{ github.event_name }}:${{ inputs.action }}" in
+            schedule:*)                  echo "mode=complet" ;;
+            push:*)                      echo "mode=site" ;;
+            *"site seulement"*)          echo "mode=site" ;;
+            *"Vidéo et réseaux"*)        echo "mode=video" ;;
+            *"voix"*)                    echo "mode=voix" ;;
+            *)                           echo "mode=complet" ;;
+          esac >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Installer les dépendances Python
+        run: pip install -r requirements.txt
+
+      - name: Préparer GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v6
+
+      - name: Adresse du site
+        run: echo "SITE_URL=${{ steps.pages.outputs.base_url }}/" >> "$GITHUB_ENV"
+
+      - name: Rédiger le numéro de la semaine
+        id: numero
+        if: steps.mode.outputs.mode == 'complet'
+        run: python -m revue.generer numero ${{ inputs.forcer && '--force' || '' }}
+
+      - name: Photos d'illustration du dernier numéro
+        if: steps.mode.outputs.mode == 'video'
+        run: python -m revue.generer photos
+
+      - name: Installer les outils vidéo
+        if: >-
+          (steps.mode.outputs.mode == 'video' || steps.mode.outputs.mode == 'voix'
+           || steps.numero.outputs.nouveau == 'true')
+          && env.GOOGLE_TTS_API_KEY != ''
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          python -m playwright install --with-deps chromium
+
+      - name: Écrire le script vidéo et les textes des réseaux
+        id: reseaux
+        if: >-
+          (steps.mode.outputs.mode == 'video' || steps.numero.outputs.nouveau == 'true')
+          && env.GOOGLE_TTS_API_KEY != ''
+        continue-on-error: true
+        run: python -m revue.generer reseaux
+
+      - name: Enregistrer la voix et monter la vidéo
+        id: video
+        if: steps.reseaux.outcome == 'success'
+        continue-on-error: true
+        run: python -m revue.generer video
+
+      - name: Enregistrer des échantillons de voix
+        if: steps.mode.outputs.mode == 'voix' && env.GOOGLE_TTS_API_KEY != ''
+        run: python -m revue.generer voix
+
+      - name: Enregistrer le numéro dans le dépôt
+        if: steps.mode.outputs.mode == 'complet' || steps.mode.outputs.mode == 'video'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if ! git diff --cached --quiet; then
+            git commit -m "Numéro du $(date +%F)"
+            git push
+          fi
+
+      - name: Générer le site
+        run: python -m revue.construire
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: _site
+
+  deploiement:
+    name: Mise en ligne
+    needs: production
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    outputs:
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - id: deploiement
+        uses: actions/deploy-pages@v5
+
+  reseaux:
+    name: Publication sur les réseaux
+    needs: [production, deploiement]
+    if: needs.production.outputs.video == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      SITE_URL: ${{ needs.deploiement.outputs.url }}
+      YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+      YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+      YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+      META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
+      FACEBOOK_PAGE_ID: ${{ secrets.FACEBOOK_PAGE_ID }}
+      INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
+      THREADS_TOKEN: ${{ secrets.THREADS_TOKEN }}
+      GH_PAT_SECRETS: ${{ secrets.GH_PAT_SECRETS }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Récupérer la vidéo depuis le site
+        run: |
+          mkdir -p _medias
+          adresse="${SITE_URL%/}/videos/${{ needs.production.outputs.date }}.mp4"
+          for essai in 1 2 3 4 5 6 7 8 9 10; do
+            curl -fsSL -o "_medias/${{ needs.production.outputs.date }}.mp4" "$adresse" && break
+            echo "Vidéo pas encore en ligne, nouvel essai dans 30 s"; sleep 30
+          done
+          test -s "_medias/${{ needs.production.outputs.date }}.mp4"
+
+      - name: Publier
+        run: python -m revue.publier --date ${{ needs.production.outputs.date }}
+
+      - name: Enregistrer les liens des publications
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/reseaux
+          if ! git diff --cached --quiet; then
+            git commit -m "Liens des publications du $(date +%F)"
+            git pull --rebase
+            git push
+          fi
