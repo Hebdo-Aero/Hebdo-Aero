@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: "Big Shoulders"; font-weight: 700; src: url("{{ polices }}/BigShoulders-Bold.woff") format("woff"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 400; src: url("{{ polices }}/InstrumentSans-Regular.woff") format("woff"); }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: 1200px; height: 630px; overflow: hidden; color: #fff; }
+body { position: relative; padding: 64px 72px; font-family: "Instrument Sans", Arial, sans-serif;
+       background: radial-gradient(80% 70% at 95% 120%, rgba(255,106,31,.75), rgba(255,106,31,0) 65%),
+                   radial-gradient(50% 50% at 0% 120%, rgba(255,182,39,.35), rgba(255,182,39,0) 65%),
+                   linear-gradient(180deg, #0B1A2E 0%, #13294A 80%); }
+.haut { display: flex; align-items: center; gap: 22px; }
+.haut img { height: 76px; }
+.num { font-family: "Big Shoulders"; font-weight: 700; font-size: 34px; color: #0B1A2E; background: #FF6A1F;
+       padding: 2px 16px 0; border-radius: 999px; }
+.periode { font-size: 28px; color: #C9D6E6; margin-top: 30px; }
+h1 { font-family: "Big Shoulders"; font-weight: 700; font-size: 84px; line-height: .98; margin-top: 10px; max-width: 1040px; }
+</style>
+</head>
+<body>
+<div class="haut"><img src="{{ logo }}" alt=""><span class="num">N° {{ numero.numero }}</span></div>
+<p class="periode">Semaine du {{ periode }}</p>
+<h1 id="t">{{ numero.titre }}</h1>
+<script>
+const t = document.getElementById("t"); let s = 84;
+while (t.scrollHeight > 270 && s > 48) { s -= 4; t.style.fontSize = s + "px"; }
+</script>
+</body>
+</html>

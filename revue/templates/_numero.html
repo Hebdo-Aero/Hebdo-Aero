@@ -1,0 +1,122 @@
+{% from "_icones.html" import icone %}
+
+{% macro sources(liste) -%}
+<p class="sources">Source{{ "s" if liste|length > 1 }} : {% for s in liste %}<a href="{{ s.url }}" rel="noopener">{{ s.nom }}</a>{{ ", " if not loop.last }}{% endfor %}</p>
+{%- endmacro %}
+
+{% macro etiquette(s, rubriques) -%}
+{% set r = rubriques[s.categorie] %}
+<span class="etiquette">{{ icone(r.icone, 16) }}{{ s.categorie }}</span>
+{%- endmacro %}
+
+{% macro numero_complet(n, racine, rubriques, profils, niveau_titre="h1") %}
+<section class="ouverture" aria-labelledby="titre-{{ n.numero }}">
+  {% if n.couverture %}<img class="fond-ouverture" src="{{ racine }}{{ n.couverture.src }}" alt="" fetchpriority="high">{% endif %}
+  <svg class="trainees" viewBox="0 0 1200 520" preserveAspectRatio="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="tr-{{ n.numero }}" x1="0" y1="1" x2="1" y2="0">
+        <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".22"/>
+      </linearGradient>
+    </defs>
+    <path d="M-40 560 L1260 -60" stroke="url(#tr-{{ n.numero }})" stroke-width="2" fill="none"/>
+    <path d="M60 560 L1290 -20" stroke="url(#tr-{{ n.numero }})" stroke-width="1.2" fill="none"/>
+  </svg>
+  <div class="cadre">
+    <p class="reperes"><span class="pastille">N° {{ n.numero }}</span><span class="periode">Semaine du {{ n.periode }}</span><span class="lecture">{{ n.lecture }} min de lecture</span></p>
+    <{{ niveau_titre }} id="titre-{{ n.numero }}">{{ n.titre }}</{{ niveau_titre }}>
+    <div class="grille">
+      <p class="edito">{{ n.edito }}</p>
+      {% if n.chiffre %}
+      <aside class="chiffre" aria-labelledby="chiffre-{{ n.numero }}">
+        <h2 id="chiffre-{{ n.numero }}">Le chiffre de la semaine</h2>
+        <p class="valeur">{{ n.chiffre.valeur }}</p>
+        <p>{{ n.chiffre.legende }}</p>
+        <p class="src">Source : <a href="{{ n.chiffre.source.url }}" rel="noopener">{{ n.chiffre.source.nom }}</a></p>
+      </aside>
+      {% endif %}
+    </div>
+    <ul class="sommaire" aria-label="Dans ce numéro">
+      <li class="c-orange"><a href="#une">{{ icone("avion", 16) }}À la une <span class="nb">{{ n.une|length }}</span></a></li>
+      {% if n.video %}<li class="c-soleil"><a href="#video">{{ icone("lecture", 16) }}La vidéo</a></li>{% endif %}
+      {% for nom, sujets in n.rubriques %}{% set r = rubriques[nom] %}
+      <li class="c-{{ r.couleur }}"><a href="#{{ r.ancre }}">{{ icone(r.icone, 16) }}{{ nom }} <span class="nb">{{ sujets|length }}</span></a></li>
+      {% endfor %}
+    </ul>
+    {% if n.couverture and n.couverture.auteur %}<p class="credit-ouverture">Photo : <a href="{{ n.couverture.page }}" rel="noopener">{{ n.couverture.auteur }}</a> / Pexels</p>{% endif %}
+  </div>
+</section>
+
+<section class="section" id="une" aria-labelledby="une-titre">
+  <div class="cadre">
+    <div class="entete-section"><h2 id="une-titre">À la une</h2></div>
+    <div class="une">
+      {% for s in n.une %}{% set r = rubriques[s.categorie] %}
+      <article class="sujet c-{{ r.couleur }}">
+        {% if s.visuel %}
+        <figure class="visuel{{ ' dessine' if s.visuel.dessine }}">
+          <img src="{{ racine }}{{ s.visuel.src }}" alt="" loading="lazy"{% if s.visuel.position %} style="object-position: {{ s.visuel.position }}"{% endif %}>
+          {% if s.visuel.dessine %}<span class="picto">{{ icone(r.icone, 64) }}</span>{% endif %}
+          {% if s.visuel.auteur %}<figcaption>Photo : <a href="{{ s.visuel.page }}" rel="noopener">{{ s.visuel.auteur }}</a> / Pexels</figcaption>{% endif %}
+        </figure>
+        {% endif %}
+        <div class="corps">
+          <p class="meta">{{ etiquette(s, rubriques) }}<span class="region">{{ s.region }}</span></p>
+          <h3>{{ s.titre }}</h3>
+          <p class="resume">{{ s.resume }}</p>
+          {{ sources(s.sources) }}
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+{% if n.video or n.liens_reseaux %}
+<section class="section bande-video" id="video" aria-labelledby="video-titre">
+  <div class="cadre">
+    {% if n.video %}
+    <div class="telephone">
+      <video controls playsinline preload="metadata" {% if n.affiche %}poster="{{ racine }}{{ n.affiche }}"{% endif %}>
+        <source src="{{ racine }}{{ n.video }}" type="video/mp4">
+      </video>
+    </div>
+    {% endif %}
+    <div>
+      <h2 id="video-titre">La semaine en 80 secondes</h2>
+      <p>Les sujets qui ont compté, résumés en vidéo verticale. Texte rédigé par IA à partir de ce numéro, voix de synthèse.</p>
+      <div class="boutons">
+        {% for nom, url in n.liens_reseaux %}<a class="bouton{{ ' plein' if loop.first }}" href="{{ url }}" rel="noopener">Voir sur {{ nom }}{{ icone("fleche", 16) }}</a>{% endfor %}
+        {% if not n.liens_reseaux %}{% for nom, url in profils %}<a class="bouton{{ ' plein' if loop.first }}" href="{{ url }}" rel="noopener">{{ nom }}{{ icone("fleche", 16) }}</a>{% endfor %}{% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% if n.rubriques %}
+<section class="section" id="breves" aria-labelledby="breves-titre">
+  <div class="cadre">
+    <div class="entete-section"><h2 id="breves-titre">En bref</h2><p>{{ n.breves|length }} brèves, rubrique par rubrique</p></div>
+    {% for nom, sujets in n.rubriques %}{% set r = rubriques[nom] %}
+    <div class="rubrique c-{{ r.couleur }}" id="{{ r.ancre }}">
+      <div class="rubrique-titre">
+        <span class="rond">{{ icone(r.icone, 22) }}</span>
+        <h3>{{ nom }}</h3>
+        <span class="nb">{{ sujets|length }} brève{{ "s" if sujets|length > 1 }}</span>
+      </div>
+      <div class="breves">
+        {% for s in sujets %}
+        <article class="breve">
+          <span class="region">{{ s.region }}</span>
+          <h4>{{ s.titre }}</h4>
+          <p class="resume">{{ s.resume }}</p>
+          {{ sources(s.sources) }}
+        </article>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endmacro %}

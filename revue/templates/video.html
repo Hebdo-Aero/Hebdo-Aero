@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: "Big Shoulders"; font-weight: 700; src: url("{{ polices }}/BigShoulders-Bold.woff") format("woff"); }
+@font-face { font-family: "Big Shoulders"; font-weight: 400; src: url("{{ polices }}/BigShoulders-Regular.woff") format("woff"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 400; src: url("{{ polices }}/InstrumentSans-Regular.woff") format("woff"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 700; src: url("{{ polices }}/InstrumentSans-Bold.woff") format("woff"); }
+
+/* Calque graphique transparent posé sur les images filmées (ou le ciel généré). */
+:root {
+  --nuit: #0B1A2E;
+  --orange: #FF6A1F;
+  --soleil: #FFB627;
+  --ciel: #3FA9F5;
+  --blanc: #FFFFFF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; background: transparent; }
+body { position: relative; color: var(--blanc); font-family: "Instrument Sans", Arial, sans-serif;
+       -webkit-font-smoothing: antialiased; }
+
+/* Voile de lisibilité : plus sombre en haut (route) et en bas (sous-titres) */
+#voile { position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(11,26,46,.82) 0%, rgba(11,26,46,.35) 22%, rgba(11,26,46,.30) 46%,
+                                      rgba(11,26,46,.55) 62%, rgba(11,26,46,.88) 100%); }
+/* Fond opaque pour la scène du chiffre */
+#plein { position: absolute; inset: 0; opacity: 0;
+  background: radial-gradient(110% 45% at 80% 105%, rgba(255,106,31,.6), rgba(255,106,31,0) 70%),
+              linear-gradient(180deg, #0B1A2E 0%, #13294A 75%, #22305A 100%); }
+
+#route { position: absolute; left: 0; top: 250px; width: 1080px; height: 190px; }
+#marque { position: absolute; left: 90px; top: 448px; display: flex; align-items: center; gap: 18px;
+          font-family: "Big Shoulders"; font-weight: 700; font-size: 40px; color: var(--soleil);
+          text-shadow: 0 2px 12px rgba(0,0,0,.5); }
+#marque img { height: 64px; }
+
+.scene { position: absolute; left: 90px; width: 860px; top: 560px; opacity: 0; }
+.surtitre { display: inline-block; font-weight: 700; font-size: 38px; color: var(--nuit); background: var(--orange);
+            padding: 6px 20px 7px; border-radius: 999px; margin-bottom: 24px; }
+.titre { font-family: "Big Shoulders"; font-weight: 700; font-size: 128px; line-height: .96; letter-spacing: -.005em;
+         text-shadow: 0 4px 28px rgba(0,0,0,.55); }
+.texte { font-size: 46px; line-height: 1.28; margin-top: 26px; font-weight: 700; color: #F1F5FA;
+         text-shadow: 0 2px 16px rgba(0,0,0,.6); }
+.scene.chiffre .titre { font-size: 300px; line-height: .9; color: var(--soleil); }
+.scene.intro .titre, .scene.fin .titre { font-size: 150px; }
+.scene.intro .surtitre, .scene.fin .surtitre { background: var(--ciel); }
+.scene.fin .texte { font-family: "Big Shoulders"; font-size: 70px; white-space: nowrap; color: var(--soleil); }
+.embleme { display: block; width: 230px; height: 230px; margin: -40px 0 30px; filter: drop-shadow(0 8px 30px rgba(0,0,0,.5)); }
+
+/* Sous-titres mot à mot */
+#st { position: absolute; left: 60px; width: 960px; top: 1250px; height: 240px; display: flex;
+      align-items: center; justify-content: center; text-align: center; }
+#st p { font-weight: 700; font-size: 64px; line-height: 1.16; letter-spacing: -.005em;
+        text-shadow: 0 0 2px #000, 0 4px 18px rgba(0,0,0,.85); transform-origin: 50% 60%; }
+#st span { color: rgba(255,255,255,.96); }
+#st span.on { color: var(--soleil); }
+
+#credit { position: absolute; left: 90px; top: 1508px; font-size: 26px; color: rgba(255,255,255,.72);
+          text-shadow: 0 1px 6px rgba(0,0,0,.8); }
+</style>
+</head>
+<body>
+<div id="voile"></div>
+<div id="plein"></div>
+<svg id="route" viewBox="0 0 1080 190">
+  <path id="trace" d="M90 150 Q540 10 990 150" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="5"
+        stroke-dasharray="14 14" stroke-linecap="round"/>
+  <path id="parcouru" d="M90 150 Q540 10 990 150" fill="none" stroke="var(--orange)" stroke-width="7" stroke-linecap="round"/>
+  <g id="balises"></g>
+  <g id="avion">
+    <path d="M0 -26 L6 -8 L28 4 L28 10 L6 4 L4 18 L12 24 L12 28 L0 25 L-12 28 L-12 24 L-4 18 L-6 4 L-28 10 L-28 4 L-6 -8 Z"
+          fill="var(--blanc)"/>
+  </g>
+</svg>
+<div id="marque"><img src="{{ logo }}" alt=""><span></span></div>
+<div id="scenes"></div>
+<div id="st"><p></p></div>
+<div id="credit"></div>
+
+<script>
+let S = [], T = [], ST = [], LONGUEUR = 0, morceauCourant = -1;
+const trace = () => document.getElementById("parcouru");
+function el(tag, cls, txt) { const e = document.createElement(tag); if (cls) e.className = cls; if (txt) e.textContent = txt; return e; }
+function ajuster(e, hauteurMax, taille, mini) {
+  e.style.fontSize = taille + "px";
+  while (e.scrollHeight > hauteurMax && taille > mini) { taille -= 4; e.style.fontSize = taille + "px"; }
+}
+
+function preparer(d) {
+  S = d.scenes; T = d.temps; ST = d.soustitres;
+  document.querySelector("#marque span").textContent = d.marque;
+  const conteneur = document.getElementById("scenes");
+  S.forEach(s => {
+    const b = el("section", "scene " + s.type);
+    if (s.type === "intro" || s.type === "fin") { const e = el("img", "embleme"); e.src = "{{ embleme }}"; b.append(e); }
+    b.append(el("p", "surtitre", s.surtitre), el("h1", "titre", s.titre_ecran), el("p", "texte", s.texte_ecran));
+    conteneur.append(b);
+  });
+  document.querySelectorAll(".scene").forEach((b, i) => {
+    b.style.opacity = 1;
+    const titre = b.querySelector(".titre"), texte = b.querySelector(".texte");
+    ajuster(titre, S[i].type === "chiffre" ? 320 : 400, parseFloat(getComputedStyle(titre).fontSize), 72);
+    ajuster(texte, S[i].type === "chiffre" ? 240 : 130, parseFloat(getComputedStyle(texte).fontSize), 34);
+    if (S[i].type === "fin") {
+      let t = parseFloat(getComputedStyle(texte).fontSize);
+      while (texte.scrollWidth > 860 && t > 30) { t -= 2; texte.style.fontSize = t + "px"; }
+    }
+    b.style.opacity = 0;
+  });
+  const p = trace(); LONGUEUR = p.getTotalLength();
+  const g = document.getElementById("balises");
+  S.forEach((_, i) => {
+    const pt = p.getPointAtLength(LONGUEUR * i / (S.length - 1));
+    const c = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    c.setAttribute("cx", pt.x); c.setAttribute("cy", pt.y); c.setAttribute("r", 9);
+    c.setAttribute("fill", "var(--nuit)"); c.setAttribute("stroke", "var(--ciel)"); c.setAttribute("stroke-width", 4);
+    g.append(c);
+  });
+  p.style.strokeDasharray = LONGUEUR; p.style.strokeDashoffset = LONGUEUR;
+}
+
+const lisse = x => x < 0 ? 0 : x > 1 ? 1 : x * x * (3 - 2 * x);
+const arrondi = x => Math.round(x * 100) / 100;
+
+function seek(t) {
+  let i = T.findIndex(x => t >= x.debut && t < x.fin); if (i < 0) i = S.length - 1;
+  const x = T[i], local = t - x.debut, reste = x.fin - t, s = S[i];
+  const entree = arrondi(lisse(local / 0.5)), sortie = i === S.length - 1 ? 1 : arrondi(lisse(reste / 0.3));
+  document.querySelectorAll(".scene").forEach((b, j) => { if (j !== i) b.style.opacity = 0; });
+  const b = document.querySelectorAll(".scene")[i];
+  b.style.opacity = Math.min(entree, sortie);
+  b.querySelector(".titre").style.transform = `translateY(${(1 - entree) * 46}px)`;
+  const entreeTexte = arrondi(lisse((local - 0.15) / 0.5));
+  b.querySelector(".texte").style.opacity = Math.min(entreeTexte, sortie);
+
+  // fond opaque seulement pour le chiffre de la semaine (fondu enchaîné)
+  const plein = s.type === "chiffre" ? Math.min(arrondi(lisse(local / 0.35)), i === S.length - 1 ? 1 : arrondi(lisse(reste / 0.35))) : 0;
+  document.getElementById("plein").style.opacity = plein;
+  document.getElementById("marque").style.opacity = (s.type === "intro" || s.type === "fin") ? 0 : 1;
+  document.getElementById("credit").textContent = s.credit || "";
+
+  const prog = arrondi(lisse(local / 0.9));
+  const a = Math.max(0, i - 1 + prog) / (S.length - 1);
+  const p = trace(), pt = p.getPointAtLength(LONGUEUR * a), pt2 = p.getPointAtLength(Math.min(LONGUEUR, LONGUEUR * a + 2));
+  const angle = Math.atan2(pt2.y - pt.y, pt2.x - pt.x) * 180 / Math.PI + 90;
+  document.getElementById("avion").setAttribute("transform", `translate(${pt.x} ${pt.y}) rotate(${a >= 1 ? 90 : angle})`);
+  p.style.strokeDashoffset = LONGUEUR * (1 - a);
+
+  // sous-titres : un groupe de mots à la fois, le mot prononcé en jaune
+  const k = ST.findIndex(m => t >= m.debut && t < m.fin);
+  const para = document.querySelector("#st p");
+  if (k !== morceauCourant) {
+    para.innerHTML = "";
+    if (k >= 0) ST[k].mots.forEach((m, j) => { const sp = el("span", "", m.m); para.append(sp, document.createTextNode(" ")); });
+    morceauCourant = k;
+  }
+  let actif = -1, pop = 1;
+  if (k >= 0) {
+    ST[k].mots.forEach((m, j) => { if (t >= m.t) actif = j; });
+    para.querySelectorAll("span").forEach((sp, j) => sp.className = j === actif ? "on" : "");
+    pop = arrondi(0.94 + 0.06 * lisse((t - ST[k].debut) / 0.12));
+    para.style.transform = `scale(${pop})`;
+  }
+  return [i, entree, sortie, entreeTexte, prog, plein, k, actif, pop].join("|");
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+{% from "_icones.html" import icone %}<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block titre %}{{ site.nom }}{% endblock %}</title>
+<meta name="description" content="{% block description %}{{ site.sous_titre }}{% endblock %}">
+<meta name="theme-color" content="#0B1A2E">
+{% if url_page %}<link rel="canonical" href="{{ url_page }}">{% endif %}
+<meta property="og:site_name" content="{{ site.nom }}">
+<meta property="og:locale" content="fr_FR">
+<meta property="og:type" content="{% block og_type %}website{% endblock %}">
+<meta property="og:title" content="{{ self.titre() }}">
+<meta property="og:description" content="{{ self.description() }}">
+{% if url_page %}<meta property="og:url" content="{{ url_page }}">{% endif %}
+{% if image_partage %}<meta property="og:image" content="{{ image_partage }}">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">{% endif %}
+<link rel="alternate" type="application/rss+xml" title="{{ site.nom }}" href="{{ racine }}flux.xml">
+<link rel="icon" href="{{ racine }}assets/logo/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{{ racine }}assets/logo/avatar-1024.png">
+<style>
+{% include "style.css" %}
+</style>
+</head>
+<body>
+<a class="evitement" href="#contenu">Aller au contenu</a>
+<header class="bandeau">
+  <div class="cadre">
+    <a class="logo" href="{{ racine }}" aria-label="{{ site.nom }}, accueil"><img src="{{ racine }}assets/logo/logo-sombre.svg" alt="{{ site.nom }}" width="200" height="44"></a>
+    <nav aria-label="Navigation principale">
+      <a href="{{ racine }}"{% if page == "accueil" %} aria-current="page"{% endif %}>Ce numéro</a>
+      <a href="{{ racine }}archives/"{% if page == "archives" %} aria-current="page"{% endif %}>Archives</a>
+      <a class="facultatif" href="{{ racine }}a-propos/"{% if page == "a-propos" %} aria-current="page"{% endif %}>À propos</a>
+    </nav>
+  </div>
+</header>
+<main id="contenu">
+{% block contenu %}{% endblock %}
+</main>
+<footer class="pied">
+  <div class="cadre">
+    <div>
+      <img class="embleme" src="{{ racine }}assets/logo/embleme.svg" alt="" width="64" height="64">
+      <h2>{{ site.nom }}</h2>
+      <p>{{ site.sous_titre }}, chaque dimanche matin. Les résumés sont rédigés automatiquement par une intelligence artificielle à partir des articles cités, que nous vous invitons à lire.</p>
+    </div>
+    <div>
+      <h2>La revue</h2>
+      <ul>
+        <li><a href="{{ racine }}">Dernier numéro</a></li>
+        <li><a href="{{ racine }}archives/">Tous les numéros</a></li>
+        <li><a href="{{ racine }}a-propos/">Comment elle est faite</a></li>
+        <li><a href="{{ racine }}flux.xml">Flux RSS</a></li>
+        {% if site.contact %}<li><a href="mailto:{{ site.contact }}">Signaler une erreur</a></li>{% endif %}
+      </ul>
+    </div>
+    <div>
+      <h2>Nous suivre</h2>
+      <ul>
+        {% for nom, url in profils %}<li><a href="{{ url }}" rel="noopener">{{ nom }}</a></li>{% endfor %}
+        {% if not profils %}<li><a href="{{ racine }}flux.xml">Flux RSS</a></li>{% endif %}
+      </ul>
+    </div>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,79 @@
+{
+  "numero": 1,
+  "date": "2026-10-11",
+  "video": {
+    "scenes": [
+      {
+        "type": "intro",
+        "surtitre": "N° 1",
+        "titre_ecran": "Hebdo Aero",
+        "texte_ecran": "Semaine du 5 au 11 octobre 2026",
+        "narration": "Hebdo Aéro, numéro 1. L'essentiel de l'aviation commerciale, semaine du 5 au 11 octobre 2026.",
+        "recherche_video": "airplane takeoff sunset"
+      },
+      {
+        "type": "sujet",
+        "surtitre": "Riyad, Arabie saoudite",
+        "titre_ecran": "Un missile frappe l'aéroport de Riyad",
+        "texte_ecran": "Au moins 12 morts au terminal 3, trafic suspendu",
+        "narration": "À Riyad, un missile tiré depuis le Yémen a frappé le terminal 3 de l'aéroport King Khalid, le 10 octobre. Au moins douze personnes ont été tuées et tout le trafic a été suspendu.",
+        "recherche_video": "airport terminal night"
+      },
+      {
+        "type": "sujet",
+        "surtitre": "Commandes",
+        "titre_ecran": "Avolon commande 250 avions",
+        "texte_ecran": "110 chez Airbus, 140 chez Boeing",
+        "narration": "Le loueur irlandais Avolon signe des commandes fermes pour deux cent cinquante avions : cent dix chez Airbus, dont trente-cinq A330neo, et le reste chez Boeing.",
+        "recherche_video": "airplanes parked airport"
+      },
+      {
+        "type": "sujet",
+        "surtitre": "Livraisons",
+        "titre_ecran": "Airbus doit accélérer",
+        "texte_ecran": "72 avions livrés en septembre, 547 depuis janvier",
+        "narration": "Airbus a livré soixante-douze avions en septembre. Pour tenir son objectif d'environ huit cent soixante-dix livraisons cette année, il lui en faudrait plus de cent par mois d'ici décembre.",
+        "recherche_video": "aircraft factory assembly"
+      },
+      {
+        "type": "sujet",
+        "surtitre": "Fret aérien",
+        "titre_ecran": "Ethiopian renforce sa flotte cargo",
+        "texte_ecran": "10 Boeing 777 cargo, dont 8 du nouveau 777-8F",
+        "narration": "Ethiopian Airlines commande dix Boeing 777 cargo, dont huit 777-8F. C'est une première pour une compagnie africaine sur cette nouvelle version.",
+        "recherche_video": "cargo airplane loading"
+      },
+      {
+        "type": "sujet",
+        "surtitre": "À bord",
+        "titre_ecran": "Starlink gagne du terrain",
+        "texte_ecran": "American Airlines et Royal Air Maroc s'équipent",
+        "narration": "L'internet par satellite Starlink progresse : American Airlines va en équiper plus de mille avions, et Royal Air Maroc devient la première compagnie africaine à l'adopter.",
+        "recherche_video": "airplane cabin passengers"
+      },
+      {
+        "type": "chiffre",
+        "surtitre": "Le chiffre de la semaine",
+        "titre_ecran": "6 Md$",
+        "texte_ecran": "C'est la hausse de la facture de carburant que Delta Air Lines anticipe pour 2026 par rapport à 2025.",
+        "narration": "Le chiffre de la semaine : six milliards de dollars. C'est la hausse de la facture de carburant que Delta prévoit cette année."
+      },
+      {
+        "type": "fin",
+        "surtitre": "Sources et détails",
+        "titre_ecran": "Hebdo Aero",
+        "texte_ecran": "{lien_court}",
+        "narration": "Toutes les sources sont sur le site Hebdo Aéro. Rendez-vous dimanche prochain.",
+        "recherche_video": "airplane above clouds"
+      }
+    ]
+  },
+  "legendes": {
+    "youtube_titre": "Aviation : l'essentiel du 5 au 11 octobre 2026",
+    "youtube_description": "Au sommaire de la semaine du 5 au 11 octobre : l'attaque meurtrière contre l'aéroport de Riyad, une commande de 250 avions signée par Avolon chez Airbus et Boeing, Airbus contraint d'accélérer ses livraisons, et une facture de carburant qui grimpe de 6 milliards de dollars pour Delta.\n\nLe numéro complet et toutes les sources : {lien}\n\nRésumé rédigé par IA à partir des sources citées sur le site, voix de synthèse. Signalez toute erreur via le site.\n\n#aviation #aeronautique #avgeek #compagniesaeriennes #transportaerien #Shorts",
+    "instagram": "L'essentiel de l'aviation commerciale du 5 au 11 octobre : un missile frappe l'aéroport de Riyad, le loueur Avolon commande 250 avions, Airbus doit accélérer ses livraisons, Ethiopian renforce sa flotte cargo et Starlink s'installe chez American Airlines et Royal Air Maroc.\n\nLe numéro complet et toutes les sources : lien en bio.\n\nRésumé rédigé par IA à partir des sources citées sur le site, voix de synthèse. Signalez toute erreur via le site.\n\n#aviation #aeronautique #avgeek #compagniesaeriennes #transportaerien",
+    "facebook": "Au sommaire de la semaine du 5 au 11 octobre : l'attaque meurtrière contre l'aéroport de Riyad, une commande de 250 avions signée par Avolon chez Airbus et Boeing, Airbus contraint d'accélérer ses livraisons, et une facture de carburant qui grimpe de 6 milliards de dollars pour Delta.\n\nLe numéro complet et toutes les sources : {lien}\n\nRésumé rédigé par IA à partir des sources citées sur le site, voix de synthèse. Signalez toute erreur via le site.",
+    "threads": "Aviation, semaine du 5 au 11 octobre : missile sur l'aéroport de Riyad, 250 avions commandés par Avolon, Airbus sous pression sur ses livraisons, +6 milliards de dollars de carburant pour Delta. Le résumé en 80 secondes, et toutes les sources sur le site.\n\n{lien}"
+  },
+  "publications": {}
+}

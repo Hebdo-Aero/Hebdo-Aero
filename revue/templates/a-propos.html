@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block titre %}À propos, {{ site.nom }}{% endblock %}
+{% block description %}Comment {{ site.nom }} est rédigé, à partir de quelles sources, et comment signaler une erreur.{% endblock %}
+{% block contenu %}
+<div class="cadre"><div class="page">
+  <h1>Comment cette revue est faite</h1>
+  <p>{{ site.nom }} résume chaque dimanche l'actualité mondiale de l'aviation commerciale de la semaine écoulée : compagnies aériennes, constructeurs, commandes et livraisons, aéroports, maintenance, résultats financiers, sécurité et environnement.</p>
+
+  <h2>Une rédaction automatisée</h2>
+  <p>Chaque dimanche matin, un programme rassemble les articles publiés pendant la semaine par les médias spécialisés listés ci-dessous. Un modèle d'intelligence artificielle, Claude, sélectionne les sujets importants, les regroupe et les résume en français. Il peut compléter ces articles par quelques recherches sur le web.</p>
+  <p>Avant publication, des contrôles automatiques écartent tout sujet dont la source n'a pas été réellement consultée, ainsi que tout résumé qui reprendrait mot pour mot un article. Chaque sujet renvoie vers ses sources : ce sont elles qui font foi.</p>
+
+  <h2>Les sources consultées</h2>
+  <ul>
+    {% for f in flux %}<li>{{ f.nom }}</li>{% endfor %}
+  </ul>
+  <p>Les médias cités restent propriétaires de leurs articles ; la revue n'en reproduit pas le texte et renvoie toujours vers eux.</p>
+
+  <h2>La vidéo de la semaine</h2>
+  <p>Une courte vidéo verticale reprend les sujets principaux. Son texte est écrit par la même IA à partir du numéro publié, et lu par une voix de synthèse. Elle est publiée sur YouTube, Instagram, Facebook et Threads.</p>
+
+  <h2>Signaler une erreur</h2>
+  <p>Une IA peut se tromper. {% if site.contact %}Si vous repérez une erreur, écrivez à <a href="mailto:{{ site.contact }}">{{ site.contact }}</a> : elle sera corrigée.{% else %}Si vous repérez une erreur, signalez-la via les réseaux sociaux de la revue : elle sera corrigée.{% endif %}</p>
+</div></div>
+{% endblock %}

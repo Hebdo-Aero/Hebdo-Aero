@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block titre %}Page introuvable, {{ site.nom }}{% endblock %}
+{% block contenu %}
+<div class="cadre"><div class="page">
+  <h1>Hors de la route</h1>
+  <p>Cette page n'existe pas ou a été déplacée. Le dernier numéro est sur <a href="{{ racine }}">la page d'accueil</a>, les précédents dans <a href="{{ racine }}archives/">les archives</a>.</p>
+</div></div>
+{% endblock %}

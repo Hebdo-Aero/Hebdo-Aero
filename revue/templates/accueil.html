@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from "_numero.html" import numero_complet %}
+{% block titre %}{{ site.nom }}, {{ site.sous_titre|lower }}{% endblock %}
+{% block description %}{% if dernier %}N° {{ dernier.numero }}, semaine du {{ dernier.periode }} : {{ dernier.titre }}{% else %}{{ site.sous_titre }}{% endif %}{% endblock %}
+{% block contenu %}
+{% if dernier %}
+  {{ numero_complet(dernier, racine, rubriques, profils) }}
+  {% if precedents %}
+  <section class="section bande-claire" aria-labelledby="precedents">
+    <div class="cadre">
+      <div class="entete-section"><h2 id="precedents">Numéros précédents</h2><p><a href="{{ racine }}archives/">Tout voir</a></p></div>
+      <ol class="archives grille-3">
+        {% for n in precedents %}
+        <li><a class="carte-numero" href="{{ racine }}numeros/{{ n.numero }}/">{% if n.couverture %}<img src="{{ racine }}{{ n.couverture.src }}" alt="" loading="lazy">{% endif %}<span class="n">{{ n.numero }}</span><span class="t">{{ n.titre }}</span><span class="p">Semaine du {{ n.periode }}</span></a></li>
+        {% endfor %}
+      </ol>
+    </div>
+  </section>
+  {% endif %}
+{% else %}
+  <div class="cadre"><div class="page"><h1>Premier numéro dimanche</h1><p>La revue paraît chaque dimanche matin.</p></div></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block titre %}Archives, {{ site.nom }}{% endblock %}
+{% block description %}Tous les numéros de {{ site.nom }}, {{ site.sous_titre|lower }}.{% endblock %}
+{% block contenu %}
+<div class="cadre">
+  <div class="page">
+    <h1>Tous les numéros</h1>
+    <p>{{ numeros|length }} numéro{{ "s" if numeros|length > 1 }} depuis le lancement. Chaque numéro couvre une semaine, du lundi au dimanche.</p>
+  </div>
+  <ol class="archives grille-3" style="padding-bottom:56px">
+    {% for n in numeros %}
+    <li><a class="carte-numero" href="{{ racine }}numeros/{{ n.numero }}/">{% if n.couverture %}<img src="{{ racine }}{{ n.couverture.src }}" alt="" loading="lazy">{% endif %}<span class="n">{{ n.numero }}</span><span class="t">{{ n.titre }}</span><span class="p">Semaine du {{ n.periode }}</span></a></li>
+    {% endfor %}
+  </ol>
+</div>
+{% endblock %}

@@ -1,0 +1,97 @@
+# Configuration de « Hebdo Aero »
+# Tout ce qui se règle sans toucher au code se trouve ici.
+
+[site]
+nom = "Hebdo Aero"
+# Le nom tel que la voix de synthèse doit le prononcer dans les vidéos.
+nom_parle = "Hebdo Aéro"
+sous_titre = "La revue hebdomadaire de l'aviation commerciale"
+# Adresse publique du site. Laissez vide : GitHub Actions la remplit tout seul
+# avec l'adresse GitHub Pages. Renseignez-la si vous utilisez un domaine à vous.
+url = ""
+langue = "fr"
+fuseau = "Europe/Paris"
+contact = ""  # adresse e-mail affichée pour signaler une erreur (facultatif)
+
+[redaction]
+# Modèle Claude utilisé pour rédiger la revue et les textes des réseaux sociaux.
+modele = "claude-sonnet-5-5"
+# Nombre maximum de recherches web que Claude peut faire pour compléter les flux RSS
+# (10 $ les 1 000 recherches, soit 0,08 $ pour 8).
+recherches_web_max = 8
+# Nombre de brèves visées en plus des 3 sujets « À la une ».
+breves_cible = 12
+# En dessous de ce nombre d'articles valides, la revue n'est pas publiée.
+articles_minimum = 6
+
+# Flux RSS lus chaque semaine. Ajoutez ou retirez des lignes librement.
+# Un flux qui ne répond pas est simplement ignoré.
+[[flux]]
+nom = "AeroTime"
+url = "https://www.aerotime.aero/feed"
+
+[[flux]]
+nom = "Le Journal de l'Aviation"
+url = "https://www.journal-aviation.com/feed"
+
+[[flux]]
+nom = "Aerobuzz"
+url = "https://www.aerobuzz.fr/feed/"
+
+[[flux]]
+nom = "AirlineGeeks"
+url = "https://airlinegeeks.com/feed/"
+
+[[flux]]
+nom = "Aviation24.be"
+url = "https://www.aviation24.be/feed/"
+
+[[flux]]
+nom = "AeroRoutes"
+url = "https://www.aeroroutes.com/?format=rss"
+
+[[flux]]
+nom = "Simple Flying"
+url = "https://simpleflying.com/feed/"
+
+[[flux]]
+nom = "Air Journal"
+url = "https://www.air-journal.fr/feed"
+
+[video]
+# Voix Google Cloud Text-to-Speech (Chirp 3 HD). Pour les écouter toutes et choisir,
+# lancez l'action « Écouter les voix disponibles » puis ouvrez la page /voix/ du site.
+voix = "fr-FR-Chirp3-HD-Sulafat"
+vitesse = 1.0
+# Durée maximale : les Reels Facebook publiés par API sont limités à 90 secondes.
+duree_max = 88
+images_par_seconde = 30
+# Plans vidéo d'illustration (Pexels) pour l'ouverture et la conclusion.
+recherche_intro = "airplane takeoff sunset"
+recherche_fin = "airplane above clouds"
+# Musique : votre fichier libre de droits s'il existe, sinon une nappe générée automatiquement.
+musique = "assets/musique.mp3"
+volume_musique = 0.32
+# Léger souffle sonore à chaque changement de scène (0 pour le couper).
+volume_transitions = 0.35
+
+[reseaux]
+# Mettez false pour couper une plateforme sans retirer ses secrets.
+youtube = true
+instagram = true
+facebook = true
+threads = true
+# Visibilité des vidéos YouTube : "public", "unlisted" (non répertoriée) ou "private".
+youtube_visibilite = "public"
+# Signale à YouTube que la vidéo utilise une voix de synthèse.
+youtube_contenu_synthetique = true
+hashtags = ["aviation", "aeronautique", "avgeek", "compagniesaeriennes", "transportaerien"]
+# Version de l'API Graph de Meta (Instagram et Facebook).
+meta_version_api = "v25.0"
+
+# Adresses de vos pages, affichées sur le site (laissez vide pour masquer).
+[reseaux.profils]
+youtube = ""
+instagram = ""
+facebook = ""
+threads = ""

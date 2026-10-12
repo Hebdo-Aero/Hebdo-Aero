@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>{{ site.url }}</loc>{% if numeros %}<lastmod>{{ numeros[0].date }}</lastmod>{% endif %}</url>
+  <url><loc>{{ site.url }}archives/</loc></url>
+  <url><loc>{{ site.url }}a-propos/</loc></url>
+  {% for n in numeros %}<url><loc>{{ site.url }}numeros/{{ n.numero }}/</loc><lastmod>{{ n.date }}</lastmod></url>
+  {% endfor %}
+</urlset>

@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block titre %}Choisir la voix, {{ site.nom }}{% endblock %}
+{% block contenu %}
+<div class="cadre">
+  <div class="page">
+    <h1>Choisir la voix des vidéos</h1>
+    <p>Chaque voix lit la même phrase. Quand vous avez fait votre choix, recopiez son nom dans <code>config.toml</code>, ligne <code>voix =</code>. Voix actuelle : <strong>{{ actuelle }}</strong>.</p>
+  </div>
+  <ul class="voix">
+    {% for v in voix %}
+    <li{% if v.voix == actuelle %} class="actuelle"{% endif %}>
+      <div><strong>{{ v.nom }}</strong><span>{{ v.description }}</span><code>{{ v.voix }}</code></div>
+      <audio controls preload="none" src="{{ v.fichier }}"></audio>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}

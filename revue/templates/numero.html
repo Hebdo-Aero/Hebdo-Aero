@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% from "_numero.html" import numero_complet %}
+{% block titre %}N° {{ n.numero }} : {{ n.titre }}, {{ site.nom }}{% endblock %}
+{% block description %}Semaine du {{ n.periode }}. {{ n.edito|truncate(220) }}{% endblock %}
+{% block og_type %}article{% endblock %}
+{% block contenu %}
+  {{ numero_complet(n, racine, rubriques, profils) }}
+  <section class="section bande-claire">
+    <nav class="cadre pagination" aria-label="Autres numéros">
+      <span>{% if n.precedent %}<a href="{{ racine }}numeros/{{ n.precedent }}/">Numéro {{ n.precedent }}</a>{% endif %}</span>
+      <a href="{{ racine }}archives/">Tous les numéros</a>
+      <span>{% if n.suivant %}<a href="{{ racine }}numeros/{{ n.suivant }}/">Numéro {{ n.suivant }}</a>{% endif %}</span>
+    </nav>
+  </section>
+{% endblock %}

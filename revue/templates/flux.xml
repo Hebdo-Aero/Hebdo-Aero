@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+<channel>
+  <title>{{ site.nom }}</title>
+  <link>{{ site.url }}</link>
+  <description>{{ site.sous_titre }}</description>
+  <language>fr-FR</language>
+  {% if site.url %}<atom:link href="{{ site.url }}flux.xml" rel="self" type="application/rss+xml"/>{% endif %}
+  {% for n in numeros[:30] %}
+  <item>
+    <title>N° {{ n.numero }} : {{ n.titre }}</title>
+    <link>{{ site.url }}numeros/{{ n.numero }}/</link>
+    <guid isPermaLink="true">{{ site.url }}numeros/{{ n.numero }}/</guid>
+    <pubDate>{{ n.date_rss }}</pubDate>
+    <description>{{ n.edito }} À la une : {% for s in n.une %}{{ s.titre }}{{ " ; " if not loop.last else "." }}{% endfor %}</description>
+  </item>
+  {% endfor %}
+</channel>
+</rss>

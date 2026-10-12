@@ -1,0 +1,286 @@
+{
+  "numero": 1,
+  "date": "2026-10-11",
+  "debut": "2026-10-05",
+  "fin": "2026-10-11",
+  "titre": "Riyad sous les missiles, Avolon commande 250 avions, le kérosène pèse sur Delta",
+  "edito": "La semaine est marquée par l'attaque meurtrière contre l'aéroport de Riyad, nouveau signe que le conflit au Moyen-Orient frappe désormais directement les infrastructures du transport aérien civil. L'appétit pour les avions neufs ne faiblit pas pour autant : le loueur Avolon signe pour 250 appareils, Ethiopian renforce sa flotte cargo et Biman Bangladesh mise sur l'A350. Reste la question des coûts et des cadences : Delta voit sa facture de carburant bondir de 6 milliards de dollars, tandis qu'Airbus doit nettement accélérer ses livraisons d'ici décembre pour tenir son objectif annuel.",
+  "chiffre": {
+    "valeur": "6 Md$",
+    "legende": "C'est la hausse de la facture de carburant que Delta Air Lines anticipe pour 2026 par rapport à 2025.",
+    "source": {
+      "nom": "AeroTime",
+      "url": "https://www.aerotime.aero/articles/delta-cuts-2026-profit-forecast-fuel-costs"
+    }
+  },
+  "une": [
+    {
+      "titre": "Riyad : un missile frappe l'aéroport King Khalid, au moins 12 morts",
+      "resume": "Le 10 octobre, un missile tiré depuis la zone du Yémen contrôlée par les Houthis a touché le terminal 3 de l'aéroport international King Khalid de Riyad. L'autorité saoudienne de l'aviation civile fait état d'au moins 12 morts et de 309 blessés, dont plusieurs dans un état critique. Toutes les opérations ont été suspendues au moins jusqu'à la nuit du 12 octobre. Deux jours plus tôt, d'autres frappes sur l'aéroport avaient tué trois personnes, dont un commandant de bord de Saudia, et endommagé un Airbus de la famille A320 au sol.",
+      "categorie": "Sécurité & sûreté",
+      "region": "Moyen-Orient",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/missile-attack-on-riyadhs-international-airport-kills-twelve-injures-hundred"
+        }
+      ],
+      "illustration": "airport terminal night"
+    },
+    {
+      "titre": "Le loueur Avolon commande 250 avions à Airbus et Boeing",
+      "resume": "Le loueur irlandais Avolon a annoncé le 9 octobre des commandes fermes portant sur 250 appareils. Chez Airbus, elles concernent 110 avions : 35 A330-900 et 75 monocouloirs de la famille A320neo, ce qui porte à 114 le nombre d'A330-900 commandés par Avolon, premier loueur de ce modèle. Les 140 appareils restants sont commandés à Boeing. La société dit vouloir sécuriser ses livraisons jusqu'à la prochaine décennie, face à une demande des compagnies qui reste soutenue.",
+      "categorie": "Constructeurs & commandes",
+      "region": "Europe",
+      "sources": [
+        {
+          "nom": "Le Journal de l'Aviation",
+          "url": "https://www.journal-aviation.com/actualites-industrie-aeronautique/avions-commerciaux/avolon-passe-des-commandes-fermes-pour-250-airbus-et-boeing-20261009.html"
+        },
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/airbus-lands-triple-digit-aircraft-order-from-avolon"
+        }
+      ],
+      "illustration": "airplanes parked airport"
+    },
+    {
+      "titre": "Delta abaisse sa prévision de bénéfice, plombée par le carburant",
+      "resume": "Delta Air Lines a revu à la baisse, le 9 octobre, sa prévision de bénéfice ajusté par action pour 2026 : elle se situe désormais entre 5,10 et 5,60 dollars, contre 6,50 à 7,50 dollars annoncés en juillet. La compagnie s'attend à une facture de carburant supérieure de 6 milliards de dollars à celle de 2025. Son chiffre d'affaires ajusté du troisième trimestre atteint pourtant un record de 17,6 milliards de dollars, en hausse de 16 %, porté par les cabines premium dont les recettes progressent de 18 %.",
+      "categorie": "Résultats & marchés",
+      "region": "Amérique du Nord",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/delta-cuts-2026-profit-forecast-fuel-costs"
+        }
+      ],
+      "illustration": "airplane fuel truck"
+    }
+  ],
+  "breves": [
+    {
+      "titre": "Airbus livre 72 avions en septembre mais reste loin de son rythme cible",
+      "resume": "Airbus a livré 72 appareils à 37 clients en septembre, soit 547 depuis janvier. Pour atteindre son objectif d'environ 870 livraisons en 2026, l'avionneur devrait en remettre environ 108 par mois d'ici à la fin de l'année. Les livraisons d'A330neo restent faibles, et des inspections sont en cours après la découverte d'un outil dans l'empennage horizontal de l'un de ces appareils. Avec 17 commandes, septembre est le mois le plus faible de l'année pour les prises de commandes.",
+      "categorie": "Constructeurs & commandes",
+      "region": "Europe",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/airbus-aircraft-deliveries-september-2026"
+        },
+        {
+          "nom": "Le Journal de l'Aviation",
+          "url": "https://www.journal-aviation.com/actualites-industrie-aeronautique/airbus-a-livre-72-appareils-en-septembre-20261009.html"
+        },
+        {
+          "nom": "Aviation24.be",
+          "url": "https://www.aviation24.be/manufacturers/airbus/airbus-recorded-17-orders-and-delivered-72-aircraft-in-september-2026/"
+        }
+      ]
+    },
+    {
+      "titre": "Ethiopian Airlines commande dix Boeing 777 cargo",
+      "resume": "La compagnie éthiopienne renforce nettement sa flotte de fret avec deux Boeing 777 Freighter et huit 777-8F. C'est la première commande d'une compagnie africaine pour cette nouvelle version cargo du 777X. Elle s'ajoute à une précédente commande de huit 777-9 destinés au transport de passagers.",
+      "categorie": "Constructeurs & commandes",
+      "region": "Afrique",
+      "sources": [
+        {
+          "nom": "Aerobuzz",
+          "url": "https://www.aerobuzz.fr/breves-transport-aerien/10-boeing-777-cargo-pour-ethiopian-airlines/"
+        }
+      ]
+    },
+    {
+      "titre": "Biman Bangladesh finalise une commande de dix Airbus",
+      "resume": "La compagnie nationale du Bangladesh a finalisé le 7 octobre l'achat de quatre A350-900 et de six A321neo. Depuis son hub de Dacca, elle compte sur la grande autonomie de l'A350 pour concrétiser ses projets long-courriers, notamment vers l'Amérique.",
+      "categorie": "Constructeurs & commandes",
+      "region": "Asie-Pacifique",
+      "sources": [
+        {
+          "nom": "Le Journal de l'Aviation",
+          "url": "https://www.journal-aviation.com/actualites-transport-aerien/compagnies-aeriennes/biman-bangladesh-commande-quatre-airbus-a350-et-six-a321neo-20261008.html"
+        },
+        {
+          "nom": "Aerobuzz",
+          "url": "https://www.aerobuzz.fr/breves-transport-aerien/biman-bangladesh-airlines-commande-10-airbus-a350-900-et-a321neo/"
+        }
+      ]
+    },
+    {
+      "titre": "KLM reçoit son premier A350 mais allège son programme d'hiver",
+      "resume": "KLM a pris livraison de son premier Airbus A350-900, qui doit moderniser progressivement sa flotte long-courrier. Dans le même temps, la compagnie néerlandaise va annuler à l'avance une partie de ses vols entre le 26 octobre et début mars : des retards de maintenance et de réparation immobilisent plus d'avions que prévu, et elle veut garder des long-courriers en réserve pour limiter les perturbations de dernière minute.",
+      "categorie": "Compagnies & réseaux",
+      "region": "Europe",
+      "sources": [
+        {
+          "nom": "Aerobuzz",
+          "url": "https://www.aerobuzz.fr/breves-transport-aerien/le-premier-airbus-a350-900-aux-couleurs-de-klm/"
+        },
+        {
+          "nom": "Aviation24.be",
+          "url": "https://www.aviation24.be/airlines/air-france-klm-group/klm-royal-dutch-airlines/klm-to-cut-winter-flights-as-maintenance-delays-reduce-aircraft-availability/"
+        }
+      ]
+    },
+    {
+      "titre": "Starlink s'invite chez American Airlines et Royal Air Maroc",
+      "resume": "American Airlines prévoit d'équiper plus de 1 000 avions de sa flotte principale, monocouloirs comme gros-porteurs, de l'internet par satellite Starlink. Royal Air Maroc devient pour sa part la première compagnie africaine à adopter ce service : 41 appareils seront équipés, les premiers d'ici début 2027, avec un accès gratuit pour les membres de son programme de fidélité Safar Flyer.",
+      "categorie": "Innovation & environnement",
+      "region": "Monde",
+      "sources": [
+        {
+          "nom": "AirlineGeeks",
+          "url": "https://airlinegeeks.com/2026/10/08/american-to-use-starlink-across-mainline-fleet/"
+        },
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/royal-air-maroc-to-become-the-first-african-airline-to-offer-starlink"
+        }
+      ]
+    },
+    {
+      "titre": "LATAM Brasil réceptionne son premier Embraer E195-E2",
+      "resume": "La filiale brésilienne de LATAM a reçu le 8 octobre son premier E195-E2, appelé à élargir son réseau intérieur. Douze exemplaires sont attendus d'ici à la fin de l'année.",
+      "categorie": "Compagnies & réseaux",
+      "region": "Amérique latine",
+      "sources": [
+        {
+          "nom": "Le Journal de l'Aviation",
+          "url": "https://www.journal-aviation.com/actualites-transport-aerien/compagnies-aeriennes/latam-recoit-son-premier-embraer-e195-e2-20261009.html"
+        },
+        {
+          "nom": "AirlineGeeks",
+          "url": "https://airlinegeeks.com/2026/10/08/latam-takes-delivery-of-its-first-e195-e2-aircraft/"
+        },
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/latam-brazil-takes-first-embraer-e195-e2-jet-as-it-broadens-its-domestic-network"
+        }
+      ]
+    },
+    {
+      "titre": "Air France ouvrira Nashville et San Diego à l'été 2027",
+      "resume": "Air France lancera en mai 2027 deux nouvelles lignes au départ de Paris-Charles de Gaulle, vers Nashville et San Diego, exploitées en Airbus A350. La compagnie desservira ainsi 20 destinations aux États-Unis à l'été 2027.",
+      "categorie": "Compagnies & réseaux",
+      "region": "Europe",
+      "sources": [
+        {
+          "nom": "Le Journal de l'Aviation",
+          "url": "https://www.journal-aviation.com/actualites-transport-aerien/compagnies-aeriennes/air-france-va-desservir-nashville-et-san-diego-en-airbus-a350-a-partir-de-mai-prochain-20261011.html"
+        },
+        {
+          "nom": "AirlineGeeks",
+          "url": "https://airlinegeeks.com/2026/10/08/air-france-adds-routes-to-u-s/"
+        }
+      ]
+    },
+    {
+      "titre": "Air Astana mise sur Oman et le Japon",
+      "resume": "La compagnie kazakhe ouvrira fin octobre des vols hebdomadaires vers Salalah, sa première destination à Oman, depuis Almaty et Astana. Elle prévoit aussi une ligne Almaty – Tokyo-Narita à partir du 30 novembre, deux fois par semaine en A321LR et en partage de codes avec Japan Airlines, sous réserve d'approbation.",
+      "categorie": "Compagnies & réseaux",
+      "region": "Asie-Pacifique",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/air-astana-launches-new-routes-to-salalah-oman-and-tokyo-narita"
+        }
+      ]
+    },
+    {
+      "titre": "Norse Atlantic loue deux 787-9 à PIA",
+      "resume": "Norse Atlantic fournira deux Boeing 787-9 avec leurs équipages à Pakistan International Airlines, dans le cadre d'un contrat de location ACMI. Les appareils doivent renforcer les liaisons entre le Royaume-Uni et le Pakistan à partir de début novembre ; les lignes et la durée du contrat n'ont pas été précisées.",
+      "categorie": "Compagnies & réseaux",
+      "region": "Asie-Pacifique",
+      "sources": [
+        {
+          "nom": "Le Journal de l'Aviation",
+          "url": "https://www.journal-aviation.com/actualites-transport-aerien/compagnies-aeriennes/pia-va-louer-deux-boeing-787-9-a-norse-atlantic-20261009.html"
+        },
+        {
+          "nom": "Aviation24.be",
+          "url": "https://www.aviation24.be/airlines/norse-atlantic-airways/norse-atlantic-to-provide-two-boeing-787-9s-for-pias-uk-pakistan-services/"
+        }
+      ]
+    },
+    {
+      "titre": "Départ immédiat du directeur commercial d'Etihad",
+      "resume": "Arik De, directeur des revenus et du commerce d'Etihad Airways, a quitté la compagnie d'Abou Dhabi avec effet immédiat, après près de cinq ans en poste. Il a annoncé son départ le 8 octobre ; Etihad n'a pas encore désigné de successeur.",
+      "categorie": "Compagnies & réseaux",
+      "region": "Moyen-Orient",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/etihad-commercial-chief-arik-de-leaves-with-immediate-effect-no-successor-named"
+        }
+      ]
+    },
+    {
+      "titre": "Chalair desservira l'Andorre à partir de 2027",
+      "resume": "Le gouvernement d'Andorre a retenu la compagnie française Chalair pour exploiter, à partir du 1er janvier 2027, plusieurs liaisons régulières au départ de l'aéroport d'Andorra-La Seu d'Urgell, dans le cadre d'une convention de quatre ans.",
+      "categorie": "Compagnies & réseaux",
+      "region": "Europe",
+      "sources": [
+        {
+          "nom": "Aerobuzz",
+          "url": "https://www.aerobuzz.fr/transport-aerien/chalair-se-deploie-en-andorre/"
+        }
+      ]
+    },
+    {
+      "titre": "ST Engineering ouvre un quatrième centre de maintenance à Singapour",
+      "resume": "Inauguré le 9 octobre dans la zone de Changi Creek, le nouveau site de 84 000 m² compte quatre baies pour gros-porteurs. Il accroît de 40 % la capacité de maintenance cellule de ST Engineering à Singapour, soit une centaine de gros-porteurs supplémentaires par an, et doit employer plus de 500 personnes. Drones d'inspection, robots de logistique et détection des défauts par IA font partie de son organisation.",
+      "categorie": "Aéroports & maintenance",
+      "region": "Asie-Pacifique",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/st-engineering-opens-singapore-airframe-mro-hub-adding-40-to-widebody-capacity"
+        },
+        {
+          "nom": "Le Journal de l'Aviation",
+          "url": "https://www.journal-aviation.com/actualites-mro-support/maintenance-cellule/mro-st-engineering-se-dote-dun-4e-site-de-maintenance-cellule-a-singapour-20261009.html"
+        }
+      ]
+    },
+    {
+      "titre": "ACI Europe élargit sa stratégie environnementale",
+      "resume": "L'association des aéroports européens a présenté une nouvelle stratégie de développement durable qui ne se limite plus à la réduction des émissions de carbone et s'étend à d'autres enjeux de durabilité des plateformes.",
+      "categorie": "Innovation & environnement",
+      "region": "Europe",
+      "sources": [
+        {
+          "nom": "Le Journal de l'Aviation",
+          "url": "https://www.journal-aviation.com/actualites-transport-aerien/aeroports/aci-europe-presente-sa-nouvelle-strategie-de-developpement-durable-pour-les-aeroports-20261007.html"
+        }
+      ]
+    },
+    {
+      "titre": "Sortie de piste à Miami : le NTSB pointe une approche trop rapide",
+      "resume": "Le NTSB a publié son rapport préliminaire sur la sortie de piste d'un Boeing 767 de 21 Air, survenue le 6 septembre à Miami lors d'un vol cargo opéré pour Amazon depuis San Juan. Les données des enregistreurs de vol montrent une approche effectuée à vitesse élevée.",
+      "categorie": "Sécurité & sûreté",
+      "region": "Amérique du Nord",
+      "sources": [
+        {
+          "nom": "Aerobuzz",
+          "url": "https://www.aerobuzz.fr/transport-aerien/une-arrivee-trop-rapide-a-miami-pour-le-boeing-767-de-21-air/"
+        }
+      ]
+    },
+    {
+      "titre": "Turbulences sévères sur un vol Avianca, huit personnes hospitalisées",
+      "resume": "Le vol AV42 d'Avianca entre Medellín et New York-JFK, assuré en Airbus A320, a été dérouté vers Miami le 9 octobre après avoir traversé de fortes turbulences qui ont blessé des passagers et des membres d'équipage. L'avion s'est posé sans encombre ; huit personnes ont été conduites à l'hôpital.",
+      "categorie": "Sécurité & sûreté",
+      "region": "Amérique latine",
+      "sources": [
+        {
+          "nom": "Aviation24.be",
+          "url": "https://www.aviation24.be/airlines/avianca/avianca-flight-to-new-york-diverts-to-miami-after-turbulence-injures-passengers-and-crew/"
+        }
+      ]
+    }
+  ],
+  "genere_par": "numéro de lancement, rédigé avec Claude à partir des flux vérifiés",
+  "genere_le": "2026-10-12T20:00:00+00:00",
+  "illustration": "airplane sunset clouds"
+}
