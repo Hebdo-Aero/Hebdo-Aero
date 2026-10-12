@@ -44,6 +44,7 @@ jobs:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
       PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+      PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
     steps:
       - name: Choisir le mode
         id: mode
