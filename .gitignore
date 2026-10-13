@@ -1,0 +1,6 @@
+_site/
+_medias/
+__pycache__/
+*.pyc
+.venv/
+.env

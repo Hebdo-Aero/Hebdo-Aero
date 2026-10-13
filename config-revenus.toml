@@ -1,0 +1,57 @@
+# À COLLER À LA FIN DE config.toml (sur GitHub : ouvrez config.toml, cliquez sur le crayon, collez, enregistrez).
+
+# ======================================================================
+# Revenus : newsletter, partenaires, soutien, statistiques, mentions légales
+# Chaque section est facultative : vide, elle n'affiche rien.
+# ======================================================================
+
+[newsletter]
+# Formulaire d'inscription : l'adresse « action » du formulaire HTML de votre compte Kit
+# (Kit > Grow > Landing Pages & Forms > votre formulaire > Publish > HTML).
+formulaire = ""                  # ex. "https://app.kit.com/forms/1234567/subscriptions"
+champ_email = "email_address"
+prestataire = "Kit"
+# Envoi automatique du numéro chaque dimanche (secret KIT_API_KEY), heure de Paris.
+heure_envoi = "08:30"
+# En dessous de ce nombre, le nombre d'abonnés n'est pas affiché sur la page « Annoncer ».
+seuil_affichage_abonnes = 100
+
+[soutien]
+# Page de dons (Tipeee, Ko-fi, Buy Me a Coffee…). Laissez vide pour masquer le bouton.
+url = ""                         # ex. "https://fr.tipeee.com/hebdo-aero"
+plateforme = ""                  # ex. "Tipeee"
+texte = ""                       # phrase facultative ; sinon un texte par défaut
+
+[statistiques]
+# Mesure d'audience sans cookie : "cloudflare" (gratuit), "goatcounter" ou "umami".
+fournisseur = ""
+identifiant = ""                 # cloudflare : le jeton du site ; goatcounter : le nom du compte ; umami : l'id du site
+# Chiffres affichés sur la page « Annoncer » (0 pour masquer). À mettre à jour de temps en temps.
+visites_par_mois = 0
+abonnes_reseaux = 0
+vues_videos_par_mois = 0
+
+[annonceurs]
+tarif = ""                       # ex. "à partir de 50 € le numéro" ; vide : « sur demande »
+
+[editeur]
+# Mentions légales : obligatoires dès que le site rapporte de l'argent.
+nom = ""                         # vos prénom et nom, ou le nom de votre entreprise
+statut = ""                      # ex. "entrepreneur individuel (micro-entreprise)"
+siret = ""
+adresse = ""                     # adresse postale (une domiciliation est possible)
+telephone = ""
+directeur_publication = ""       # en général vous-même
+
+# Partenaires (sponsors) : un bloc par partenaire. Il apparaît, signalé comme publicité,
+# dans les numéros dont la date (le dimanche) est comprise entre « du » et « au ».
+# Retirez les # devant les lignes pour activer l'exemple.
+# [[partenaires]]
+# nom = "École Exemple"
+# texte = "Formez-vous aux métiers de l'aérien : portes ouvertes le 15 novembre."
+# lien = "https://exemple.fr/portes-ouvertes"
+# bouton = "Découvrir"
+# logo = ""                      # facultatif : fichier déposé dans assets/partenaires/, ou adresse https
+# du = 2026-10-18
+# au = 2026-11-08
+# video = true                   # mention dans la vidéo de la semaine (à l'écran et à la voix)
