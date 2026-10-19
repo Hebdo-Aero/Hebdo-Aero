@@ -1,0 +1,216 @@
+{
+  "titre": "Lufthansa remporte TAP, Airbus pousse l'A350, Boeing accélère",
+  "edito": "La semaine est marquée par la recomposition du paysage européen, avec l'entrée de Lufthansa au capital de TAP Air Portugal, et par la course à la capacité chez les constructeurs : Airbus envisage d'augmenter la cadence de l'A350 et Boeing relève ses livraisons de 737 MAX. Les loueurs et les compagnies sécurisent leurs flottes à très long terme, jusqu'en 2035 pour ACG, tandis que Cirium anticipe des pénuries d'appareils jusqu'en 2030 au moins. Côté exploitation, les tensions d'approvisionnement en kérosène à Francfort et à Zurich, la panne du contrôle aérien italien et les restrictions d'espace aérien rappellent la fragilité du système. La demande, elle, reste soutenue sur le long terme : Airbus chiffre à 2,44 millions les nouveaux professionnels nécessaires d'ici 2045.",
+  "illustration": "airplane sunset sky",
+  "chiffre": {
+    "valeur": "2,44 M",
+    "legende": "Nombre de pilotes, techniciens de maintenance et personnels de cabine que le transport aérien devra recruter d'ici 2045, selon les prévisions d'Airbus publiées le 14 octobre 2026.",
+    "source": {
+      "nom": "AeroTime",
+      "url": "https://www.aerotime.aero/articles/airbus-aviation-workers-pilots-technicians-2045"
+    }
+  },
+  "une": [
+    {
+      "titre": "Airbus juge inévitable une hausse de la cadence de l'A350 et étudie des versions allongées d'A350 et d'A220",
+      "resume": "Lors d'un point presse à Toulouse le 14 octobre 2026, Lars Wagner, responsable des avions commerciaux d'Airbus, a indiqué qu'une décision d'augmenter la cadence de l'A350 serait prochainement prise, sous réserve de l'accord du conseil d'administration. La ligne d'assemblage actuelle a été conçue pour 12 à 13 appareils par mois ; aller au-delà exigerait des capacités supplémentaires. Le dirigeant a aussi confirmé une demande pour des versions allongées des familles A350 et A220, sans annoncer de lancement.",
+      "categorie": "Constructeurs & commandes",
+      "region": "Europe",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/airbus-a350-production-expansion-demand"
+        },
+        {
+          "nom": "Air Journal",
+          "url": "https://www.air-journal.fr/2026-10-16-a350-2000-et-a220-500-airbus-prepare-ses-prochains-paris-5278272.html"
+        }
+      ],
+      "illustration": "aircraft assembly line",
+      "image": {
+        "fichier": "2026-10-18-une-1.jpg",
+        "auteur": "StockSnap",
+        "page": "https://pixabay.com/photos/industrial-airplane-train-tracks-925878/",
+        "source": "Pixabay"
+      }
+    },
+    {
+      "titre": "Boeing a livré 475 avions en neuf mois (+8 %), dont un nombre record de 737 MAX ; Airbus en compte 547",
+      "resume": "Les chiffres publiés le 13 octobre 2026 montrent que Boeing a livré 475 avions commerciaux de janvier à septembre, soit 8 % de plus qu'un an plus tôt. Les 363 737 MAX remis sur la période constituent un record pour un début d'année et représentent plus des trois quarts du total. Airbus reste devant avec 547 livraisons, également en hausse d'environ 8 %. Boeing, qui a livré 600 appareils l'an dernier, doit encore en remettre 126 d'ici la fin de l'année pour dépasser ce total.",
+      "categorie": "Constructeurs & commandes",
+      "region": "Monde",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/boeing-2026-deliveries-orders-airbus-september"
+        },
+        {
+          "nom": "Air Journal",
+          "url": "https://www.air-journal.fr/2026-10-14-boeing-livre-363-avions-737-max-en-neuf-mois-un-record-pour-le-programme-5278218.html"
+        }
+      ],
+      "illustration": "airliner delivery runway",
+      "image": {
+        "fichier": "2026-10-18-une-2.jpg",
+        "auteur": "bilaleldaou",
+        "page": "https://pixabay.com/photos/dhl-freight-cargo-airline-airplane-2882823/",
+        "source": "Pixabay"
+      }
+    },
+    {
+      "titre": "Le loueur ACG commande 75 appareils de la famille A320neo, la plus grosse commande de son histoire",
+      "resume": "Aviation Capital Group, filiale de Tokyo Century, a signé le 16 octobre 2026 une commande ferme de 75 Airbus de la famille A320neo. Les livraisons sont attendues entre 2032 et 2035, et le contrat inclut des droits de conversion vers d'autres variantes de la famille.",
+      "categorie": "Constructeurs & commandes",
+      "region": "Amérique du Nord",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/airbus-order-75-airbus-a320neo-aviation-capital-group"
+        },
+        {
+          "nom": "Le Journal de l'Aviation",
+          "url": "https://www.journal-aviation.com/leasing-et-financement/acg-finalise-une-commande-pour-75-airbus-de-la-famille-a320neo-20261016.html"
+        },
+        {
+          "nom": "Air Journal",
+          "url": "https://www.air-journal.fr/2026-10-16-airbus-acg-commande-75-a320neo-et-reserve-sa-place-jusquen-2035-5278280.html"
+        }
+      ],
+      "illustration": "jet aircraft parked airport",
+      "image": {
+        "fichier": "2026-10-18-une-3.jpg",
+        "auteur": "Kim_R_Hunter",
+        "page": "https://pixabay.com/photos/aircraft-pilatus-pc-24-corporate-jet-5611528/",
+        "source": "Pixabay"
+      }
+    }
+  ],
+  "breves": [
+    {
+      "titre": "Japan Airlines commande jusqu'à 26 Embraer E190-E2 pour renouveler la flotte de J-Air",
+      "resume": "JAL a annoncé le 14 octobre 2026 une commande de 16 E190-E2 fermes et 10 options pour sa filiale régionale J-Air. Ces appareils remplaceront les E170 et E190 actuels, avec des premières livraisons prévues durant l'exercice fiscal 2029.",
+      "categorie": "Constructeurs & commandes",
+      "region": "Asie-Pacifique",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/jal-orders-up-to-26-embraer-e190-e2-jets-to-replace-j-airs-e170-and-e190-fleets"
+        },
+        {
+          "nom": "Air Journal",
+          "url": "https://www.air-journal.fr/2026-10-14-japan-airlines-commande-jusqua-26-embraer-e190-e2-pour-sa-filiale-j-air-5278227.html"
+        }
+      ],
+      "illustration": "regional jet airport"
+    },
+    {
+      "titre": "Cirium anticipe des pénuries d'avions neufs jusqu'en 2030 au moins",
+      "resume": "Dans sa prévision annuelle de flotte publiée le 13 octobre 2026, Cirium estime que la disponibilité des moteurs, les goulots d'étranglement chez les fournisseurs et les retards de certification limiteront la production au moins jusqu'en 2030. Les constructeurs resteraient donc incapables de répondre à la demande des compagnies d'ici la fin de la décennie.",
+      "categorie": "Constructeurs & commandes",
+      "region": "Monde",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/airlines-new-airplane-shortage-2030"
+        }
+      ],
+      "illustration": "aircraft factory production"
+    },
+    {
+      "titre": "SITA va racheter Collins Aerospace Airport Solutions, finalisation attendue au premier semestre 2027",
+      "resume": "Le fournisseur de systèmes informatiques du transport aérien SITA, basé à Genève, a annoncé le 15 octobre 2026 l'acquisition de l'activité de technologies aéroportuaires de Collins Aerospace (RTX). Elle couvre notamment l'enregistrement, les bornes en libre-service et les bagages. Les conditions financières n'ont pas été dévoilées et l'opération reste soumise à des autorisations réglementaires.",
+      "categorie": "Aéroports & maintenance",
+      "region": "Monde",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/sita-to-acquire-collins-aerospace-airport-solutions-in-deal-set-to-close-in-2027"
+        },
+        {
+          "nom": "Le Journal de l'Aviation",
+          "url": "https://www.journal-aviation.com/actualite-en-bref/sita-souhaite-acquerir-collins-aerospace-airport-solutions-20261015.html"
+        }
+      ],
+      "illustration": "airport check-in kiosk"
+    },
+    {
+      "titre": "Kérosène : Lufthansa fait emporter du carburant supplémentaire vers Francfort, la Suisse puise dans ses…",
+      "resume": "Le 15 octobre 2026, Lufthansa a demandé aux équipages de certains vols vers Francfort d'embarquer du carburant additionnel avant le départ, la maintenance d'un pipeline ayant réduit les capacités d'approvisionnement de son hub principal. Le groupe ne prévoit pas d'annulations. Parallèlement, la Suisse a autorisé des prélèvements sur ses réserves de kérosène pour éviter une pénurie à l'aéroport de Zurich.",
+      "categorie": "Aéroports & maintenance",
+      "region": "Europe",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/lufthansa-extra-fuel-frankfurt-zurich-supply-crunch"
+        },
+        {
+          "nom": "Air Journal",
+          "url": "https://www.air-journal.fr/2026-10-16-kerosene-sous-tension-a-francfort-lufthansa-fait-le-plein-ailleurs-5278288.html"
+        }
+      ],
+      "illustration": "aircraft refueling tanker"
+    },
+    {
+      "titre": "Delta reporte à mars 2027 son lancement vers Riyad après des attaques meurtrières à l'aéroport",
+      "resume": "Delta Air Lines a annoncé le 12 octobre 2026 le report à mars 2027 de sa liaison Atlanta–Riyad, prévue à partir du 23 octobre. Cette décision fait suite à des attaques meurtrières visant le principal aéroport de la capitale saoudienne. La route aurait été le premier service passager direct de la compagnie vers l'Arabie saoudite ; Delta indique rester en contact avec les autorités et ses partenaires, dont Saudia et Riyadh Air.",
+      "categorie": "Compagnies & réseaux",
+      "region": "Moyen-Orient",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/delta-postpones-saudi-arabia-riyadh-flights"
+        }
+      ],
+      "illustration": "airport terminal departures"
+    },
+    {
+      "titre": "Washington : des élus demandent à la FAA de suspendre un outil d'IA de gestion du trafic aérien",
+      "resume": "Plus de vingt-quatre parlementaires américains demandent à la FAA de cesser d'utiliser un nouvel outil d'intelligence artificielle sur le trafic de la région de Washington tant que les questions de tests de sécurité et de formation du personnel restent sans réponse. Des opérations limitées ont débuté le 21 septembre 2026 à Reagan National, Dulles et Baltimore/Washington. Selon des documents internes, l'agence cherche par ailleurs à prendre une participation dans Air Space Intelligence, éditeur du système, déjà titulaire de contrats pouvant atteindre 875,9 millions de dollars.",
+      "categorie": "Sécurité & sûreté",
+      "region": "Amérique du Nord",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/us-lawmakers-faa-pause-smart-ai-air-traffic-tool"
+        },
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/faa-stake-air-space-intelligence-ai-air-traffic"
+        }
+      ],
+      "illustration": "air traffic radar screen"
+    },
+    {
+      "titre": "Le Pakistan prolonge jusqu'au 24 novembre l'interdiction de son espace aérien aux compagnies indiennes",
+      "resume": "Le Pakistan a reconduit pour un mois l'interdiction de survol visant les appareils indiens, désormais en vigueur jusqu'au 24 novembre 2026, au lieu du 24 octobre prévu. L'autorité aéroportuaire pakistanaise a publié un nouveau NOTAM. Cette restriction oblige depuis plus d'un an les compagnies indiennes à dérouter leurs vols internationaux, avec une consommation de carburant accrue.",
+      "categorie": "Compagnies & réseaux",
+      "region": "Asie-Pacifique",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/pakistan-extends-airspace-ban-on-indian-airlines"
+        }
+      ],
+      "illustration": "airplane flying clouds"
+    },
+    {
+      "titre": "RwandAir augmente ses fréquences vers Accra et Bujumbura pour l'hiver 2026/27",
+      "resume": "La compagnie rwandaise a déposé ses modifications de programme pour l'hiver nordique 2026/27. Kigali–Accra passe de 3 à 4 vols hebdomadaires en 737-800 à partir du 20 décembre 2026, et Kigali–Bujumbura de 7 à 10 vols hebdomadaires en Dash 8-Q400 à partir du 14 décembre.",
+      "categorie": "Compagnies & réseaux",
+      "region": "Afrique",
+      "sources": [
+        {
+          "nom": "AeroRoutes",
+          "url": "https://www.aeroroutes.com/eng/261017-wbnw26"
+        }
+      ],
+      "illustration": "regional turboprop airport"
+    }
+  ],
+  "numero": 2,
+  "date": "2026-10-18",
+  "debut": "2026-10-12",
+  "fin": "2026-10-18",
+  "genere_par": "claude-sonnet-5-5",
+  "genere_le": "2026-10-19T17:31:31+00:00"
+}
