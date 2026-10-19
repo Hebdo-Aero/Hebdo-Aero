@@ -15,6 +15,26 @@ API = "https://pixabay.com/api/"
 TAILLE_MAX_4K = 80 * 1024 * 1024     # on évite de télécharger des fichiers 4K trop lourds
 
 
+# Images écartées : une compagnie ou une marque reconnaissable ferait croire qu'elle est concernée par le sujet.
+MARQUES = {
+    "dhl", "fedex", "ups", "lufthansa", "emirates", "ryanair", "easyjet", "wizz", "klm", "delta", "united",
+    "american", "southwest", "qatar", "etihad", "turkish", "british", "iberia", "swiss", "austrian", "alitalia",
+    "ita", "tap", "aeroflot", "airfrance", "france", "transavia", "vueling", "norwegian", "finnair", "sas",
+    "singapore", "cathay", "qantas", "jetblue", "alaska", "spirit", "frontier", "condor", "eurowings", "tui",
+    "jet2", "flybe", "virgin", "aircanada", "canada", "westjet", "ana", "jal", "korean", "asiana", "china",
+    "hainan", "garuda", "thai", "malaysia", "saudia", "royal", "aegean", "lot", "icelandair", "brussels",
+    "luxair", "corsair", "airbaltic", "pegasus", "indigo", "vistara", "avianca", "latam", "aeromexico",
+    "boeing", "airbus", "embraer", "bombardier", "cessna", "pilatus", "dassault", "gulfstream", "atr",
+}
+
+
+def _marque(v: dict) -> bool:
+    """Vrai si les mots-clés de l'image citent une compagnie, un constructeur ou une marque."""
+    mots = {m.strip().lower().replace(" ", "") for m in (v.get("tags") or "").split(",")}
+    mots |= {m.strip().lower() for m in (v.get("tags") or "").replace(",", " ").split()}
+    return bool(mots & MARQUES)
+
+
 def disponible() -> bool:
     return bool(os.environ.get("PIXABAY_API_KEY"))
 
@@ -45,7 +65,7 @@ def chercher_video(recherche: str, duree_min: float, deja_pris: set[int]) -> dic
         return None
     candidats = []
     for v in resultats.get("hits", []):
-        if v["id"] in deja_pris:
+        if v["id"] in deja_pris or _marque(v):
             continue
         rendu = _meilleur_rendu(v.get("videos", {}))
         if not rendu:
@@ -67,7 +87,7 @@ def chercher_photo(recherche: str, deja_pris: set[int], orientation: str = "hori
         print(f"  Pixabay indisponible ({e})", file=sys.stderr)
         return None
     for p in resultats.get("hits", []):
-        if p["id"] not in deja_pris and p.get("largeImageURL"):
+        if p["id"] not in deja_pris and p.get("largeImageURL") and not _marque(p):
             return {"id": p["id"], "lien": p["largeImageURL"], "auteur": p.get("user") or "Pixabay",
                     "page": p.get("pageURL", ""), "source": "Pixabay"}
     return None

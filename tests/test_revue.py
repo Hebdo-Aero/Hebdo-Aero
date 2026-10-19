@@ -15,6 +15,25 @@ from unittest import mock
 from revue import claude, flux, generer, redaction, reseaux, video
 from revue.config import charger_config, lire_json, periode_fr, RACINE
 
+# Les tests s'appuient sur le numéro 1, quel que soit le nombre de numéros publiés depuis dans data/.
+_NUMEROS_TEST = None
+
+
+def setUpModule():
+    global _NUMEROS_TEST
+    from revue import config as module_config
+    _NUMEROS_TEST = Path(tempfile.mkdtemp())
+    shutil.copy(RACINE / "data" / "numeros" / "2026-10-11.json", _NUMEROS_TEST)
+    module_config._DOSSIER_NUMEROS_REEL = module_config.DOSSIER_NUMEROS
+    module_config.DOSSIER_NUMEROS = _NUMEROS_TEST
+
+
+def tearDownModule():
+    from revue import config as module_config
+    module_config.DOSSIER_NUMEROS = module_config._DOSSIER_NUMEROS_REEL
+    shutil.rmtree(_NUMEROS_TEST, ignore_errors=True)
+
+
 RSS = b"""<?xml version="1.0"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/">
 <channel><title>Test</title>
 <item><title>Airbus livre 72 avions</title><link>https://www.exemple.com/airbus-72/?utm_source=rss</link>
@@ -129,6 +148,31 @@ class TestRedaction(unittest.TestCase):
                               appelant=lambda c: reponse)
         self.assertEqual((n["numero"], n["date"], n["debut"]), (7, "2026-10-18", "2026-10-12"))
         self.assertIsNotNone(n["chiffre"])
+
+    def test_titre_reecrit_quand_un_sujet_est_ecarte(self):
+        config = charger_config()
+        brut = self.brut(une_urls=["https://media.com/0", "https://invente.com/x", "https://media.com/2"])
+        brut["titre"] = "Lufthansa rachète TAP"          # sujet retiré par le contrôle des sources
+        appels = []
+
+        def appelant(charge):
+            appels.append(charge["tools"][-1]["name"])
+            if charge["tools"][-1]["name"] == "titre_edito":
+                return {"stop_reason": "tool_use", "content": [
+                    {"type": "tool_use", "name": "titre_edito", "input": {"titre": "Nouveau titre", "edito": "Nouvel édito."}}]}
+            return {"stop_reason": "tool_use", "content": [{"type": "tool_use", "name": "publier_numero", "input": brut}]}
+
+        n = redaction.rediger(config, self.articles, 2, date(2026, 10, 12), date(2026, 10, 18), appelant=appelant)
+        self.assertEqual(appels, ["publier_numero", "titre_edito"])
+        self.assertEqual((n["titre"], n["edito"]), ("Nouveau titre", "Nouvel édito."))
+        self.assertNotIn("_ecartes", n)
+
+    def test_titre_de_secours(self):
+        config = charger_config()
+        brut = self.brut(une_urls=["https://media.com/0", "https://invente.com/x", "https://media.com/2"])
+        reponse = {"stop_reason": "tool_use", "content": [{"type": "tool_use", "name": "publier_numero", "input": brut}]}
+        n = redaction.rediger(config, self.articles, 2, date(2026, 10, 12), date(2026, 10, 18), appelant=lambda c: reponse)
+        self.assertEqual(n["titre"], n["une"][0]["titre"])
 
 
 class TestReseaux(unittest.TestCase):
@@ -288,6 +332,24 @@ class TestPixabay(unittest.TestCase):
                 choisi = illustrations.chercher_video("airplane", 8, set())
                 self.assertEqual((choisi["id"], choisi["lien"], choisi["source"]), (2, "m2", "Pixabay"))
                 self.assertEqual(illustrations.chercher_video("airplane", 8, {2})["lien"], "m1")
+
+
+class TestImagesSansMarque(unittest.TestCase):
+    def test_marques_ecartees(self):
+        from revue import pixabay
+        self.assertTrue(pixabay._marque({"tags": "dhl, freight, cargo, airline, airplane"}))
+        self.assertTrue(pixabay._marque({"tags": "british airways, airport"}))
+        self.assertTrue(pixabay._marque({"tags": "aircraft, pilatus pc-24, jet"}))
+        self.assertFalse(pixabay._marque({"tags": "airplane, sunset, sky, clouds"}))
+
+    def test_sujets_sans_photo_par_defaut(self):
+        from revue import illustrations
+        demandes = []
+        numero = {"date": "2026-10-18", "une": [{"titre": "A"}, {"titre": "B"}]}
+        with mock.patch.object(illustrations, "disponible", return_value=True), \
+             mock.patch.object(illustrations, "chercher_photo", side_effect=lambda r, p: demandes.append(r) or None):
+            illustrations.illustrer_numero(numero, Path(tempfile.mkdtemp()))
+        self.assertEqual(demandes, ["airplane sunset sky", "airplane sky clouds"])     # la couverture seulement
 
 
 class TestPeriode(unittest.TestCase):
@@ -617,6 +679,8 @@ class TestAnnonce(unittest.TestCase):
         texte = self.a.legende(self.config, self.numero, d)
         self.assertIn("lien en bio", texte)
         self.assertIn("Au sommaire", texte)
+        self.assertNotIn("; ;", texte)
+        self.assertIn("▸ Le loueur Avolon commande 250 avions à Airbus et Boeing", texte)   # titres complets
         g = self.a.donnees(self.config, {"numero": 2, "debut": "2026-10-12", "fin": "2026-10-18"}, generique=True)
         self.assertEqual(g["titres"], self.a.GENERIQUE)
         self.assertEqual(g["periode"], "12 au 18 octobre 2026")

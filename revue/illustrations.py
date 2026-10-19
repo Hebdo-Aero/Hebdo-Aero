@@ -52,15 +52,21 @@ def telecharger_photo(photo: dict, cible: Path, largeur_max: int = 1600) -> Path
     return cible
 
 
-def illustrer_numero(numero: dict, dossier: Path) -> dict:
-    """Ajoute une photo d'ouverture et une photo par sujet à la une."""
+def illustrer_numero(numero: dict, dossier: Path, photos_sujets: bool = False) -> dict:
+    """Ajoute une photo d'ouverture et, si demandé, une photo par sujet à la une.
+
+    Par défaut, les sujets gardent leur vignette dessinée : une photo générique montre souvent
+    un autre avion ou une autre compagnie que ceux du sujet, ce que les passionnés remarquent.
+    """
     if not disponible():
         return numero
     pris: set[int] = set()
     demandes = [("couverture", numero, numero.get("illustration") or "airplane sunset sky")]
-    demandes += [(f"une-{i + 1}", s, s.get("illustration") or "airplane") for i, s in enumerate(numero.get("une", []))]
+    if photos_sujets:
+        demandes += [(f"une-{i + 1}", s, s.get("illustration") or "airplane")
+                     for i, s in enumerate(numero.get("une", []))]
     for suffixe, cible, recherche in demandes:
-        photo = chercher_photo(recherche, pris) or chercher_photo("airplane", pris)
+        photo = chercher_photo(recherche, pris) or chercher_photo("airplane sky clouds", pris)
         if not photo:
             continue
         pris.add(photo["id"])

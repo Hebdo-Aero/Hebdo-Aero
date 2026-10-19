@@ -75,7 +75,8 @@ def etape_numero(config: dict, force: bool) -> int:
     from .illustrations import disponible, illustrer_numero
     if disponible():
         print("Recherche des photos d'illustration…")
-        illustrer_numero(contenu, RACINE / "data" / "images")
+        illustrer_numero(contenu, RACINE / "data" / "images",
+                         photos_sujets=bool(config.get("illustrations", {}).get("photos_sujets", False)))
     chemin = DOSSIER_NUMEROS / f"{fin.isoformat()}.json"
     ecrire_json(chemin, contenu)
     print(f"Numéro enregistré : {chemin.relative_to(RACINE)} "

@@ -37,10 +37,15 @@ def _court(texte: str, limite: int) -> str:
     return texte if len(texte) <= limite else texte[:limite - 1].rsplit(" ", 1)[0] + "…"
 
 
-def choisir_titres(numero: dict, nombre: int = 3) -> list[str]:
-    """Les titres « À la une », puis des brèves, en écartant la rubrique Sécurité & sûreté."""
+def choisir_sujets(numero: dict, nombre: int = 3) -> list[dict]:
+    """Les sujets « À la une », puis des brèves, en écartant la rubrique Sécurité & sûreté."""
     sujets = [s for s in numero.get("une", []) + numero.get("breves", []) if s.get("categorie") != RUBRIQUE_SENSIBLE]
-    return [_court(s["titre"], 84) for s in sujets[:nombre]]
+    return sujets[:nombre]
+
+
+def choisir_titres(numero: dict, nombre: int = 3) -> list[str]:
+    """Titres raccourcis pour l'écran de la vidéo."""
+    return [_court(s["titre"], 84) for s in choisir_sujets(numero, nombre)]
 
 
 def donnees(config: dict, numero: dict, generique: bool = False) -> dict:
@@ -69,7 +74,9 @@ def legende(config: dict, numero: dict, d: dict, generique: bool = False) -> str
     if generique:
         sommaire = "Les infos clés, le chiffre de la semaine et toutes les brèves, sources à l'appui."
     else:
-        sommaire = "Au sommaire : " + " ; ".join(t.rstrip("…") for t in d["titres"]) + "."
+        titres = [re.sub(r"\s+", " ", s["titre"]).strip() for s in choisir_sujets(numero)]
+        sommaire = "Au sommaire :\n" + "\n".join(f"▸ {t}" for t in titres) if titres else \
+            "Les infos clés, le chiffre de la semaine et toutes les brèves, sources à l'appui."
     return "\n\n".join([f"Le N° {d['numero']} de {config['site']['nom']} est en ligne ✈️ "
                         f"L'actu de l'aviation commerciale, semaine du {d['periode']}.",
                         sommaire, "À lire gratuitement : lien en bio.", tags])

@@ -1,6 +1,6 @@
 {
-  "titre": "Lufthansa remporte TAP, Airbus pousse l'A350, Boeing accélère",
-  "edito": "La semaine est marquée par la recomposition du paysage européen, avec l'entrée de Lufthansa au capital de TAP Air Portugal, et par la course à la capacité chez les constructeurs : Airbus envisage d'augmenter la cadence de l'A350 et Boeing relève ses livraisons de 737 MAX. Les loueurs et les compagnies sécurisent leurs flottes à très long terme, jusqu'en 2035 pour ACG, tandis que Cirium anticipe des pénuries d'appareils jusqu'en 2030 au moins. Côté exploitation, les tensions d'approvisionnement en kérosène à Francfort et à Zurich, la panne du contrôle aérien italien et les restrictions d'espace aérien rappellent la fragilité du système. La demande, elle, reste soutenue sur le long terme : Airbus chiffre à 2,44 millions les nouveaux professionnels nécessaires d'ici 2045.",
+  "titre": "Airbus pousse l'A350, Boeing accélère, ACG commande 75 A320neo",
+  "edito": "La semaine est marquée par la course à la capacité chez les constructeurs : Airbus juge inévitable une hausse de la cadence de l'A350, et Boeing a livré un nombre record de 737 MAX sur les neuf premiers mois de l'année. Loueurs et compagnies sécurisent leurs avions très tôt, avec des livraisons jusqu'en 2035 pour la commande d'ACG, tandis que Cirium anticipe des pénuries d'avions neufs jusqu'en 2030 au moins. Côté exploitation, les tensions sur l'approvisionnement en kérosène à Francfort et en Suisse, ainsi que la fermeture prolongée de l'espace aérien pakistanais aux compagnies indiennes, rappellent la fragilité du système. La demande reste soutenue sur le long terme : Airbus estime à 2,44 millions les pilotes, techniciens et personnels de cabine à recruter d'ici 2045.",
   "illustration": "airplane sunset sky",
   "chiffre": {
     "valeur": "2,44 M",
@@ -26,13 +26,7 @@
           "url": "https://www.air-journal.fr/2026-10-16-a350-2000-et-a220-500-airbus-prepare-ses-prochains-paris-5278272.html"
         }
       ],
-      "illustration": "aircraft assembly line",
-      "image": {
-        "fichier": "2026-10-18-une-1.jpg",
-        "auteur": "StockSnap",
-        "page": "https://pixabay.com/photos/industrial-airplane-train-tracks-925878/",
-        "source": "Pixabay"
-      }
+      "illustration": "aircraft assembly line"
     },
     {
       "titre": "Boeing a livré 475 avions en neuf mois (+8 %), dont un nombre record de 737 MAX ; Airbus en compte 547",
@@ -49,13 +43,7 @@
           "url": "https://www.air-journal.fr/2026-10-14-boeing-livre-363-avions-737-max-en-neuf-mois-un-record-pour-le-programme-5278218.html"
         }
       ],
-      "illustration": "airliner delivery runway",
-      "image": {
-        "fichier": "2026-10-18-une-2.jpg",
-        "auteur": "bilaleldaou",
-        "page": "https://pixabay.com/photos/dhl-freight-cargo-airline-airplane-2882823/",
-        "source": "Pixabay"
-      }
+      "illustration": "airliner delivery runway"
     },
     {
       "titre": "Le loueur ACG commande 75 appareils de la famille A320neo, la plus grosse commande de son histoire",
@@ -76,13 +64,7 @@
           "url": "https://www.air-journal.fr/2026-10-16-airbus-acg-commande-75-a320neo-et-reserve-sa-place-jusquen-2035-5278280.html"
         }
       ],
-      "illustration": "jet aircraft parked airport",
-      "image": {
-        "fichier": "2026-10-18-une-3.jpg",
-        "auteur": "Kim_R_Hunter",
-        "page": "https://pixabay.com/photos/aircraft-pilatus-pc-24-corporate-jet-5611528/",
-        "source": "Pixabay"
-      }
+      "illustration": "jet aircraft parked airport"
     }
   ],
   "breves": [

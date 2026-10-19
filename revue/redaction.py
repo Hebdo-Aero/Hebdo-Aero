@@ -1,6 +1,8 @@
 """Rédaction du numéro de la semaine par Claude, puis contrôle qualité."""
 from __future__ import annotations
 
+import json
+
 import re
 import unicodedata
 from datetime import date, datetime, timezone
@@ -117,6 +119,10 @@ def rediger(config: dict, articles: list[Article], numero: int, debut: date, fin
     claude.log("Rédaction : " + claude.resume_conso(r["modele"], conso))
 
     numero_valide = valider(brut, articles, urls_recherche, minimum=r.get("articles_minimum", 6))
+    if numero_valide.pop("_ecartes", 0):
+        # Le titre et l'éditorial ont été écrits avant le contrôle des sources : ils pourraient évoquer
+        # un sujet retiré. On les fait réécrire d'après le contenu définitif.
+        reecrire_titre_edito(config, numero_valide, numero, debut, fin, appelant)
     numero_valide.update({
         "numero": numero,
         "date": fin.isoformat(),
@@ -126,6 +132,48 @@ def rediger(config: dict, articles: list[Article], numero: int, debut: date, fin
         "genere_le": datetime.now(timezone.utc).isoformat(timespec="seconds"),
     })
     return numero_valide
+
+
+CONSIGNE_TITRE = """Voici le contenu définitif du numéro {numero} (semaine du {periode}). Des sujets ont été \
+retirés après la vérification des sources : le titre et l'éditorial doivent maintenant correspondre exactement \
+à ce contenu.
+
+Écris :
+- un titre de semaine accrocheur mais exact (moins de 100 caractères), qui ne cite que des sujets « À la une » ;
+- un éditorial de 3 ou 4 phrases qui dégage les grandes tendances, sans aucun fait, nom ou chiffre absent \
+du contenu ci-dessous.
+
+Contenu :
+{contenu}"""
+OUTIL_TITRE = {
+    "name": "titre_edito",
+    "description": "Transmet le titre et l'éditorial du numéro.",
+    "input_schema": {"type": "object", "properties": {"titre": {"type": "string"}, "edito": {"type": "string"}},
+                     "required": ["titre", "edito"]},
+}
+
+
+def reecrire_titre_edito(config: dict, n: dict, numero: int, debut: date, fin: date, appelant=claude.appeler) -> None:
+    """Titre et éditorial fidèles au contenu validé ; à défaut, une version construite sans IA."""
+    contenu = json.dumps({
+        "a_la_une": [{"titre": s["titre"], "resume": s["resume"]} for s in n["une"]],
+        "breves": [{"titre": s["titre"], "resume": s["resume"]} for s in n["breves"]],
+        "chiffre": {k: n["chiffre"][k] for k in ("valeur", "legende")} if n.get("chiffre") else None,
+    }, ensure_ascii=False, indent=1)
+    r = config["redaction"]
+    try:
+        brut, _, conso = claude.executer_avec_outil(
+            modele=r["modele"], systeme=SYSTEME.format(nom=config["site"]["nom"]),
+            consigne=CONSIGNE_TITRE.format(numero=numero, periode=periode_fr(debut, fin), contenu=contenu),
+            outil_final=OUTIL_TITRE, max_tokens=2000, tours_max=3, appelant=appelant)
+        claude.log("Titre et éditorial réécrits : " + claude.resume_conso(r["modele"], conso))
+        if brut.get("titre") and brut.get("edito"):
+            n["titre"], n["edito"] = _couper(brut["titre"], 110), _couper(brut["edito"], 900)
+            return
+    except Exception as e:  # noqa: BLE001 — repli sans IA ci-dessous
+        claude.log(f"  réécriture du titre impossible ({e}) : version de secours")
+    n["titre"] = _couper(n["une"][0]["titre"], 110)
+    n["edito"] = _couper(" ".join(re.split(r"(?<=[.!?])\s", s["resume"], maxsplit=1)[0] for s in n["une"]), 900)
 
 
 # --- Contrôle qualité -----------------------------------------------------------------
@@ -210,7 +258,10 @@ def valider(brut: dict, articles: list[Article], urls_recherche: set[str], minim
 
     chiffre = brut.get("chiffre") or {}
     source_chiffre = sources_valides([chiffre.get("source")]) if chiffre.get("source") else []
+    if chiffre and not source_chiffre:
+        rejets.append("chiffre de la semaine sans source vérifiable")
     return {
+        "_ecartes": len(rejets),
         "titre": _couper(brut.get("titre"), 110),
         "edito": _couper(brut.get("edito"), 900),
         "illustration": _couper(brut.get("illustration") or "airplane sunset sky", 60),

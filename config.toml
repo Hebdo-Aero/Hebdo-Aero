@@ -75,6 +75,12 @@ volume_musique = 0.32
 # Léger souffle sonore à chaque changement de scène (0 pour le couper).
 volume_transitions = 0.35
 
+[illustrations]
+# Photo libre de droits (Pixabay ou Pexels) en ouverture de chaque numéro. Les sujets « À la une » gardent
+# leur vignette dessinée : une photo générique montre souvent un autre avion ou une autre compagnie.
+# Mettez true pour leur donner quand même une photo.
+photos_sujets = false
+
 [reseaux]
 # Mettez false pour couper une plateforme sans retirer ses secrets.
 youtube = true
