@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_numero.html" import numero_complet %}
+{% from "_numero.html" import numero_complet with context %}
 {% block titre %}{{ site.nom }}, {{ site.sous_titre|lower }}{% endblock %}
 {% block description %}{% if dernier %}N° {{ dernier.numero }}, semaine du {{ dernier.periode }} : {{ dernier.titre }}{% else %}{{ site.sous_titre }}{% endif %}{% endblock %}
 {% block contenu %}

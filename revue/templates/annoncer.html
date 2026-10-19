@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% block titre %}Annoncer sur {{ site.nom }}{% endblock %}
+{% block description %}Associez votre marque au numéro de la semaine de {{ site.nom }} : newsletter, site et vidéo, auprès des passionnés et professionnels de l'aviation commerciale.{% endblock %}
+{% block contenu %}
+<section class="ouverture page-annonceurs">
+  <div class="cadre">
+    <p class="reperes"><span class="pastille">Partenariats</span><span class="periode">Kit média</span></p>
+    <h1>Annoncer sur {{ site.nom }}</h1>
+    <p class="edito">Chaque dimanche, {{ site.nom }} résume l'actualité mondiale de l'aviation commerciale pour des passionnés et des professionnels du secteur. Associez votre marque au numéro de la semaine, sur tous nos supports.</p>
+    <ul class="chiffres-audience">
+      {% for c in audience %}<li><b>{{ c.valeur }}</b><span>{{ c.libelle }}</span></li>{% endfor %}
+    </ul>
+  </div>
+</section>
+
+<section class="section">
+  <div class="cadre">
+    <div class="entete-section"><h2>L'offre « Partenaire de la semaine »</h2><p>Un seul partenaire par numéro</p></div>
+    <div class="offre">
+      {% if newsletter.active %}
+      <article class="c-ciel"><span class="rond">{{ icone("mail", 22) }}</span><h3>Dans la newsletter</h3><p>Un encart en tête de l'e-mail du dimanche, avec votre texte et votre lien.</p></article>
+      {% endif %}
+      <article class="c-orange"><span class="rond">{{ icone("avion", 22) }}</span><h3>Sur le site</h3><p>Un encart sur la page du numéro, juste après « À la une ». Il reste visible dans les archives.</p></article>
+      <article class="c-soleil"><span class="rond">{{ icone("lecture", 22) }}</span><h3>Dans la vidéo</h3><p>Une mention, à l'écran et à la voix, dans la vidéo de la semaine{% if profils %} publiée sur {% for nom, url in profils %}{{ nom }}{{ ", " if not loop.last }}{% endfor %}{% endif %}.</p></article>
+      <article class="c-vert"><span class="rond">{{ icone("courbe", 22) }}</span><h3>Des résultats mesurés</h3><p>Vos liens sont suivis (paramètres UTM) : vous voyez exactement les visites que la revue vous apporte.</p></article>
+    </div>
+    <p class="tarif"><b>Tarif :</b> {{ annonceurs.tarif or "sur demande, selon la période et le nombre de numéros." }}</p>
+  </div>
+</section>
+
+<section class="section bande-claire">
+  <div class="cadre">
+    <div class="page court">
+      <h2>Nos règles</h2>
+      <ul>
+        <li>Toute publicité est clairement signalée : « Publicité », « Partenaire de la semaine » ou « Collaboration commerciale ».</li>
+        <li>Les partenaires n'ont aucune influence sur le choix ni sur le contenu des informations. Une entreprise partenaire peut faire l'actualité comme une autre.</li>
+        <li>Nous refusons les offres trompeuses, ainsi que celles qui n'ont pas leur place devant nos lecteurs.</li>
+      </ul>
+      <h2>Nous contacter</h2>
+      {% if site.contact %}
+      <p>Écrivez-nous en précisant les dates souhaitées : nous répondons sous 48 heures.</p>
+      <p><a class="bouton-plein" href="mailto:{{ site.contact }}?subject={{ ('Partenariat ' ~ site.nom)|urlencode }}">{{ icone("megaphone", 18) }} {{ site.contact }}</a></p>
+      {% else %}
+      <p>Contactez-nous via nos réseaux sociaux en précisant les dates souhaitées.</p>
+      {% endif %}
+    </div>
+  </div>
+</section>
+{% endblock %}

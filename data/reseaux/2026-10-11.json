@@ -8,7 +8,7 @@
         "surtitre": "N° 1",
         "titre_ecran": "Hebdo Aero",
         "texte_ecran": "Semaine du 5 au 11 octobre 2026",
-        "narration": "Hebdo Aéro, numéro 1. L'essentiel de l'aviation commerciale, semaine du 5 au 11 octobre 2026.",
+        "narration": "Hebdo Aéro. L'actualité de l'aviation commerciale, semaine du 5 au 11 octobre 2026.",
         "recherche_video": "airplane takeoff sunset"
       },
       {
@@ -75,5 +75,94 @@
     "facebook": "Au sommaire de la semaine du 5 au 11 octobre : l'attaque meurtrière contre l'aéroport de Riyad, une commande de 250 avions signée par Avolon chez Airbus et Boeing, Airbus contraint d'accélérer ses livraisons, et une facture de carburant qui grimpe de 6 milliards de dollars pour Delta.\n\nLe numéro complet et toutes les sources : {lien}\n\nRésumé rédigé par IA à partir des sources citées sur le site, voix de synthèse. Signalez toute erreur via le site.",
     "threads": "Aviation, semaine du 5 au 11 octobre : missile sur l'aéroport de Riyad, 250 avions commandés par Avolon, Airbus sous pression sur ses livraisons, +6 milliards de dollars de carburant pour Delta. Le résumé en 80 secondes, et toutes les sources sur le site.\n\n{lien}"
   },
-  "publications": {}
+  "publications": {},
+  "accroches": [
+    {
+      "scenes": [
+        {
+          "type": "accroche",
+          "surtitre": "Commande géante",
+          "titre_ecran": "250 avions d'un coup",
+          "texte_ecran": "",
+          "narration": "Deux cent cinquante avions, commandés d'un seul coup.",
+          "recherche_video": "airplanes parked airport"
+        },
+        {
+          "type": "sujet",
+          "surtitre": "Commande géante",
+          "titre_ecran": "Avolon commande 250 avions",
+          "texte_ecran": "110 chez Airbus, 140 chez Boeing",
+          "narration": "Le loueur irlandais Avolon vient de signer chez Airbus et chez Boeing. Mais pourquoi un loueur, et pas une compagnie, achète-t-il autant d'avions ?",
+          "recherche_video": "airplanes parked airport"
+        },
+        {
+          "type": "appel",
+          "surtitre": "La suite sur le site",
+          "titre_ecran": "Hebdo Aero",
+          "texte_ecran": "Lien en bio",
+          "narration": "Toute l'histoire, et les autres actus de la semaine, sur Hebdo Aéro. Lien en bio.",
+          "recherche_video": ""
+        }
+      ],
+      "legende": "Un loueur irlandais vient de commander 250 avions d'un coup. Pourquoi lui, et pourquoi maintenant ?\n\nToute l'histoire et les sources : lien en bio.\n\nRésumé rédigé par IA, voix de synthèse.\n\n#aviation #aeronautique #avgeek #compagniesaeriennes #transportaerien"
+    },
+    {
+      "scenes": [
+        {
+          "type": "accroche",
+          "surtitre": "Compagnies",
+          "titre_ecran": "+6 milliards de kérosène",
+          "texte_ecran": "",
+          "narration": "Six milliards de dollars de plus, rien que pour le carburant.",
+          "recherche_video": "airplane refueling airport"
+        },
+        {
+          "type": "sujet",
+          "surtitre": "Compagnies",
+          "titre_ecran": "Delta abaisse sa prévision de bénéfice",
+          "texte_ecran": "Malgré des ventes trimestrielles record",
+          "narration": "C'est la facture supplémentaire que Delta Air Lines attend cette année. Pourtant, ses ventes du trimestre battent un record. Comment l'expliquer ?",
+          "recherche_video": "airplane refueling airport"
+        },
+        {
+          "type": "appel",
+          "surtitre": "La suite sur le site",
+          "titre_ecran": "Hebdo Aero",
+          "texte_ecran": "Lien en bio",
+          "narration": "Toute l'histoire, et les autres actus de la semaine, sur Hebdo Aéro. Lien en bio.",
+          "recherche_video": ""
+        }
+      ],
+      "legende": "Le kérosène coûte 6 milliards de dollars de plus à Delta cette année. Et pourtant, ses ventes battent des records.\n\nToute l'histoire et les sources : lien en bio.\n\nRésumé rédigé par IA, voix de synthèse.\n\n#aviation #aeronautique #avgeek #compagniesaeriennes #transportaerien"
+    },
+    {
+      "scenes": [
+        {
+          "type": "accroche",
+          "surtitre": "Constructeurs",
+          "titre_ecran": "108 avions par mois",
+          "texte_ecran": "",
+          "narration": "Airbus doit livrer plus de cent avions par mois.",
+          "recherche_video": "aircraft factory assembly"
+        },
+        {
+          "type": "sujet",
+          "surtitre": "Constructeurs",
+          "titre_ecran": "Le défi des livraisons d'Airbus",
+          "texte_ecran": "547 avions livrés depuis janvier, objectif 870",
+          "narration": "C'est le rythme qu'il lui faut d'ici décembre pour tenir son objectif de l'année. En septembre, il n'en a livré que soixante-douze. Qu'est-ce qui coince ?",
+          "recherche_video": "aircraft factory assembly"
+        },
+        {
+          "type": "appel",
+          "surtitre": "La suite sur le site",
+          "titre_ecran": "Hebdo Aero",
+          "texte_ecran": "Lien en bio",
+          "narration": "Toute l'histoire, et les autres actus de la semaine, sur Hebdo Aéro. Lien en bio.",
+          "recherche_video": ""
+        }
+      ],
+      "legende": "Airbus doit accélérer très fort d'ici décembre pour tenir son objectif. Qu'est-ce qui le freine ?\n\nToute l'histoire et les sources : lien en bio.\n\nRésumé rédigé par IA, voix de synthèse.\n\n#aviation #aeronautique #avgeek #compagniesaeriennes #transportaerien"
+    }
+  ]
 }

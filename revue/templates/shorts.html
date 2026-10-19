@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block titre %}Shorts de la semaine, {{ site.nom }}{% endblock %}
+{% block entete %}<meta name="robots" content="noindex, nofollow">{% endblock %}
+{% block contenu %}
+<div class="cadre">
+  <div class="page">
+    <h1>Shorts de la semaine</h1>
+    <p>Page de travail, non référencée. Pour TikTok : téléchargez une vidéo sur votre téléphone, publiez-la dans l'appli, collez la légende, et activez « Contenu généré par l'IA » dans « Plus d'options ». Numéro {{ n.numero }}, semaine du {{ n.periode }}.</p>
+  </div>
+  {% if n.annonce %}
+  <ol class="shorts">
+    <li>
+      <video controls playsinline preload="metadata" poster="{{ racine }}{{ n.annonce.affiche }}"><source src="{{ racine }}{{ n.annonce.video }}" type="video/mp4"></video>
+      <div>
+        <h2>Annonce de la sortie</h2>
+        <p>À publier le dimanche, dès que le numéro est en ligne.</p>
+        <p><a class="bouton-plein" href="{{ racine }}{{ n.annonce.video }}" download>Télécharger la vidéo</a></p>
+        <label for="leg-annonce">Légende à copier</label>
+        <textarea id="leg-annonce" rows="8" readonly>{{ n.annonce.legende }}</textarea>
+        <button type="button" class="copier" data-cible="leg-annonce">Copier la légende</button>
+      </div>
+    </li>
+  </ol>
+  {% endif %}
+  <ol class="shorts">
+    {% for s in shorts %}
+    <li>
+      <video controls playsinline preload="metadata" poster="{{ racine }}{{ s.affiche }}"><source src="{{ racine }}{{ s.video }}" type="video/mp4"></video>
+      <div>
+        <h2>Short {{ loop.index }}{% if s.publie %} <span class="publie">publié sur Instagram</span>{% endif %}</h2>
+        <p><a class="bouton-plein" href="{{ racine }}{{ s.video }}" download>Télécharger la vidéo</a></p>
+        <label for="leg-{{ loop.index }}">Légende à copier</label>
+        <textarea id="leg-{{ loop.index }}" rows="8" readonly>{{ s.legende }}</textarea>
+        <button type="button" class="copier" data-cible="leg-{{ loop.index }}">Copier la légende</button>
+      </div>
+    </li>
+    {% else %}
+    {% if not n.annonce %}<li><p>Aucun short cette semaine.</p></li>{% endif %}
+    {% endfor %}
+  </ol>
+</div>
+<script>
+document.querySelectorAll(".copier").forEach(b => b.addEventListener("click", async () => {
+  const zone = document.getElementById(b.dataset.cible);
+  try { await navigator.clipboard.writeText(zone.value); } catch (e) { zone.select(); document.execCommand("copy"); }
+  const avant = b.textContent; b.textContent = "Légende copiée"; setTimeout(() => b.textContent = avant, 1800);
+}));
+</script>
+{% endblock %}

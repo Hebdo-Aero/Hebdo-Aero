@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% from "_abonnement.html" import formulaire %}
+{% block titre %}La newsletter du dimanche, {{ site.nom }}{% endblock %}
+{% block description %}Recevez {{ site.nom }} chaque dimanche matin : l'actualité de l'aviation commerciale de la semaine, gratuitement, dans votre boîte mail.{% endblock %}
+{% block contenu %}
+<section class="ouverture page-abo">
+  <div class="cadre">
+    <p class="reperes"><span class="pastille">Gratuit</span><span class="periode">Chaque dimanche matin</span></p>
+    <h1>L'aviation commerciale de la semaine, dans votre boîte mail</h1>
+    <div class="grille">
+      <div>
+        <p class="edito">Chaque dimanche, le nouveau numéro de {{ site.nom }} arrive directement chez vous. Cinq minutes de lecture pour ne rien manquer de la semaine.</p>
+        {{ formulaire(newsletter, racine, "page") }}
+      </div>
+      <ul class="atouts">
+        <li>{{ icone("avion", 20) }}<span><b>Les infos clés</b> de la semaine, expliquées</span></li>
+        <li>{{ icone("courbe", 20) }}<span><b>Le chiffre</b> qui résume la semaine</span></li>
+        <li>{{ icone("route", 20) }}<span><b>Toutes les brèves</b>, classées par rubrique</span></li>
+        <li>{{ icone("bouclier", 20) }}<span><b>Chaque info sourcée</b>, avec un lien vers l'article d'origine</span></li>
+      </ul>
+    </div>
+    {% if dernier %}<p class="exemple">Un aperçu ? <a href="{{ racine }}numeros/{{ dernier.numero }}/">Lire le dernier numéro</a></p>{% endif %}
+  </div>
+</section>
+{% endblock %}

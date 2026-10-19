@@ -2,8 +2,8 @@
 
 Usage : python outils/logo.py
 Produit dans assets/logo/ : embleme.svg, logo-clair.svg, logo-sombre.svg,
-favicon.svg, avatar-1024.png (photo de profil des réseaux) et
-banniere-youtube.png (2560 × 1440).
+favicon.svg, avatar-1024.png (photo de profil des réseaux),
+banniere-youtube.png (2560 × 1440) et logo-email.png (en-tête de la newsletter).
 
 Les couleurs et le texte se règlent ci-dessous ; relancez le script pour tout régénérer.
 """
@@ -73,7 +73,7 @@ def embleme(id_: str = "e", simple: bool = False) -> str:
     """Écusson 256 × 256 : un jet qui crève le cadre en montée, au-dessus d'un horizon en feu."""
     jet = chemin_jet()
     trainees = "" if simple else f"""
-    <g clip-path="url(#{id_}-disque)">
+    <g clip-path="url(#{id_}-disque)" class="trainees">
       <g transform="{POSE}" stroke-linecap="round" fill="none">
         <path d="M31.5 20 L31.5 300" stroke="url(#{id_}-trainee)" stroke-width="7"/>
         <path d="M-31.5 20 L-31.5 300" stroke="url(#{id_}-trainee)" stroke-width="7"/>
@@ -81,7 +81,7 @@ def embleme(id_: str = "e", simple: bool = False) -> str:
       </g>
     </g>"""
     horizon = "" if simple else f"""
-    <g clip-path="url(#{id_}-disque)">
+    <g clip-path="url(#{id_}-disque)" class="horizon">
       <path d="M20 182 Q128 166 236 182 L236 240 L20 240 Z" fill="{NUIT}" opacity=".55"/>
       <path d="M20 182 Q128 166 236 182" fill="none" stroke="{SOLEIL}" stroke-width="2.5" opacity=".9"/>
     </g>"""
@@ -100,12 +100,13 @@ def embleme(id_: str = "e", simple: bool = False) -> str:
     </linearGradient>
     <clipPath id="{id_}-disque"><circle cx="128" cy="128" r="101"/></clipPath>
   </defs>
-  <circle cx="128" cy="128" r="124" fill="{NUIT}"/>
-  <circle cx="128" cy="128" r="101" fill="url(#{id_}-ciel)"/>
+  <circle class="fond" cx="128" cy="128" r="124" fill="{NUIT}"/>
+  <circle class="ciel" cx="128" cy="128" r="101" fill="url(#{id_}-ciel)"/>
   {horizon}
   {trainees}
-  <circle cx="128" cy="128" r="110" fill="none" stroke="{ORANGE}" stroke-width="12"/>
-  <path transform="{POSE}" d="{jet}" fill="{BLANC}"
+  <circle class="anneau" cx="128" cy="128" r="110" fill="none" stroke="{ORANGE}" stroke-width="12"
+          transform="rotate(-90 128 128)"/>
+  <path class="jet" transform="{POSE}" d="{jet}" fill="{BLANC}"
         stroke="{NUIT}" stroke-width="7" stroke-linejoin="round" paint-order="stroke" fill-rule="nonzero"/>
 """
 
@@ -143,19 +144,23 @@ def main() -> None:
       <img src="{(SORTIE / 'logo-sombre.svg').as_uri()}" style="height:300px"></body></html>"""
     avatar = (f'<html><body style="margin:0;background:{NUIT}">'
               f'<img src="embleme.svg" style="width:1024px;height:1024px;display:block"></body></html>')
+    # Logo des e-mails (les messageries n'affichent pas le SVG) : fond transparent, 3 fois la taille affichée.
+    email = ('<html><body style="margin:0;background:transparent">'
+             '<img src="logo-sombre.svg" style="height:144px;display:block"></body></html>')
     temporaire = SORTIE / "_rendu.html"
     with sync_playwright() as p:
         navigateur = p.chromium.launch()
         for html, (l, h), nom in [(avatar, (1024, 1024), "avatar-1024.png"),
-                                  (banniere, (2560, 1440), "banniere-youtube.png")]:
+                                  (banniere, (2560, 1440), "banniere-youtube.png"),
+                                  (email, (535, 144), "logo-email.png")]:
             temporaire.write_text(html, encoding="utf-8")
             page = navigateur.new_page(viewport={"width": l, "height": h})
             page.goto(temporaire.as_uri())
             page.wait_for_timeout(200)
-            page.screenshot(path=str(SORTIE / nom))
+            page.screenshot(path=str(SORTIE / nom), omit_background=True)
         navigateur.close()
     temporaire.unlink()
-    print("PNG générés : avatar-1024.png, banniere-youtube.png")
+    print("PNG générés : avatar-1024.png, banniere-youtube.png, logo-email.png")
 
 
 if __name__ == "__main__":

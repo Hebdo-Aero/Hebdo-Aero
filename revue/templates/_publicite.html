@@ -1,0 +1,13 @@
+{# Bloc d'annonce Google AdSense placé à la main, toujours signalé comme publicité. #}
+{% macro bloc(publicite, emplacement) -%}
+{% if publicite.active and publicite.affichee and emplacement %}
+<aside class="zone-pub" aria-label="Publicité">
+  <div class="cadre">
+    <p class="mention">Publicité</p>
+    <ins class="adsbygoogle" style="display:block" data-ad-client="{{ publicite.client }}" data-ad-slot="{{ emplacement }}"
+         data-ad-format="auto" data-full-width-responsive="true"></ins>
+    <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+  </div>
+</aside>
+{% endif %}
+{%- endmacro %}

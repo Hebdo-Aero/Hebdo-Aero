@@ -16,9 +16,13 @@
 {% if image_partage %}<meta property="og:image" content="{{ image_partage }}">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">{% endif %}
+{% block entete %}{% endblock %}
 <link rel="alternate" type="application/rss+xml" title="{{ site.nom }}" href="{{ racine }}flux.xml">
 <link rel="icon" href="{{ racine }}assets/logo/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="{{ racine }}assets/logo/avatar-1024.png">
+{% if statistiques %}{{ statistiques|safe }}{% endif %}
+{% if publicite.active %}<meta name="google-adsense-account" content="{{ publicite.client }}">
+{% if publicite.affichee %}<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ publicite.client }}" crossorigin="anonymous"></script>{% endif %}{% endif %}
 <style>
 {% include "style.css" %}
 </style>
@@ -32,6 +36,7 @@
       <a href="{{ racine }}"{% if page == "accueil" %} aria-current="page"{% endif %}>Ce numéro</a>
       <a href="{{ racine }}archives/"{% if page == "archives" %} aria-current="page"{% endif %}>Archives</a>
       <a class="facultatif" href="{{ racine }}a-propos/"{% if page == "a-propos" %} aria-current="page"{% endif %}>À propos</a>
+      {% if newsletter.active %}<a class="facultatif abonner" href="{{ racine }}newsletter/"{% if page == "newsletter" %} aria-current="page"{% endif %}>S'abonner</a>{% endif %}
     </nav>
   </div>
 </header>
@@ -51,7 +56,9 @@
         <li><a href="{{ racine }}">Dernier numéro</a></li>
         <li><a href="{{ racine }}archives/">Tous les numéros</a></li>
         <li><a href="{{ racine }}a-propos/">Comment elle est faite</a></li>
+        {% if newsletter.active %}<li><a href="{{ racine }}newsletter/">Recevoir la newsletter</a></li>{% endif %}
         <li><a href="{{ racine }}flux.xml">Flux RSS</a></li>
+        {% if soutien.active %}<li><a href="{{ soutien.url }}" rel="noopener">Soutenir la revue</a></li>{% endif %}
         {% if site.contact %}<li><a href="mailto:{{ site.contact }}">Signaler une erreur</a></li>{% endif %}
       </ul>
     </div>
@@ -62,6 +69,10 @@
         {% if not profils %}<li><a href="{{ racine }}flux.xml">Flux RSS</a></li>{% endif %}
       </ul>
     </div>
+  </div>
+  <div class="cadre bas-de-page">
+    <p>© {{ annee }} {{ site.nom }}</p>
+    <p><a href="{{ racine }}annoncer/">Annoncer sur {{ site.nom }}</a> · <a href="{{ racine }}mentions-legales/">Mentions légales et confidentialité</a>{% if publicite.active %} · <a href="{{ racine }}mentions-legales/#cookies" onclick="if (window.googlefc && googlefc.showRevocationMessage) { googlefc.callbackQueue.push(googlefc.showRevocationMessage); return false; }">Gérer les cookies</a>{% endif %}</p>
   </div>
 </footer>
 </body>

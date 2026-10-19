@@ -36,7 +36,7 @@ body { position: relative; color: var(--blanc); font-family: "Instrument Sans", 
           text-shadow: 0 2px 12px rgba(0,0,0,.5); }
 #marque img { height: 64px; }
 
-.scene { position: absolute; left: 90px; width: 860px; top: 560px; opacity: 0; }
+.scene { position: absolute; left: 90px; width: 830px; top: 530px; opacity: 0; }
 .surtitre { display: inline-block; font-weight: 700; font-size: 38px; color: var(--nuit); background: var(--orange);
             padding: 6px 20px 7px; border-radius: 999px; margin-bottom: 24px; }
 .titre { font-family: "Big Shoulders"; font-weight: 700; font-size: 128px; line-height: .96; letter-spacing: -.005em;
@@ -45,19 +45,46 @@ body { position: relative; color: var(--blanc); font-family: "Instrument Sans", 
          text-shadow: 0 2px 16px rgba(0,0,0,.6); }
 .scene.chiffre .titre { font-size: 300px; line-height: .9; color: var(--soleil); }
 .scene.intro .titre, .scene.fin .titre { font-size: 150px; }
-.scene.intro .surtitre, .scene.fin .surtitre { background: var(--ciel); }
+.scene.intro .surtitre, .scene.fin .surtitre, .scene.appel .surtitre { background: var(--ciel); }
+.scene.appel .titre { font-size: 150px; }
+.scene.appel .texte { font-family: "Big Shoulders"; font-size: 84px; color: var(--soleil); }
+/* Accroche : texte géant, lisible dès la première image */
+.scene.accroche { top: 600px; }
+.scene.accroche .surtitre { background: var(--soleil); }
+.scene.accroche .titre { font-size: 210px; line-height: .9; color: var(--blanc); }
+.scene.accroche .texte { display: none; }
 .scene.fin .texte { font-family: "Big Shoulders"; font-size: 70px; white-space: nowrap; color: var(--soleil); }
 .embleme { display: block; width: 230px; height: 230px; margin: -40px 0 30px; filter: drop-shadow(0 8px 30px rgba(0,0,0,.5)); }
 
+/* Générique d'ouverture */
+#ident { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+         justify-content: center; opacity: 0; transform-origin: 50% 46%; }
+#ident .emb { width: 560px; height: 560px; position: relative; }
+#ident .emb svg { width: 100%; height: 100%; overflow: visible; display: block; }
+#ident .onde { position: absolute; inset: 0; border-radius: 50%; border: 6px solid var(--soleil); opacity: 0; }
+#ident .nom { position: relative; margin-top: 54px; }
+#ident .nom span { display: block; font-family: "Big Shoulders"; font-weight: 700; font-size: 200px; line-height: .9;
+                   letter-spacing: .01em; transform: skewX(-9deg); text-shadow: 0 6px 40px rgba(0,0,0,.45); }
+#ident .nom svg { position: absolute; left: 8px; bottom: -34px; width: 560px; height: 30px; overflow: visible; }
+#ident .tag1 { margin-top: 64px; font-size: 40px; color: #DCE6F2; }
+#ident .tag2 { margin-top: 26px; display: flex; gap: 18px; align-items: center; font-size: 40px; color: #C9D6E6; }
+#ident .tag2 b { font-family: "Big Shoulders"; font-size: 48px; color: var(--nuit); background: var(--orange);
+                 padding: 2px 22px 0; border-radius: 999px; }
+.scene.intro { display: none; }
+
 /* Sous-titres mot à mot */
-#st { position: absolute; left: 60px; width: 960px; top: 1250px; height: 240px; display: flex;
+#st { position: absolute; left: 70px; width: 860px; top: 1190px; height: 230px; display: flex;
       align-items: center; justify-content: center; text-align: center; }
 #st p { font-weight: 700; font-size: 64px; line-height: 1.16; letter-spacing: -.005em;
         text-shadow: 0 0 2px #000, 0 4px 18px rgba(0,0,0,.85); transform-origin: 50% 60%; }
 #st span { color: rgba(255,255,255,.96); }
 #st span.on { color: var(--soleil); }
 
-#credit { position: absolute; left: 90px; top: 1508px; font-size: 26px; color: rgba(255,255,255,.72);
+/* Mention « Collaboration commerciale » (partenaire), affichée pendant toute la vidéo */
+#pub { position: absolute; left: 90px; top: 176px; display: none; font-weight: 700; font-size: 30px; letter-spacing: .02em;
+       color: #fff; background: rgba(11,26,46,.72); border: 2px solid rgba(255,255,255,.35); padding: 6px 18px 7px; border-radius: 999px; }
+.partenaire { margin-top: 30px; font-size: 40px; font-weight: 700; color: #DCE6F2; text-shadow: 0 2px 14px rgba(0,0,0,.6); }
+#credit { position: absolute; left: 90px; top: 1440px; font-size: 26px; color: rgba(255,255,255,.72);
           text-shadow: 0 1px 6px rgba(0,0,0,.8); }
 </style>
 </head>
@@ -75,12 +102,20 @@ body { position: relative; color: var(--blanc); font-family: "Instrument Sans", 
   </g>
 </svg>
 <div id="marque"><img src="{{ logo }}" alt=""><span></span></div>
+<div id="ident">
+  <div class="emb">{{ embleme_svg|safe }}<div class="onde"></div></div>
+  <div class="nom"><span></span>
+    <svg viewBox="0 0 560 30"><path id="trait" d="M4 22 L520 6 L506 28 Z" fill="var(--orange)"/></svg></div>
+  <p class="tag1"></p>
+  <p class="tag2"><b></b><span></span></p>
+</div>
 <div id="scenes"></div>
 <div id="st"><p></p></div>
 <div id="credit"></div>
+<div id="pub"></div>
 
 <script>
-let S = [], T = [], ST = [], LONGUEUR = 0, morceauCourant = -1;
+let S = [], T = [], ST = [], LONGUEUR = 0, morceauCourant = -1, DIRECT = false;
 const trace = () => document.getElementById("parcouru");
 function el(tag, cls, txt) { const e = document.createElement(tag); if (cls) e.className = cls; if (txt) e.textContent = txt; return e; }
 function ajuster(e, hauteurMax, taille, mini) {
@@ -89,19 +124,22 @@ function ajuster(e, hauteurMax, taille, mini) {
 }
 
 function preparer(d) {
-  S = d.scenes; T = d.temps; ST = d.soustitres;
+  S = d.scenes; T = d.temps; ST = d.soustitres; DIRECT = !!d.direct;
+  if (d.publicite) { const pub = document.getElementById("pub"); pub.textContent = d.publicite; pub.style.display = "block"; }
+  preparerIdent(d);
   document.querySelector("#marque span").textContent = d.marque;
   const conteneur = document.getElementById("scenes");
   S.forEach(s => {
     const b = el("section", "scene " + s.type);
-    if (s.type === "intro" || s.type === "fin") { const e = el("img", "embleme"); e.src = "{{ embleme }}"; b.append(e); }
+    if (s.type === "intro" || s.type === "fin" || s.type === "appel") { const e = el("img", "embleme"); e.src = "{{ embleme }}"; b.append(e); }
     b.append(el("p", "surtitre", s.surtitre), el("h1", "titre", s.titre_ecran), el("p", "texte", s.texte_ecran));
+    if (s.partenaire) b.append(el("p", "partenaire", s.partenaire));
     conteneur.append(b);
   });
   document.querySelectorAll(".scene").forEach((b, i) => {
     b.style.opacity = 1;
     const titre = b.querySelector(".titre"), texte = b.querySelector(".texte");
-    ajuster(titre, S[i].type === "chiffre" ? 320 : 400, parseFloat(getComputedStyle(titre).fontSize), 72);
+    ajuster(titre, S[i].type === "chiffre" ? 320 : (S[i].type === "accroche" ? 520 : 400), parseFloat(getComputedStyle(titre).fontSize), 72);
     ajuster(texte, S[i].type === "chiffre" ? 240 : 130, parseFloat(getComputedStyle(texte).fontSize), 34);
     if (S[i].type === "fin") {
       let t = parseFloat(getComputedStyle(texte).fontSize);
@@ -127,21 +165,25 @@ const arrondi = x => Math.round(x * 100) / 100;
 function seek(t) {
   let i = T.findIndex(x => t >= x.debut && t < x.fin); if (i < 0) i = S.length - 1;
   const x = T[i], local = t - x.debut, reste = x.fin - t, s = S[i];
-  const entree = arrondi(lisse(local / 0.5)), sortie = i === S.length - 1 ? 1 : arrondi(lisse(reste / 0.3));
+  // en format court, la première scène est pleinement visible dès la première image
+  const entree = (DIRECT && i === 0) ? 1 : arrondi(lisse(local / 0.5)), sortie = i === S.length - 1 ? 1 : arrondi(lisse(reste / 0.3));
   document.querySelectorAll(".scene").forEach((b, j) => { if (j !== i) b.style.opacity = 0; });
   const b = document.querySelectorAll(".scene")[i];
   b.style.opacity = Math.min(entree, sortie);
   b.querySelector(".titre").style.transform = `translateY(${(1 - entree) * 46}px)`;
-  const entreeTexte = arrondi(lisse((local - 0.15) / 0.5));
+  const entreeTexte = (DIRECT && i === 0) ? 1 : arrondi(lisse((local - 0.15) / 0.5));
   b.querySelector(".texte").style.opacity = Math.min(entreeTexte, sortie);
 
-  // fond opaque seulement pour le chiffre de la semaine (fondu enchaîné)
-  const plein = s.type === "chiffre" ? Math.min(arrondi(lisse(local / 0.35)), i === S.length - 1 ? 1 : arrondi(lisse(reste / 0.35))) : 0;
+  const identVisible = s.type === "intro" ? animerIdent(local, x.fin - x.debut) : 0;
+  document.getElementById("ident").style.opacity = identVisible;
+  // fond opaque pour le générique et le chiffre de la semaine (fondu enchaîné)
+  const plein = s.type === "intro" ? FOND_IDENT : s.type === "chiffre" ? Math.min(arrondi(lisse(local / 0.35)), i === S.length - 1 ? 1 : arrondi(lisse(reste / 0.35))) : 0;
   document.getElementById("plein").style.opacity = plein;
-  document.getElementById("marque").style.opacity = (s.type === "intro" || s.type === "fin") ? 0 : 1;
-  document.getElementById("credit").textContent = s.credit || "";
+  document.getElementById("marque").style.opacity = (s.type === "intro" || s.type === "fin" || s.type === "appel") ? 0 : 1;
+  document.getElementById("credit").textContent = s.type === "intro" ? "" : (s.credit || "");
+  document.getElementById("route").style.opacity = s.type === "intro" ? 0 : 1;
 
-  const prog = arrondi(lisse(local / 0.9));
+  const prog = (DIRECT && i === 0) ? 1 : arrondi(lisse(local / 0.9));
   const a = Math.max(0, i - 1 + prog) / (S.length - 1);
   const p = trace(), pt = p.getPointAtLength(LONGUEUR * a), pt2 = p.getPointAtLength(Math.min(LONGUEUR, LONGUEUR * a + 2));
   const angle = Math.atan2(pt2.y - pt.y, pt2.x - pt.x) * 180 / Math.PI + 90;
@@ -149,7 +191,7 @@ function seek(t) {
   p.style.strokeDashoffset = LONGUEUR * (1 - a);
 
   // sous-titres : un groupe de mots à la fois, le mot prononcé en jaune
-  const k = ST.findIndex(m => t >= m.debut && t < m.fin);
+  const k = s.type === "intro" ? -1 : ST.findIndex(m => t >= m.debut && t < m.fin);
   const para = document.querySelector("#st p");
   if (k !== morceauCourant) {
     para.innerHTML = "";
@@ -163,7 +205,75 @@ function seek(t) {
     pop = arrondi(0.94 + 0.06 * lisse((t - ST[k].debut) / 0.12));
     para.style.transform = `scale(${pop})`;
   }
-  return [i, entree, sortie, entreeTexte, prog, plein, k, actif, pop].join("|");
+  return [i, entree, sortie, entreeTexte, prog, plein, k, actif, pop, s.type === "intro" ? arrondi(local * 30) : ""].join("|");
+}
+
+// --- Générique : l'anneau se dessine, le ciel s'ouvre, le jet arrive (impact à 1,2 s), puis le nom ---
+const IMPACT = {{ impact }};
+let FOND_IDENT = 1, JET = null, TRAINEES = null, ANNEAU = null, CIEL = [], LONG_ANNEAU = 691, LONG_TRAIT = 1100;
+function preparerIdent(d) {
+  const intro = d.scenes[0];
+  if (!intro || intro.type !== "intro") return;
+  document.querySelector("#ident .nom span").textContent = (intro.titre_ecran || "").toUpperCase();
+  document.querySelector("#ident .tag1").textContent = d.sous_titre || "";
+  document.querySelector("#ident .tag2 b").textContent = intro.surtitre || "";
+  document.querySelector("#ident .tag2 span").textContent = intro.texte_ecran || "";
+  const svg = document.querySelector("#ident .emb svg"), ns = "http://www.w3.org/2000/svg";
+  const jet = svg && svg.querySelector(".jet");
+  if (!jet || !svg.querySelector(".anneau")) { STATIQUE = true; return; }   // ancien logo : générique sans animation fine
+  JET = document.createElementNS(ns, "g"); jet.parentNode.insertBefore(JET, jet); JET.appendChild(jet);
+  TRAINEES = svg.querySelector(".trainees");
+  ANNEAU = svg.querySelector(".anneau");
+  LONG_ANNEAU = ANNEAU.getTotalLength(); ANNEAU.style.strokeDasharray = LONG_ANNEAU;
+  CIEL = [svg.querySelector(".ciel"), svg.querySelector(".horizon"), svg.querySelector(".fond")].filter(Boolean);
+  CIEL.forEach(e => { e.style.transformOrigin = "128px 128px"; e.style.transformBox = "view-box"; });
+  const trait = document.getElementById("trait");
+  LONG_TRAIT = trait.getTotalLength(); trait.style.strokeDasharray = LONG_TRAIT;
+}
+const sortieDouce = x => 1 - Math.pow(1 - Math.min(1, Math.max(0, x)), 3);
+let STATIQUE = false;
+function animerIdent(t, duree) {
+  if (!JET) {   // repli : simple fondu de l'écusson et du nom
+    const fin = Math.min(1, Math.max(0, (t - (duree - 0.5)) / 0.5));
+    FOND_IDENT = 1 - fin;
+    return STATIQUE ? Math.min(Math.min(1, t / 0.6), 1 - fin) : 0;
+  }
+  const p = (a, b) => Math.min(1, Math.max(0, (t - a) / (b - a)));
+  // fond et anneau
+  const trace = p(0.05, IMPACT - 0.1);
+  ANNEAU.style.strokeDasharray = trace >= 1 ? "none" : `${LONG_ANNEAU} ${LONG_ANNEAU}`;
+  ANNEAU.style.strokeDashoffset = LONG_ANNEAU * (1 - sortieDouce(trace));
+  const ouverture = sortieDouce(p(0.1, 0.9));
+  CIEL.forEach(e => { e.style.transform = `scale(${0.55 + 0.45 * ouverture})`; e.style.opacity = ouverture; });
+  // le jet arrive du bas à gauche et se pose pile sur l'impact
+  const vol = sortieDouce(p(0.3, IMPACT));
+  JET.setAttribute("transform", `translate(${-210 * (1 - vol)} ${210 * (1 - vol)})`);
+  JET.style.opacity = p(0.3, 0.45);
+  TRAINEES.style.opacity = p(IMPACT - 0.4, IMPACT + 0.3);
+  // onde de choc à l'impact
+  const onde = p(IMPACT, IMPACT + 0.7);
+  const o = document.querySelector("#ident .onde");
+  o.style.opacity = onde > 0 && onde < 1 ? (1 - onde) * 0.9 : 0;
+  o.style.transform = `scale(${1 + 0.55 * sortieDouce(onde)})`;
+  // le nom se dévoile de gauche à droite, puis la traînée orange se dessine
+  const nom = sortieDouce(p(IMPACT + 0.08, IMPACT + 0.6));
+  const span = document.querySelector("#ident .nom span");
+  span.style.clipPath = `inset(-20% ${100 - 100 * nom}% -20% -5%)`;
+  span.style.transform = `skewX(-9deg) translateX(${-40 * (1 - nom)}px)`;
+  const trait = document.getElementById("trait");
+  trait.style.fill = p(IMPACT + 0.85, IMPACT + 0.9) >= 1 ? "var(--orange)" : "none";
+  trait.style.stroke = "var(--orange)"; trait.style.strokeWidth = 3;
+  trait.style.strokeDashoffset = LONG_TRAIT * (1 - sortieDouce(p(IMPACT + 0.35, IMPACT + 0.85)));
+  // accroches textuelles
+  const t1 = sortieDouce(p(IMPACT + 0.55, IMPACT + 1.0)), t2 = sortieDouce(p(IMPACT + 0.75, IMPACT + 1.2));
+  const tag1 = document.querySelector("#ident .tag1"), tag2 = document.querySelector("#ident .tag2");
+  tag1.style.opacity = t1; tag1.style.transform = `translateY(${24 * (1 - t1)}px)`;
+  tag2.style.opacity = t2; tag2.style.transform = `translateY(${24 * (1 - t2)}px)`;
+  // sortie : léger zoom et fondu vers les news
+  const fin = p(duree - 0.5, duree);
+  document.getElementById("ident").style.transform = `scale(${1 + 0.07 * fin})`;
+  FOND_IDENT = 1 - fin;
+  return Math.min(p(0, 0.25), 1 - fin);
 }
 </script>
 </body>

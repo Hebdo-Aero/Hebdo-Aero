@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: "Big Shoulders"; font-weight: 700; src: url("{{ polices }}/BigShoulders-Bold.woff") format("woff"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 400; src: url("{{ polices }}/InstrumentSans-Regular.woff") format("woff"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 700; src: url("{{ polices }}/InstrumentSans-Bold.woff") format("woff"); }
+
+/* Vidéo d'annonce de la sortie du numéro (1080 × 1920). Chaque image est calculée par seek(t).
+   Mode « dessin » : ciel et avions dessinés ici. Mode « film » : calque transparent posé par ffmpeg
+   sur des plans d'avions filmés (Pixabay). */
+:root { --nuit: #0B1A2E; --orange: #FF6A1F; --soleil: #FFB627; --ciel: #3FA9F5; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1080px; height: 1920px; overflow: hidden; }
+body { position: relative; color: #fff; font-family: "Instrument Sans", Arial, sans-serif; -webkit-font-smoothing: antialiased;
+       background: {{ "transparent" if mode == "film" else "var(--nuit)" }}; }
+.couche { position: absolute; inset: 0; }
+#ciel { position: absolute; top: 0; left: 0; height: 1920px; }
+#avions { position: absolute; inset: 0; width: 1080px; height: 1920px; }
+/* voile de lisibilité, plus sombre en haut et en bas */
+#voile { background: linear-gradient(180deg, rgba(11,26,46,.78) 0%, rgba(11,26,46,.30) 26%, rgba(11,26,46,.22) 52%,
+                                     rgba(11,26,46,.55) 74%, rgba(11,26,46,.86) 100%); }
+#assombri { background: var(--nuit); opacity: 0; }
+
+.bloc { position: absolute; left: 70px; right: 70px; opacity: 0; display: flex; flex-direction: column; align-items: center; text-align: center; }
+.pastille { display: inline-block; font-weight: 700; font-size: 40px; letter-spacing: .1em; color: var(--nuit);
+            background: var(--soleil); padding: 8px 28px 9px; border-radius: 999px; }
+.titre { font-family: "Big Shoulders"; font-weight: 700; text-transform: uppercase; line-height: .9;
+         text-shadow: 0 6px 44px rgba(0,0,0,.55); }
+.titre em { font-style: normal; color: var(--orange); }
+
+#accroche { top: 560px; }
+#accroche .titre { font-size: 212px; margin-top: 40px; }
+#accroche .periode { margin-top: 36px; font-size: 46px; font-weight: 700; color: #F1F5FA; text-shadow: 0 2px 18px rgba(0,0,0,.7); }
+
+#marque { top: 560px; }
+#marque .emb { width: 420px; height: 420px; position: relative; }
+#marque .emb img { width: 100%; height: 100%; display: block; filter: drop-shadow(0 14px 40px rgba(0,0,0,.55)); }
+#marque .onde { position: absolute; inset: 0; border-radius: 50%; border: 7px solid var(--soleil); opacity: 0; }
+#marque .titre { font-size: 168px; margin-top: 44px; transform: skewX(-9deg); }
+#marque .tag { margin-top: 30px; font-size: 42px; color: #E6EDF6; text-shadow: 0 2px 16px rgba(0,0,0,.7); }
+
+#sommaire { top: 250px; align-items: stretch; text-align: left; }
+#sommaire .entete { display: flex; align-items: center; gap: 22px; }
+#sommaire .entete img { width: 96px; height: 96px; }
+#sommaire .entete .titre { font-size: 104px; }
+#sommaire .entete .titre em { color: var(--soleil); }
+.carte { margin-top: 30px; display: flex; gap: 26px; align-items: flex-start; padding: 26px 30px 28px;
+         background: rgba(11,26,46,.78); border-left: 8px solid var(--orange); border-radius: 22px;
+         box-shadow: 0 18px 50px rgba(0,0,0,.35); opacity: 0; }
+.carte .n { flex: none; width: 74px; height: 74px; border-radius: 50%; background: var(--orange); color: var(--nuit);
+            font-family: "Big Shoulders"; font-weight: 700; font-size: 52px; line-height: 76px; text-align: center; }
+.carte p { font-weight: 700; font-size: 54px; line-height: 1.14; letter-spacing: -.005em; }
+#sommaire .plus { margin-top: 34px; font-weight: 700; font-size: 44px; color: var(--soleil); text-align: center; opacity: 0;
+                  text-shadow: 0 2px 16px rgba(0,0,0,.7); }
+
+#fin { top: 470px; }
+#fin img { width: 300px; height: 300px; filter: drop-shadow(0 12px 36px rgba(0,0,0,.55)); }
+#fin .titre { font-size: 150px; margin-top: 36px; }
+#fin .cta { margin-top: 50px; font-family: "Big Shoulders"; font-weight: 700; font-size: 104px; color: var(--nuit);
+            background: var(--orange); padding: 8px 60px 4px; border-radius: 999px; box-shadow: 0 14px 50px rgba(255,106,31,.45); }
+#fin .url { margin-top: 38px; font-weight: 700; font-size: 42px; color: var(--soleil); text-shadow: 0 2px 16px rgba(0,0,0,.7); }
+#fin .plus { margin-top: 16px; font-size: 38px; color: #DCE6F2; text-shadow: 0 2px 16px rgba(0,0,0,.7); }
+</style>
+</head>
+<body>
+{% if mode != "film" %}
+<img id="ciel" src="{{ ciel }}" alt="">
+<svg id="avions" viewBox="0 0 1080 1920">
+  <defs>
+    {# Avion de ligne de profil, nez vers la droite (environ 1000 × 260), éclairé par le soleil couchant,
+       dérive orange aux couleurs de la revue (aucune vraie compagnie) #}
+    <linearGradient id="fuselage" gradientUnits="userSpaceOnUse" x1="0" y1="126" x2="0" y2="202">
+      <stop offset="0" stop-color="#FFFFFF"/><stop offset=".45" stop-color="#E3E9F0"/>
+      <stop offset=".8" stop-color="#C9B3A8"/><stop offset="1" stop-color="#F0A673"/>
+    </linearGradient>
+    <linearGradient id="derive" gradientUnits="userSpaceOnUse" x1="0" y1="16" x2="0" y2="140">
+      <stop offset="0" stop-color="#FF8A3D"/><stop offset="1" stop-color="#D9480F"/>
+    </linearGradient>
+    <linearGradient id="aile" gradientUnits="userSpaceOnUse" x1="0" y1="192" x2="0" y2="256">
+      <stop offset="0" stop-color="#B8C4D2"/><stop offset="1" stop-color="#7D8CA0"/>
+    </linearGradient>
+    <g id="profil">
+      <path d="M110 140 L58 16 L122 16 L272 130 Z" fill="url(#derive)"/>
+      <path d="M96 118 L74 64 L108 64 L176 118 Z" fill="#FFB627" opacity=".9"/>
+      <path d="M150 150 L58 170 L96 175 L232 158 Z" fill="#AEB9C7"/>
+      <path d="M90 140 L230 128 L880 128 C940 128 985 148 990 168 C992 185 965 200 925 200 L300 200 L90 150 Z" fill="url(#fuselage)"/>
+      <path d="M300 186 L925 186 C950 186 968 182 980 176" fill="none" stroke="#FF6A1F" stroke-width="4" opacity=".85"/>
+      <g fill="#1D2B44"><circle cx="330" cy="151" r="3.4"/><circle cx="345" cy="151" r="3.4"/><circle cx="360" cy="151" r="3.4"/><circle cx="375" cy="151" r="3.4"/><circle cx="390" cy="151" r="3.4"/><circle cx="405" cy="151" r="3.4"/><circle cx="420" cy="151" r="3.4"/><circle cx="435" cy="151" r="3.4"/><circle cx="450" cy="151" r="3.4"/><circle cx="465" cy="151" r="3.4"/><circle cx="480" cy="151" r="3.4"/><circle cx="495" cy="151" r="3.4"/><circle cx="510" cy="151" r="3.4"/><circle cx="525" cy="151" r="3.4"/><circle cx="540" cy="151" r="3.4"/><circle cx="555" cy="151" r="3.4"/><circle cx="570" cy="151" r="3.4"/><circle cx="585" cy="151" r="3.4"/><circle cx="600" cy="151" r="3.4"/><circle cx="615" cy="151" r="3.4"/><circle cx="630" cy="151" r="3.4"/><circle cx="645" cy="151" r="3.4"/><circle cx="660" cy="151" r="3.4"/><circle cx="675" cy="151" r="3.4"/><circle cx="690" cy="151" r="3.4"/><circle cx="705" cy="151" r="3.4"/><circle cx="720" cy="151" r="3.4"/><circle cx="735" cy="151" r="3.4"/><circle cx="750" cy="151" r="3.4"/><circle cx="765" cy="151" r="3.4"/><circle cx="780" cy="151" r="3.4"/><circle cx="795" cy="151" r="3.4"/><circle cx="810" cy="151" r="3.4"/><circle cx="825" cy="151" r="3.4"/><circle cx="840" cy="151" r="3.4"/><circle cx="855" cy="151" r="3.4"/><circle cx="870" cy="151" r="3.4"/><path d="M944 150 L974 158 L968 163 L940 158 Z"/></g>
+      <path d="M610 192 L500 196 L330 250 L382 256 Z" fill="url(#aile)"/>
+      <path d="M560 198 L604 197 L614 212 L572 214 Z" fill="#8E9CAF"/>
+      <path d="M520 210 L642 206 C664 206 670 228 648 234 L530 238 C514 238 511 212 520 210 Z" fill="#D5DDE6"/>
+      <path d="M636 208 C652 208 658 226 646 232 C640 226 640 214 636 208 Z" fill="#33415A"/>
+    </g>
+    <filter id="brume" color-interpolation-filters="sRGB">
+      <feColorMatrix type="matrix" values=".55 0 0 0 .10  0 .55 0 0 .13  0 0 .55 0 .22  0 0 0 1 0"/>
+    </filter>
+    {# Jet vu de dessous, très haut dans le ciel, nez vers le haut #}
+    <path id="dessous" d="M0 -26 L3 -20 L4 -4 L26 6 L26 9 L4 5 L3 17 L10 22 L10 24 L0 22 L-10 24 L-10 22 L-3 17 L-4 5 L-26 9 L-26 6 L-4 -4 L-3 -20 Z"/>
+  </defs>
+  <g id="hauts"></g>
+  <g id="moyens"></g>
+</svg>
+{% endif %}
+<div id="voile" class="couche"></div>
+{% if mode != "film" %}
+{# les avions proches passent devant le voile : bien visibles, mais derrière les textes #}
+<svg id="avions-devant" class="couche" viewBox="0 0 1080 1920" width="1080" height="1920"><g id="proches"></g></svg>
+{% endif %}
+<div id="assombri" class="couche"></div>
+
+<section id="accroche" class="bloc">
+  <p class="pastille">NOUVEAU NUMÉRO</p>
+  <h1 class="titre">Le <em>N°&nbsp;{{ d.numero }}</em><br>est en ligne</h1>
+  <p class="periode">Semaine du {{ d.periode }}</p>
+</section>
+
+<section id="marque" class="bloc">
+  <div class="emb"><img src="{{ embleme }}" alt=""><div class="onde"></div></div>
+  <p class="titre">{{ d.nom }}</p>
+  <p class="tag">{{ d.tag }}</p>
+</section>
+
+<section id="sommaire" class="bloc">
+  <div class="entete"><img src="{{ embleme }}" alt=""><p class="titre">Au sommaire du <em>N°&nbsp;{{ d.numero }}</em></p></div>
+  {% for t in d.titres %}<div class="carte"><span class="n">{{ loop.index }}</span><p>{{ t }}</p></div>{% endfor %}
+  <p class="plus">{{ d.plus }}</p>
+</section>
+
+<section id="fin" class="bloc">
+  <img src="{{ embleme }}" alt="">
+  <p class="titre">À lire maintenant</p>
+  <p class="cta">LIEN EN BIO</p>
+  <p class="url">{{ d.adresse }}</p>
+  <p class="plus">{{ d.mention }}</p>
+</section>
+
+<script>
+const D = {{ d|tojson }}, T = D.temps, DESSIN = {{ "false" if mode == "film" else "true" }};
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const borne = x => Math.min(1, Math.max(0, x));
+const fen = (t, a, b) => borne((t - a) / (b - a));
+const doux = x => 1 - Math.pow(1 - borne(x), 3);
+const r2 = x => Math.round(x * 1000) / 1000;
+const ns = "http://www.w3.org/2000/svg";
+
+// --- Les avions (mode dessin) ---------------------------------------------------------
+// hauts : petits jets à haute altitude qui laissent des traînées ; moyens et proches : avions de ligne de profil.
+const HAUTS = [
+  { x0: -80, y0: 560, x1: 1160, y1: 180, t0: -2, t1: 17, s: 1.0 },
+  { x0: 1160, y0: 330, x1: -80, y1: 120, t0: 1.5, t1: 22, s: 0.7 },
+  { x0: 300, y0: 1000, x1: 1160, y1: 420, t0: 6, t1: 26, s: 0.85 },
+];
+const PROFILS = [   // calque, départ, arrivée, taille, cabré (degrés), instants ; « loin » = voilé par la brume
+  { g: "moyens", x0: -420, y0: 860, x1: 1180, y1: 690, s: 0.38, a: -4, t0: 0, t1: 15, loin: true },
+  { g: "proches", x0: -760, y0: 1590, x1: 1120, y1: 1040, s: 1.6, a: -13, t0: 0, t1: 7.2 },
+  { g: "proches", x0: -1500, y0: 1900, x1: 1150, y1: 1470, s: 1.15, a: -8, t0: 8.6, t1: 16.8 },
+];
+function preparerAvions() {
+  HAUTS.forEach(h => {
+    const g = document.createElementNS(ns, "g");
+    const grad = document.createElementNS(ns, "linearGradient");
+    grad.id = "tr" + Math.random().toString(36).slice(2); grad.setAttribute("gradientUnits", "userSpaceOnUse");
+    grad.innerHTML = '<stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".75"/>';
+    const tr = document.createElementNS(ns, "path");
+    tr.setAttribute("stroke", `url(#${grad.id})`); tr.setAttribute("stroke-width", 5 * h.s); tr.setAttribute("fill", "none");
+    tr.setAttribute("stroke-linecap", "round");
+    const jet = document.createElementNS(ns, "use"); jet.setAttribute("href", "#dessous"); jet.setAttribute("fill", "#fff");
+    g.append(grad, tr, jet); $("#hauts").append(g);
+    Object.assign(h, { grad, tr, jet });
+  });
+  PROFILS.forEach(p => {
+    const g = document.createElementNS(ns, "g");
+    const corps = document.createElementNS(ns, "use"); corps.setAttribute("href", "#profil");
+    if (p.loin) { corps.setAttribute("filter", "url(#brume)"); g.setAttribute("opacity", ".9"); }
+    const feux = document.createElementNS(ns, "g");
+    feux.innerHTML = '<circle class="rouge" cx="560" cy="124" r="7" fill="#FF3B3B"/><circle class="blanc" cx="62" cy="18" r="7" fill="#fff"/>' +
+                     '<circle class="blanc" cx="352" cy="252" r="6" fill="#fff"/>';
+    g.append(corps, feux); $("#" + p.g).append(g);
+    Object.assign(p, { el: g, feux });
+  });
+}
+function animerAvions(t) {
+  const ciel = $("#ciel");
+  const course = ciel.naturalWidth * 1920 / ciel.naturalHeight - 1080;
+  ciel.style.transform = `translateX(${(-course * t / D.duree).toFixed(1)}px)`;
+  HAUTS.forEach(h => {
+    const x = fen(t, h.t0, h.t1), ax = h.x0 + (h.x1 - h.x0) * x, ay = h.y0 + (h.y1 - h.y0) * x;
+    const ang = Math.atan2(h.y1 - h.y0, h.x1 - h.x0), lg = 700 * h.s * Math.min(1, (t - h.t0) / 3 + 0.2);
+    const qx = ax - Math.cos(ang) * lg, qy = ay - Math.sin(ang) * lg;
+    h.jet.setAttribute("transform", `translate(${ax.toFixed(1)} ${ay.toFixed(1)}) rotate(${(ang * 180 / Math.PI + 90).toFixed(1)}) scale(${h.s})`);
+    h.tr.setAttribute("d", `M${qx.toFixed(1)} ${qy.toFixed(1)} L${(ax - Math.cos(ang) * 14 * h.s).toFixed(1)} ${(ay - Math.sin(ang) * 14 * h.s).toFixed(1)}`);
+    h.grad.setAttribute("x1", qx); h.grad.setAttribute("y1", qy); h.grad.setAttribute("x2", ax); h.grad.setAttribute("y2", ay);
+  });
+  PROFILS.forEach(p => {
+    const x = fen(t, p.t0, p.t1), visible = t > p.t0 - 0.01 && t < p.t1;
+    const px = p.x0 + (p.x1 - p.x0) * x, py = p.y0 + (p.y1 - p.y0) * x;
+    p.el.style.display = visible ? "" : "none";
+    p.el.setAttribute("transform", `translate(${px.toFixed(1)} ${py.toFixed(1)}) rotate(${p.a}) scale(${p.s})`);
+    const rouge = (t * 1.1) % 1 < 0.12, blanc = (t * 0.8 + 0.3) % 1 < 0.06;
+    p.feux.querySelector(".rouge").style.opacity = rouge ? 1 : 0.15;
+    p.feux.querySelectorAll(".blanc").forEach(b => b.style.opacity = blanc ? 1 : 0);
+  });
+}
+
+// --- Textes -----------------------------------------------------------------------------
+function preparer() {
+  if (DESSIN) preparerAvions();
+  $$(".carte p").forEach(p => {     // ajuste la taille des titres longs
+    let taille = 54; p.style.fontSize = taille + "px";
+    while (p.scrollHeight > 200 && taille > 38) { taille -= 2; p.style.fontSize = taille + "px"; }
+  });
+}
+function seek(t) {
+  if (DESSIN) animerAvions(t);
+  const A = T.accroche, M = T.marque, S = T.sommaire, F = T.fin;
+  // accroche : visible dès la première image
+  const sa = fen(t, A[1] - 0.3, A[1]);
+  $("#accroche").style.opacity = r2(1 - sa);
+  $("#accroche").style.transform = `scale(${r2(1.03 - 0.03 * doux(t / A[1]) + 0.08 * sa)})`;
+  // écusson et nom : impact sur le temps fort
+  const impact = M[0] + D.impact;
+  const vm = Math.min(fen(t, M[0], M[0] + 0.15), 1 - fen(t, M[1] - 0.3, M[1]));
+  $("#marque").style.opacity = r2(vm);
+  const pose = doux(fen(t, M[0], impact)), rebond = Math.sin(Math.min(1, fen(t, impact, impact + 0.35)) * Math.PI) * 0.06;
+  $("#marque .emb").style.transform = `scale(${r2(1.9 - 0.9 * pose + rebond)}) rotate(${r2(-25 * (1 - pose))}deg)`;
+  const onde = fen(t, impact, impact + 0.7), o = $("#marque .onde");
+  o.style.opacity = onde > 0 && onde < 1 ? r2((1 - onde) * 0.9) : 0;
+  o.style.transform = `scale(${r2(1 + 0.6 * doux(onde))})`;
+  const nom = doux(fen(t, impact + 0.05, impact + 0.5)), titreM = $("#marque .titre");
+  titreM.style.clipPath = `inset(-20% ${r2(100 - 100 * nom)}% -20% -5%)`;
+  const tag = doux(fen(t, impact + 0.4, impact + 0.8));
+  $("#marque .tag").style.opacity = r2(tag); $("#marque .tag").style.transform = `translateY(${r2(24 * (1 - tag))}px)`;
+  // sommaire : les cartes arrivent une à une
+  const vs = Math.min(fen(t, S[0], S[0] + 0.3), 1 - fen(t, S[1] - 0.3, S[1]));
+  $("#sommaire").style.opacity = r2(vs);
+  $$(".carte").forEach((c, k) => {
+    const e = doux(fen(t, D.cartes[k], D.cartes[k] + 0.45));
+    c.style.opacity = r2(e); c.style.transform = `translateX(${r2(-90 * (1 - e))}px)`;
+  });
+  const p = doux(fen(t, D.cartes[D.cartes.length - 1], D.cartes[D.cartes.length - 1] + 0.45));
+  $("#sommaire .plus").style.opacity = r2(p);
+  $("#assombri").style.opacity = r2(0.35 * vs);
+  // fin : appel à l'action
+  const vf = doux(fen(t, F[0], F[0] + 0.5));
+  $("#fin").style.opacity = r2(vf); $("#fin").style.transform = `translateY(${r2(60 * (1 - vf))}px)`;
+  const pulse = t > F[0] + 1.2 ? 1 + 0.04 * Math.max(0, Math.sin((t - F[0] - 1.2) * Math.PI / 0.6)) : 1;
+  $("#fin .cta").style.transform = `scale(${r2(pulse)})`;
+  return DESSIN ? String(Math.round(t * 30)) : [r2(sa), r2(vm), r2(pose), r2(onde), r2(nom), r2(tag), r2(vs),
+         $$(".carte").map(c => c.style.opacity).join(","), r2(p), r2(vf), r2(pulse)].join("|");
+}
+</script>
+</body>
+</html>

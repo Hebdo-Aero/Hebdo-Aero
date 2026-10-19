@@ -1,0 +1,38 @@
+{% from "_icones.html" import icone %}
+
+{# Formulaire d'inscription à la newsletter : envoyé directement au service (Kit par défaut), sans script. #}
+{% macro formulaire(newsletter, racine, id="abo", sombre=true) -%}
+<form class="formulaire-abo{{ ' clair' if not sombre }}" action="{{ newsletter.formulaire }}" method="post">
+  <label for="{{ id }}-email" class="cache">Votre adresse e-mail</label>
+  <input id="{{ id }}-email" type="email" name="{{ newsletter.champ_email }}" required
+         placeholder="votre@email.fr" autocomplete="email" inputmode="email">
+  <button type="submit" class="bouton plein">S'inscrire{{ icone("fleche", 16) }}</button>
+</form>
+<p class="petit">Gratuit, désinscription en un clic. Votre adresse sert uniquement à l'envoi de la revue, via {{ newsletter.prestataire }}. <a href="{{ racine }}mentions-legales/#donnees">Données personnelles</a></p>
+{%- endmacro %}
+
+{# Bandeau de fin de numéro : newsletter et soutien #}
+{% macro bandeau(newsletter, soutien, site, racine) -%}
+{% if newsletter.active or soutien.active %}
+<section class="section bande-abonnement" id="newsletter" aria-labelledby="abo-titre">
+  <div class="cadre{{ ' deux' if newsletter.active and soutien.active }}">
+    {% if newsletter.active %}
+    <div class="abo">
+      <p class="surtitre">{{ icone("mail", 18) }}La newsletter du dimanche</p>
+      <h2 id="abo-titre">Recevez {{ site.nom }} chaque dimanche matin</h2>
+      <p>Les infos clés, le chiffre de la semaine et toutes les brèves, directement dans votre boîte mail.</p>
+      {{ formulaire(newsletter, racine, "bandeau") }}
+    </div>
+    {% endif %}
+    {% if soutien.active %}
+    <div class="soutien">
+      <p class="surtitre">{{ icone("coeur", 18) }}Soutenir la revue</p>
+      {% if not newsletter.active %}<h2 id="abo-titre">{{ site.nom }} est gratuit</h2>{% else %}<h3>{{ site.nom }} est gratuit</h3>{% endif %}
+      <p>{{ soutien.texte or "Si la revue vous est utile, un petit don nous aide à la faire vivre et à l'améliorer chaque semaine." }}</p>
+      <a class="bouton" href="{{ soutien.url }}" rel="noopener">Soutenir{% if soutien.plateforme %} sur {{ soutien.plateforme }}{% endif %}{{ icone("fleche", 16) }}</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+{% endif %}
+{%- endmacro %}

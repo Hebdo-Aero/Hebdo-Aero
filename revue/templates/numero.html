@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "_numero.html" import numero_complet %}
+{% from "_numero.html" import numero_complet with context %}
 {% block titre %}N° {{ n.numero }} : {{ n.titre }}, {{ site.nom }}{% endblock %}
 {% block description %}Semaine du {{ n.periode }}. {{ n.edito|truncate(220) }}{% endblock %}
 {% block og_type %}article{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block titre %}Plus qu'une étape, {{ site.nom }}{% endblock %}
+{% block entete %}<meta name="robots" content="noindex">{% endblock %}
+{% block contenu %}
+<div class="cadre"><div class="page">
+  <h1>Plus qu'une étape</h1>
+  <p>Merci ! Pour confirmer votre inscription, cliquez sur le lien de l'e-mail que nous venons de vous envoyer. S'il n'apparaît pas d'ici quelques minutes, regardez dans les courriers indésirables ou l'onglet « Promotions ».</p>
+  <p>Vous recevrez ensuite {{ site.nom }} chaque dimanche matin.</p>
+  {% if dernier %}<p><a class="bouton-plein" href="{{ racine }}numeros/{{ dernier.numero }}/">Lire le dernier numéro en attendant</a></p>{% endif %}
+</div></div>
+{% endblock %}

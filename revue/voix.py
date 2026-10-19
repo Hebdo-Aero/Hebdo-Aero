@@ -7,7 +7,7 @@ import os
 import wave
 from pathlib import Path
 
-from .http import post_json
+from .http import ErreurHTTP, post_json
 
 URL_TTS = "https://texttospeech.googleapis.com/v1/text:synthesize"
 
@@ -43,15 +43,35 @@ def synthetiser(textes: list[str], dossier: Path, voix: str, vitesse: float = 1.
     dossier.mkdir(parents=True, exist_ok=True)
     pistes = []
     for i, texte in enumerate(textes):
-        rep = post_json(url, {
-            "input": {"text": texte},
-            "voice": {"languageCode": langue, "name": voix},
-            "audioConfig": {"audioEncoding": "LINEAR16", "sampleRateHertz": 48000, "speakingRate": vitesse},
-        }, entetes=entetes, delai=120)
+        try:
+            rep = _demander(url, entetes, langue, voix, texte, vitesse)
+        except ErreurHTTP as e:
+            raise ErreurVoix(_explication(e)) from None
         piste = dossier / f"scene-{i:02d}.wav"
         piste.write_bytes(base64.b64decode(rep["audioContent"]))
         pistes.append(piste)
     return pistes
+
+
+def _explication(e: ErreurHTTP) -> str:
+    corps = e.corps or ""
+    if "API key not valid" in corps:
+        return "Clé Google refusée : vérifiez le secret GOOGLE_TTS_API_KEY (copié en entier, sans espace)."
+    if "has not been used" in corps or "is disabled" in corps or "SERVICE_DISABLED" in corps:
+        return "L'API Cloud Text-to-Speech n'est pas activée dans le projet Google Cloud (Bibliothèque > Activer)."
+    if "billing" in corps.lower():
+        return "Le projet Google Cloud n'a pas de compte de facturation associé (obligatoire, même pour la gratuité)."
+    if "API_KEY_SERVICE_BLOCKED" in corps or "are blocked" in corps:
+        return "La clé est restreinte à d'autres API : ajoutez « Cloud Text-to-Speech API » dans ses restrictions."
+    return f"Google Text-to-Speech a refusé la demande : {e}"
+
+
+def _demander(url: str, entetes: dict, langue: str, voix: str, texte: str, vitesse: float) -> dict:
+    return post_json(url, {
+            "input": {"text": texte},
+            "voice": {"languageCode": langue, "name": voix},
+            "audioConfig": {"audioEncoding": "LINEAR16", "speakingRate": vitesse},
+        }, entetes=entetes, delai=120)
 
 
 def duree(piste: Path) -> float:

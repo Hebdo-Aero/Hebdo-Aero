@@ -4,6 +4,8 @@ on:
   schedule:
     # Chaque dimanche à 5 h 17 UTC, soit 7 h 17 à Paris l'été et 6 h 17 l'hiver.
     - cron: "17 5 * * 0"
+    # Mardi et jeudi à 16 h 17 UTC (18 h 17 à Paris l'été) : short d'accroche suivant sur Instagram.
+    - cron: "17 16 * * 2,4"
   workflow_dispatch:
     inputs:
       action:
@@ -14,9 +16,11 @@ on:
           - "Numéro de la semaine, vidéo et réseaux"
           - "Vidéo et réseaux du dernier numéro"
           - "Écouter les voix disponibles"
+          - "Publier le short d'accroche suivant"
+          - "Envoyer la newsletter du dernier numéro"
           - "Republier le site seulement"
       forcer:
-        description: "Rédiger un numéro même si la semaine est déjà couverte"
+        description: "Rédiger à nouveau le numéro de la semaine s'il existe déjà"
         type: boolean
         default: false
   push:
@@ -35,13 +39,18 @@ concurrency:
 jobs:
   production:
     name: Rédaction, vidéo et site
+    if: >-
+      github.event.schedule != '17 16 * * 2,4'
+      && inputs.action != 'Publier le short d''accroche suivant'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     outputs:
       video: ${{ steps.video.outputs.video }}
       date: ${{ steps.video.outputs.date }}
+      nouveau: ${{ steps.numero.outputs.nouveau }}
     env:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      KIT_API_KEY: ${{ secrets.KIT_API_KEY }}
       GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
       PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
       PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
@@ -53,6 +62,7 @@ jobs:
             schedule:*)                  echo "mode=complet" ;;
             push:*)                      echo "mode=site" ;;
             *"site seulement"*)          echo "mode=site" ;;
+            *"newsletter"*)              echo "mode=site" ;;
             *"Vidéo et réseaux"*)        echo "mode=video" ;;
             *"voix"*)                    echo "mode=voix" ;;
             *)                           echo "mode=complet" ;;
@@ -86,9 +96,8 @@ jobs:
 
       - name: Installer les outils vidéo
         if: >-
-          (steps.mode.outputs.mode == 'video' || steps.mode.outputs.mode == 'voix'
-           || steps.numero.outputs.nouveau == 'true')
-          && env.GOOGLE_TTS_API_KEY != ''
+          steps.mode.outputs.mode == 'video' || steps.numero.outputs.nouveau == 'true'
+          || (steps.mode.outputs.mode == 'voix' && env.GOOGLE_TTS_API_KEY != '')
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
           python -m playwright install --with-deps chromium
@@ -107,6 +116,11 @@ jobs:
         continue-on-error: true
         run: python -m revue.generer video
 
+      - name: Vidéo d'annonce de la sortie (TikTok, Reels)
+        if: steps.mode.outputs.mode == 'video' || steps.numero.outputs.nouveau == 'true'
+        continue-on-error: true
+        run: python -m revue.generer annonce
+
       - name: Enregistrer des échantillons de voix
         if: steps.mode.outputs.mode == 'voix' && env.GOOGLE_TTS_API_KEY != ''
         run: python -m revue.generer voix
@@ -121,6 +135,10 @@ jobs:
             git commit -m "Numéro du $(date +%F)"
             git push
           fi
+
+      - name: Garder les vidéos de la semaine déjà en ligne
+        continue-on-error: true
+        run: python -m revue.generer recuperer
 
       - name: Générer le site
         run: python -m revue.construire
@@ -191,6 +209,85 @@ jobs:
           git add data/reseaux
           if ! git diff --cached --quiet; then
             git commit -m "Liens des publications du $(date +%F)"
+            git pull --rebase
+            git push
+          fi
+
+  newsletter:
+    name: Newsletter du dimanche
+    needs: [production, deploiement]
+    if: >-
+      always() && needs.deploiement.result == 'success'
+      && (needs.production.outputs.nouveau == 'true'
+          || inputs.action == 'Envoyer la newsletter du dernier numéro')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      SITE_URL: ${{ needs.deploiement.outputs.url }}
+      KIT_API_KEY: ${{ secrets.KIT_API_KEY }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref_name }}
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Programmer l'envoi aux abonnés
+        run: python -m revue.newsletter
+
+      - name: Enregistrer l'envoi
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/newsletter 2>/dev/null || true
+          if ! git diff --cached --quiet; then
+            git commit -m "Newsletter du $(date +%F)"
+            git pull --rebase
+            git push
+          fi
+
+  accroches:
+    name: Short d'accroche sur Instagram
+    if: >-
+      github.event.schedule == '17 16 * * 2,4'
+      || inputs.action == 'Publier le short d''accroche suivant'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Adresse du site
+        id: pages
+        uses: actions/configure-pages@v6
+
+      - name: Publier le short suivant
+        env:
+          SITE_URL: ${{ steps.pages.outputs.base_url }}/
+          META_PAGE_TOKEN: ${{ secrets.META_PAGE_TOKEN }}
+          INSTAGRAM_USER_ID: ${{ secrets.INSTAGRAM_USER_ID }}
+        run: python -m revue.publier --accroche
+
+      - name: Enregistrer la publication
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/reseaux
+          if ! git diff --cached --quiet; then
+            git commit -m "Short d'accroche publié le $(date +%F)"
             git pull --rebase
             git push
           fi

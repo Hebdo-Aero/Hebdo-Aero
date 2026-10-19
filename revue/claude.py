@@ -25,6 +25,26 @@ class ErreurClaude(RuntimeError):
     pass
 
 
+def expliquer(e: Exception) -> str:
+    """Message clair, en français, pour les erreurs les plus courantes de l'API Claude."""
+    corps = (getattr(e, "corps", "") or "").lower()
+    code = getattr(e, "code", None)
+    if isinstance(e, ErreurClaude):
+        return str(e)
+    if "credit balance" in corps or "billing" in corps:
+        return ("Crédit Anthropic épuisé : ajoutez du crédit sur console.anthropic.com (Billing), "
+                "puis relancez l'action « Numéro de la semaine, vidéo et réseaux ».")
+    if code == 401:
+        return "Clé Claude refusée : recopiez la clé dans le secret ANTHROPIC_API_KEY (Settings > Secrets > Actions)."
+    if code == 403:
+        return "La clé Claude n'a pas accès à ce service : vérifiez l'espace de travail de la clé sur console.anthropic.com."
+    if code == 404 or "model" in corps and "not found" in corps:
+        return "Modèle Claude introuvable : vérifiez la ligne « modele » de config.toml (par exemple claude-sonnet-5-5)."
+    if code in (429, 529) or (code or 0) >= 500:
+        return "L'API Claude est surchargée ou limitée pour le moment : relancez l'action un peu plus tard."
+    return f"Erreur de l'API Claude : {e}"
+
+
 def appeler(charge: dict, cle: str | None = None) -> dict:
     cle = cle or os.environ.get("ANTHROPIC_API_KEY")
     if not cle:

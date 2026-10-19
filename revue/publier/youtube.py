@@ -5,7 +5,7 @@ import json
 import os
 from pathlib import Path
 
-from ..http import post_formulaire, requete
+from ..http import ErreurHTTP, post_formulaire, requete
 
 SECRETS = ("YOUTUBE_CLIENT_ID", "YOUTUBE_CLIENT_SECRET", "YOUTUBE_REFRESH_TOKEN")
 
@@ -30,7 +30,7 @@ def _propre(texte: str, limite: int) -> str:
 
 
 def publier(video: Path, titre: str, description: str, tags: list[str],
-            visibilite: str = "public", synthetique: bool = True) -> dict:
+            visibilite: str = "public", synthetique: bool = True, placement_paye: bool = False) -> dict:
     jeton = jeton_acces()
     meta = {
         "snippet": {
@@ -48,11 +48,26 @@ def publier(video: Path, titre: str, description: str, tags: list[str],
         },
     }
     taille = video.stat().st_size
-    _, entetes, _ = requete(
-        "https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status",
-        methode="POST", donnees=json.dumps(meta).encode("utf-8"),
-        entetes={"Authorization": f"Bearer {jeton}", "Content-Type": "application/json; charset=UTF-8",
-                 "X-Upload-Content-Type": "video/mp4", "X-Upload-Content-Length": str(taille)})
+
+    def ouvrir_envoi(meta: dict, parties: str):
+        return requete(
+            f"https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part={parties}",
+            methode="POST", donnees=json.dumps(meta).encode("utf-8"),
+            entetes={"Authorization": f"Bearer {jeton}", "Content-Type": "application/json; charset=UTF-8",
+                     "X-Upload-Content-Type": "video/mp4", "X-Upload-Content-Length": str(taille)})
+
+    if placement_paye:     # partenaire de la semaine : case « placement de produit payant »
+        try:
+            _, entetes, _ = ouvrir_envoi({**meta, "paidProductPlacementDetails": {"hasPaidProductPlacement": True}},
+                                         "snippet,status,paidProductPlacementDetails")
+        except ErreurHTTP as e:
+            if e.code != 400:
+                raise
+            print("::warning::YouTube n'a pas accepté la case « placement de produit payant » : "
+                  "cochez-la dans YouTube Studio pour cette vidéo.")
+            _, entetes, _ = ouvrir_envoi(meta, "snippet,status")
+    else:
+        _, entetes, _ = ouvrir_envoi(meta, "snippet,status")
     adresse = {k.lower(): v for k, v in entetes.items()}["location"]
     _, _, corps = requete(adresse, methode="PUT", donnees=video.read_bytes(), delai=600, essais=3,
                           entetes={"Authorization": f"Bearer {jeton}", "Content-Type": "video/mp4"})

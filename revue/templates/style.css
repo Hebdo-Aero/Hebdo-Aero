@@ -245,3 +245,102 @@ img { max-width: 100%; }
 .voix li div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; }
 .voix span { color: var(--encre-2); }
 .voix code { font-size: .85rem; color: var(--encre-2); }
+
+/* Page de travail des shorts */
+.shorts { list-style: none; padding: 0 0 56px; margin: 0; display: grid; gap: 22px; }
+.shorts li { display: grid; gap: 18px 28px; background: var(--panneau); border: 1px solid var(--trait); border-radius: 16px; padding: 18px; }
+@media (min-width: 760px) { .shorts li { grid-template-columns: 220px minmax(0, 1fr); } }
+.shorts video { width: 100%; max-width: 220px; aspect-ratio: 9 / 16; border-radius: 14px; background: #000; }
+.shorts h2 { font-family: var(--titre); font-size: 1.7rem; margin: 0 0 10px; }
+.shorts .publie { font-family: var(--texte); font-size: .85rem; font-weight: 700; color: var(--vert); margin-left: 8px; }
+.shorts label { display: block; font-weight: 700; margin: 14px 0 6px; }
+.shorts textarea { width: 100%; font: inherit; font-size: .95rem; padding: 10px 12px; border-radius: 10px;
+                   border: 1px solid var(--trait); background: var(--fond); color: var(--encre); resize: vertical; }
+.bouton-plein, .copier { display: inline-block; font: inherit; font-weight: 700; text-decoration: none; cursor: pointer;
+                         background: var(--orange); color: var(--nuit); border: 0; border-radius: 999px; padding: 10px 18px; }
+.copier { margin-top: 10px; background: var(--nuit); color: #fff; }
+@media (prefers-color-scheme: dark) { .copier { background: var(--ciel); color: var(--nuit); } }
+
+/* ---------- Revenus : partenaire, newsletter, soutien, annonceurs ---------- */
+.cache { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.bandeau nav a.abonner { color: var(--soleil); border: 1.5px solid rgba(255,182,39,.55); }
+.bandeau nav a.abonner:hover, .bandeau nav a.abonner[aria-current] { color: var(--nuit); background: var(--soleil); }
+
+/* Partenaire de la semaine : toujours signalé comme publicité */
+.zone-partenaire { padding: 0 0 8px; }
+.partenaire { background: var(--panneau); border: 1px solid var(--trait); border-radius: 18px; padding: 16px 22px 20px;
+              box-shadow: 0 1px 0 var(--trait); }
+.partenaire .mention { margin: 0 0 12px; font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+                       color: var(--encre-2); }
+.partenaire .contenu { display: grid; gap: 14px 22px; align-items: center; }
+@media (min-width: 760px) { .partenaire .contenu { grid-template-columns: auto minmax(0, 1fr) auto; } }
+.logo-partenaire { width: 72px; height: 72px; object-fit: contain; border-radius: 14px; background: #fff; padding: 6px;
+                   border: 1px solid var(--trait); }
+.partenaire h2 { font-family: var(--titre); font-weight: 700; font-size: 1.7rem; line-height: 1; margin: 0 0 6px; }
+.partenaire p { margin: 0; color: var(--encre-2); }
+.partenaire .bouton.plein { justify-self: start; }
+
+/* Bandeau newsletter et soutien */
+.bande-abonnement { background: var(--nuit); color: #fff; position: relative; overflow: hidden; }
+.bande-abonnement::before { content: ""; position: absolute; inset: 0;
+  background: radial-gradient(70% 90% at 100% 100%, rgba(255,106,31,.32), rgba(255,106,31,0) 70%),
+              radial-gradient(50% 70% at 0% 0%, rgba(63,169,245,.16), rgba(63,169,245,0) 70%); }
+.bande-abonnement .cadre { position: relative; display: grid; gap: 36px; }
+@media (min-width: 900px) { .bande-abonnement .cadre.deux { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 64px; } }
+.bande-abonnement .surtitre { display: inline-flex; align-items: center; gap: 8px; margin: 0 0 10px; font-weight: 700;
+                              font-size: .9rem; color: var(--soleil); text-transform: uppercase; letter-spacing: .06em; }
+.bande-abonnement h2 { font-family: var(--titre); font-weight: 700; font-size: clamp(2rem, 4.4vw, 3rem); line-height: 1; margin: 0 0 12px; text-wrap: balance; }
+.bande-abonnement h3 { font-family: var(--titre); font-weight: 700; font-size: 1.9rem; line-height: 1; margin: 0 0 10px; }
+.bande-abonnement p { color: #C9D6E6; max-width: 54ch; margin: 0 0 18px; }
+.bande-abonnement .soutien { border-top: 1px solid rgba(255,255,255,.12); padding-top: 28px; }
+@media (min-width: 900px) { .bande-abonnement .deux .soutien { border-top: 0; border-left: 1px solid rgba(255,255,255,.12); padding: 4px 0 0 40px; } }
+.formulaire-abo { display: flex; flex-wrap: wrap; gap: 10px; max-width: 520px; margin: 0 0 10px; }
+.formulaire-abo input { flex: 1 1 220px; min-width: 0; font: inherit; font-size: 1rem; padding: 12px 18px; border-radius: 999px;
+                        border: 1.5px solid rgba(255,255,255,.28); background: rgba(255,255,255,.08); color: #fff; }
+.formulaire-abo input::placeholder { color: #93A6BE; }
+.formulaire-abo input:focus { outline: 3px solid var(--soleil); outline-offset: 2px; border-color: transparent; }
+.formulaire-abo .bouton { font-size: 1rem; padding: 12px 20px; cursor: pointer; font-family: inherit; }
+p.petit { font-size: .82rem; color: #93A6BE; margin: 0; max-width: 60ch; }
+p.petit a { color: inherit; }
+
+/* Page newsletter */
+.page-abo .cadre { padding-top: 64px; padding-bottom: 64px; }
+.page-abo .edito { margin-bottom: 24px; }
+.atouts { list-style: none; margin: 0; padding: 22px 24px; display: grid; gap: 14px; background: rgba(11,26,46,.6);
+          border: 1px solid rgba(255,255,255,.12); border-radius: 16px; }
+.atouts li { display: flex; gap: 12px; align-items: flex-start; color: #DCE6F2; }
+.atouts .ico { color: var(--soleil); flex: none; margin-top: 3px; }
+.atouts b { color: #fff; }
+.exemple { margin: 30px 0 0; color: #C9D6E6; }
+.exemple a { color: var(--soleil); font-weight: 700; }
+
+/* Page annonceurs */
+.page-annonceurs .cadre { padding-bottom: 56px; }
+.chiffres-audience { list-style: none; padding: 0; margin: 36px 0 0; display: grid; gap: 12px;
+                     grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.chiffres-audience li { background: rgba(11,26,46,.6); border: 1px solid rgba(255,255,255,.12); border-top: 4px solid var(--soleil);
+                        border-radius: 14px; padding: 14px 18px; }
+.chiffres-audience b { display: block; font-family: var(--titre); font-size: 3rem; line-height: 1; color: var(--soleil); }
+.chiffres-audience span { color: #C9D6E6; font-size: .92rem; }
+.offre { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.offre article { background: var(--panneau); border-radius: 16px; padding: 20px 22px; border-top: 5px solid var(--rub);
+                 box-shadow: 0 1px 0 var(--trait); }
+.offre .rond { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; background: var(--rub); color: var(--nuit); }
+.offre h3 { font-family: var(--titre); font-size: 1.6rem; line-height: 1; margin: 14px 0 8px; }
+.offre p { margin: 0; color: var(--encre-2); }
+.tarif { margin: 24px 0 0; font-size: 1.05rem; }
+.page.court { padding: 0; }
+.page.court h2:first-child { margin-top: 0; }
+.page .bouton-plein { display: inline-flex; align-items: center; gap: 8px; color: var(--nuit); }
+
+/* Bas de page */
+.pied .bas-de-page { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; margin-top: 34px;
+                     padding-top: 18px; border-top: 1px solid rgba(255,255,255,.1); font-size: .86rem; }
+.pied .bas-de-page p { margin: 0; max-width: none; }
+
+/* Annonces Google AdSense (blocs placés à la main) */
+.zone-pub { padding: 8px 0 28px; }
+.section .zone-pub { padding: 34px 0; }
+.zone-pub .mention { margin: 0 0 8px; font-size: .74rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+                     color: var(--encre-2); text-align: center; }
+.zone-pub ins { min-height: 100px; }

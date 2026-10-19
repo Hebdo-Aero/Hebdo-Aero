@@ -1,4 +1,6 @@
 {% from "_icones.html" import icone %}
+{% from "_abonnement.html" import bandeau %}
+{% from "_publicite.html" import bloc %}
 
 {% macro sources(liste) -%}
 <p class="sources">Source{{ "s" if liste|length > 1 }} : {% for s in liste %}<a href="{{ s.url }}" rel="noopener">{{ s.nom }}</a>{{ ", " if not loop.last }}{% endfor %}</p>
@@ -41,8 +43,9 @@
       {% for nom, sujets in n.rubriques %}{% set r = rubriques[nom] %}
       <li class="c-{{ r.couleur }}"><a href="#{{ r.ancre }}">{{ icone(r.icone, 16) }}{{ nom }} <span class="nb">{{ sujets|length }}</span></a></li>
       {% endfor %}
+      {% if newsletter.active %}<li class="c-ciel"><a href="#newsletter">{{ icone("mail", 16) }}Recevoir par e-mail</a></li>{% endif %}
     </ul>
-    {% if n.couverture and n.couverture.auteur %}<p class="credit-ouverture">Photo : <a href="{{ n.couverture.page }}" rel="noopener">{{ n.couverture.auteur }}</a> / Pexels</p>{% endif %}
+    {% if n.couverture and n.couverture.auteur %}<p class="credit-ouverture">Photo : <a href="{{ n.couverture.page }}" rel="noopener">{{ n.couverture.auteur }}</a> / {{ n.couverture.source }}</p>{% endif %}
   </div>
 </section>
 
@@ -56,7 +59,7 @@
         <figure class="visuel{{ ' dessine' if s.visuel.dessine }}">
           <img src="{{ racine }}{{ s.visuel.src }}" alt="" loading="lazy"{% if s.visuel.position %} style="object-position: {{ s.visuel.position }}"{% endif %}>
           {% if s.visuel.dessine %}<span class="picto">{{ icone(r.icone, 64) }}</span>{% endif %}
-          {% if s.visuel.auteur %}<figcaption>Photo : <a href="{{ s.visuel.page }}" rel="noopener">{{ s.visuel.auteur }}</a> / Pexels</figcaption>{% endif %}
+          {% if s.visuel.auteur %}<figcaption>Photo : <a href="{{ s.visuel.page }}" rel="noopener">{{ s.visuel.auteur }}</a> / {{ s.visuel.source }}</figcaption>{% endif %}
         </figure>
         {% endif %}
         <div class="corps">
@@ -70,6 +73,26 @@
     </div>
   </div>
 </section>
+
+{% if n.partenaire %}{% set p = n.partenaire %}
+<aside class="zone-partenaire" aria-label="Publicité">
+  <div class="cadre">
+    <div class="partenaire">
+      <p class="mention">Publicité · Partenaire de la semaine</p>
+      <div class="contenu">
+        {% if p.logo_src %}<img class="logo-partenaire" src="{{ p.logo_src if p.logo_externe else racine ~ p.logo_src }}" alt="{{ p.nom }}" loading="lazy">{% endif %}
+        <div class="texte">
+          <h2>{{ p.nom }}</h2>
+          {% if p.texte %}<p>{{ p.texte }}</p>{% endif %}
+        </div>
+        <a class="bouton plein" href="{{ p.lien_site }}" rel="sponsored noopener">{{ p.bouton }}{{ icone("fleche", 16) }}</a>
+      </div>
+    </div>
+  </div>
+</aside>
+{% endif %}
+
+{% if not n.partenaire %}{{ bloc(publicite, publicite.bloc_numero) }}{% endif %}
 
 {% if n.video or n.liens_reseaux %}
 <section class="section bande-video" id="video" aria-labelledby="video-titre">
@@ -98,6 +121,7 @@
   <div class="cadre">
     <div class="entete-section"><h2 id="breves-titre">En bref</h2><p>{{ n.breves|length }} brèves, rubrique par rubrique</p></div>
     {% for nom, sujets in n.rubriques %}{% set r = rubriques[nom] %}
+    {% if loop.index == 3 and publicite.active and publicite.affichee and publicite.bloc_breves %}</div>{{ bloc(publicite, publicite.bloc_breves) }}<div class="cadre">{% endif %}
     <div class="rubrique c-{{ r.couleur }}" id="{{ r.ancre }}">
       <div class="rubrique-titre">
         <span class="rond">{{ icone(r.icone, 22) }}</span>
@@ -119,4 +143,6 @@
   </div>
 </section>
 {% endif %}
+
+{{ bandeau(newsletter, soutien, site, racine) }}
 {% endmacro %}

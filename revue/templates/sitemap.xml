@@ -3,6 +3,8 @@
   <url><loc>{{ site.url }}</loc>{% if numeros %}<lastmod>{{ numeros[0].date }}</lastmod>{% endif %}</url>
   <url><loc>{{ site.url }}archives/</loc></url>
   <url><loc>{{ site.url }}a-propos/</loc></url>
+  {% if newsletter.active %}<url><loc>{{ site.url }}newsletter/</loc></url>{% endif %}
+  <url><loc>{{ site.url }}annoncer/</loc></url>
   {% for n in numeros %}<url><loc>{{ site.url }}numeros/{{ n.numero }}/</loc><lastmod>{{ n.date }}</lastmod></url>
   {% endfor %}
 </urlset>

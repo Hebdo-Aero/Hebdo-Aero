@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<style>
+@font-face { font-family: "Big Shoulders"; font-weight: 700; src: url("{{ polices }}/BigShoulders-Bold.woff") format("woff"); }
+@font-face { font-family: "Big Shoulders"; font-weight: 400; src: url("{{ polices }}/BigShoulders-Regular.woff") format("woff"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 400; src: url("{{ polices }}/InstrumentSans-Regular.woff") format("woff"); }
+@font-face { font-family: "Instrument Sans"; font-weight: 700; src: url("{{ polices }}/InstrumentSans-Bold.woff") format("woff"); }
+
+/* Vidéo de présentation du site : chaque image est calculée par seek(t), sans animation CSS. */
+:root { --nuit: #0B1A2E; --nuit-2: #13294A; --orange: #FF6A1F; --soleil: #FFB627; --ciel: #3FA9F5; --blanc: #FFFFFF; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: {{ L }}px; height: {{ H }}px; overflow: hidden; background: var(--nuit); }
+body { position: relative; color: var(--blanc); font-family: "Instrument Sans", Arial, sans-serif;
+       -webkit-font-smoothing: antialiased; }
+.couche { position: absolute; inset: 0; }
+#ciel { position: absolute; top: 0; left: 0; height: 100%; }
+#voile { background: var(--nuit); opacity: .4; }
+#plein { opacity: 0;
+  background: radial-gradient(95% 42% at 88% 102%, rgba(255,106,31,.42), rgba(255,106,31,0) 70%),
+              radial-gradient(70% 34% at 0% 0%, rgba(63,169,245,.16), rgba(63,169,245,0) 70%),
+              linear-gradient(180deg, #0B1A2E 0%, #13294A 72%, #1E2B55 100%); }
+#trainee { position: absolute; inset: 0; width: {{ L }}px; height: {{ H }}px; }
+
+/* Accroche (format vertical) : lisible dès la première image */
+#accroche { position: absolute; left: 60px; right: 60px; top: 0; bottom: 0; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; text-align: center; padding-bottom: 120px; }
+#accroche .pastille { font-weight: 700; font-size: 40px; letter-spacing: .1em; color: var(--nuit); background: var(--soleil);
+                      padding: 8px 28px 9px; border-radius: 999px; margin-bottom: 44px; }
+#accroche h1 { font-family: "Big Shoulders"; font-weight: 700; font-size: 158px; line-height: .9; text-transform: uppercase;
+               text-shadow: 0 6px 44px rgba(0,0,0,.5); }
+#accroche h1 em { font-style: normal; color: var(--orange); }
+#accroche svg { width: 640px; height: 34px; margin-top: 26px; overflow: visible; }
+
+/* Générique : l'écusson s'anime, le nom se dévoile */
+#ident { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center;
+         justify-content: center; opacity: 0; transform-origin: 50% 46%; }
+#ident .emb { width: var(--emb); height: var(--emb); position: relative; }
+#ident .emb svg { width: 100%; height: 100%; overflow: visible; display: block; }
+#ident .onde { position: absolute; inset: 0; border-radius: 50%; border: 6px solid var(--soleil); opacity: 0; }
+#ident .nom { position: relative; margin-top: calc(var(--emb) * .1); }
+#ident .nom span { display: block; font-family: "Big Shoulders"; font-weight: 700; font-size: var(--nom); line-height: .9;
+                   letter-spacing: .01em; transform: skewX(-9deg); text-shadow: 0 6px 40px rgba(0,0,0,.45); }
+#ident .nom svg { position: absolute; left: 6px; bottom: calc(var(--nom) * -.17); width: calc(var(--nom) * 2.8);
+                  height: calc(var(--nom) * .15); overflow: visible; }
+#ident .tag { margin-top: calc(var(--nom) * .34); font-size: var(--tag); color: #DCE6F2; text-align: center; padding: 0 60px; }
+.vertical { --emb: 520px; --nom: 196px; --tag: 42px; }
+.flux { --emb: 360px; --nom: 150px; --tag: 34px; }
+
+/* Le téléphone qui montre le vrai site */
+#tel { position: absolute; left: 0; top: 0; transform-origin: 0 0; opacity: 0; }
+#tel .corps { width: 414px; height: 874px; border-radius: 62px; padding: 12px; position: relative;
+  background: linear-gradient(150deg, #34425E 0%, #10172A 38%, #05070C 100%);
+  box-shadow: inset 0 0 0 2px rgba(255,255,255,.10), 0 0 0 1px #000, 0 50px 110px rgba(0,0,0,.6); }
+#tel .ecran { width: 390px; height: 850px; border-radius: 50px; overflow: hidden; background: var(--nuit); position: relative; }
+#tel .statut { height: 46px; display: flex; align-items: center; justify-content: space-between;
+               padding: 4px 30px 0 40px; font-weight: 700; font-size: 16px; }
+#tel .statut svg { height: 13px; }
+#tel .ile { position: absolute; left: 50%; top: 11px; width: 116px; height: 32px; margin-left: -58px; border-radius: 20px; background: #000; }
+#tel .adresse { height: 50px; display: flex; align-items: center; justify-content: center; }
+#tel .adresse span { display: flex; gap: 8px; align-items: center; justify-content: center; width: 356px; height: 38px;
+                     border-radius: 13px; background: #1D3B66; font-size: 15px; color: #E8EEF6; }
+#tel .adresse svg { width: 12px; height: 14px; }
+#tel iframe { display: block; width: 390px; height: 754px; border: 0; background: #fff; }
+
+/* Légendes de chaque étape */
+.legende { position: absolute; display: flex; flex-direction: column; opacity: 0; }
+.legende .num { font-family: "Big Shoulders"; font-weight: 700; color: var(--nuit); background: var(--orange);
+                border-radius: 999px; line-height: 1.2; }
+.legende h2 { font-family: "Big Shoulders"; font-weight: 700; line-height: .94; text-transform: uppercase;
+              text-shadow: 0 4px 30px rgba(0,0,0,.4); }
+.legende h2 em { font-style: normal; color: var(--soleil); }
+.legende p { color: #D5DFEC; }
+.vertical .legende { left: 60px; right: 60px; top: 190px; height: 400px; align-items: center; justify-content: center; text-align: center; }
+.vertical .legende .num { font-size: 50px; padding: 0 24px; margin-bottom: 24px; }
+.vertical .legende h2 { font-size: 118px; }
+.vertical .legende p { display: none; }
+.flux .legende { left: 70px; width: 470px; top: 180px; height: 990px; justify-content: center; align-items: flex-start; }
+.flux .legende .num { font-size: 44px; padding: 0 22px; margin-bottom: 26px; }
+.flux .legende h2 { font-size: 96px; }
+.flux .legende p { font-size: 33px; line-height: 1.38; margin-top: 30px; }
+
+#entete { position: absolute; left: 70px; top: 66px; height: 62px; opacity: 0; }
+#points { position: absolute; left: 70px; bottom: 96px; display: flex; gap: 14px; opacity: 0; }
+#points i { width: 14px; height: 14px; border-radius: 50%; background: rgba(255,255,255,.28); }
+#points i.on { background: var(--orange); width: 44px; border-radius: 8px; }
+.vertical #entete, .vertical #points { display: none; }
+
+/* Carton de fin */
+#fin { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; text-align: center; opacity: 0; }
+.vertical #fin { justify-content: flex-start; padding-top: 330px; }
+.flux #fin { justify-content: center; }
+#fin img { display: block; filter: drop-shadow(0 10px 36px rgba(0,0,0,.5)); }
+.vertical #fin img { width: 300px; height: 300px; }
+.flux #fin img { width: 230px; height: 230px; }
+#fin .nom { font-family: "Big Shoulders"; font-weight: 700; line-height: .9; transform: skewX(-9deg); margin-top: 30px; }
+.vertical #fin .nom { font-size: 168px; }
+.flux #fin .nom { font-size: 132px; }
+#fin .rdv { color: #DCE6F2; margin-top: 30px; }
+.vertical #fin .rdv { font-size: 46px; }
+.flux #fin .rdv { font-size: 38px; }
+#fin .cta { font-family: "Big Shoulders"; font-weight: 700; color: var(--nuit); background: var(--orange);
+            border-radius: 999px; letter-spacing: .02em; box-shadow: 0 12px 40px rgba(255,106,31,.35); }
+.vertical #fin .cta { font-size: 92px; padding: 6px 56px 4px; margin-top: 60px; }
+.flux #fin .cta { font-size: 74px; padding: 4px 46px 2px; margin-top: 46px; }
+#fin .url { font-weight: 700; color: var(--soleil); }
+.vertical #fin .url { font-size: 40px; margin-top: 34px; }
+.flux #fin .url { font-size: 34px; margin-top: 28px; }
+#fin .plus { color: #B9C7D9; }
+.vertical #fin .plus { font-size: 36px; margin-top: 18px; }
+.flux #fin .plus { font-size: 30px; margin-top: 14px; }
+</style>
+</head>
+<body class="{{ format }}">
+<img id="ciel" src="{{ ciel }}" alt="">
+<div id="voile" class="couche"></div>
+<div id="plein" class="couche"></div>
+
+<svg id="trainee" viewBox="0 0 {{ L }} {{ H }}">
+  <defs><linearGradient id="dg" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset="1" stop-color="#fff" stop-opacity=".85"/>
+  </linearGradient></defs>
+  <path id="sillage" d="" stroke="url(#dg)" stroke-width="7" stroke-linecap="round" fill="none"/>
+  <g id="avion"><path d="M0 -26 L6 -8 L28 4 L28 10 L6 4 L4 18 L12 24 L12 28 L0 25 L-12 28 L-12 24 L-4 18 L-6 4 L-28 10 L-28 4 L-6 -8 Z" fill="#fff"/></g>
+</svg>
+
+{% if accroche %}
+<section id="accroche">
+  <p class="pastille">{{ accroche.pastille }}</p>
+  <h1>{{ accroche.titre|safe }}</h1>
+  <svg viewBox="0 0 640 34"><path id="souligne" d="M6 26 L620 8 L604 32 Z" fill="none" stroke="var(--orange)" stroke-width="3"/></svg>
+</section>
+{% endif %}
+
+<div id="ident">
+  <div class="emb">{{ embleme_svg|safe }}<div class="onde"></div></div>
+  <div class="nom"><span>{{ nom }}</span>
+    <svg viewBox="0 0 560 30" preserveAspectRatio="none"><path id="trait" d="M4 22 L520 6 L506 28 Z" fill="none"/></svg></div>
+  <p class="tag">{{ sous_titre }}</p>
+</div>
+
+<img id="entete" src="{{ logo }}" alt="">
+{% for e in etapes %}
+<div class="legende"><span class="num">{{ "%02d"|format(loop.index) }}</span><h2>{{ e.titre|safe }}</h2><p>{{ e.texte }}</p></div>
+{% endfor %}
+<div id="points">{% for e in etapes %}<i></i>{% endfor %}</div>
+
+<div id="tel"><div class="corps"><div class="ecran">
+  <div class="statut"><span>9:41</span>
+    <svg viewBox="0 0 62 13" fill="#fff"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="7" rx="1"/>
+      <rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/>
+      <rect x="32" y=".5" width="25" height="12" rx="3.5" fill="none" stroke="#fff" stroke-opacity=".5"/>
+      <rect x="34" y="2.5" width="18" height="8" rx="2"/><rect x="58.5" y="4.5" width="2" height="4" rx="1" fill-opacity=".5"/></svg></div>
+  <i class="ile"></i>
+  <div class="adresse"><span><svg viewBox="0 0 12 14"><rect x="1" y="6" width="10" height="8" rx="2" fill="#E8EEF6"/>
+    <path d="M3 6 V4.5 a3 3 0 0 1 6 0 V6" fill="none" stroke="#E8EEF6" stroke-width="1.6"/></svg>{{ domaine }}</span></div>
+  <iframe id="site" src="{{ site }}" scrolling="no" title="site"></iframe>
+</div></div></div>
+
+<section id="fin">
+  <img src="{{ embleme }}" alt="">
+  <p class="nom">{{ nom }}</p>
+  <p class="rdv">{{ fin.rdv }}</p>
+  <p class="cta">{{ fin.cta }}</p>
+  <p class="url">{{ fin.url }}</p>
+  <p class="plus">{{ fin.plus }}</p>
+</section>
+
+<script>
+const P = {{ plan|tojson }};
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
+const borne = x => Math.min(1, Math.max(0, x));
+const lisse = x => { x = borne(x); return x * x * (3 - 2 * x); };
+const sortieDouce = x => 1 - Math.pow(1 - borne(x), 3);
+const entreeSortie = x => { x = borne(x); return x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2; };
+const sinus = x => -(Math.cos(Math.PI * borne(x)) - 1) / 2;
+const r2 = x => Math.round(x * 100) / 100;
+const fenetre = (t, a, b) => borne((t - a) / (b - a));
+
+let POS = null, ETAPES = [];
+const VISEE = 150;   // hauteur, dans l'écran du téléphone, de la ligne des sources lors du zoom
+function preparer(pos) {
+  POS = pos;
+  const H = pos.entete;
+  const fin3 = pos.source - VISEE;
+  ETAPES = [
+    { de: 0, a: 320 },                                         // ouverture du numéro
+    { de: pos.sujet2 - H - 30, a: pos.sujet2 - H + 250 },       // À la une (2e sujet)
+    { de: pos.breves - H, a: Math.min(pos.breves - H + 300, fin3 - 80) },   // En bref
+    { de: fin3, a: fin3 },                                      // zoom sur les sources
+  ];
+  preparerIdent();
+}
+
+// Position du défilement du site dans l'étape en cours : glissé rapide puis lente dérive.
+function defilement(t) {
+  const E = P.etapes;
+  if (t < E[0].debut) return 0;
+  let k = E.findIndex(e => t >= e.debut && t < e.fin);
+  if (k < 0) return ETAPES[ETAPES.length - 1].a;
+  const e = E[k], x = t - e.debut, cible = ETAPES[k];
+  const glisse = k === 0 ? 0 : 0.6;
+  if (x < glisse) {
+    const avant = ETAPES[k - 1].a;
+    return avant + (cible.de - avant) * entreeSortie(x / glisse);
+  }
+  return cible.de + (cible.a - cible.de) * sinus((x - glisse) / (e.fin - e.debut - glisse));
+}
+
+function seek(t) {
+  const A = P.accroche, I = P.ident, T = P.tel, F = P.fin, E = P.etapes;
+  // fond : ciel qui glisse lentement, voile et dégradé selon la scène
+  const ciel = $("#ciel");
+  ciel.style.transform = `translateX(${-(ciel.naturalWidth * P.H / ciel.naturalHeight - P.L) * t / P.duree}px)`;
+  const pIdent = fenetre(t, I.debut, I.debut + 0.25);
+  const pTel = fenetre(t, T.debut - 0.2, T.debut + 0.5), pFin = fenetre(t, F.debut, F.debut + 0.6);
+  $("#plein").style.opacity = r2(Math.max(0, pIdent - 0.12 * pTel - 0.35 * pFin));
+  $("#voile").style.opacity = r2(A ? 0.42 : 0.5);
+
+  // accroche
+  let cle = [];
+  if (A) {
+    const vis = 1 - fenetre(t, A.fin - 0.3, A.fin);
+    const bloc = $("#accroche");
+    bloc.style.opacity = r2(vis);
+    bloc.style.transform = `scale(${r2(1.04 - 0.04 * sortieDouce(t / A.fin) + 0.06 * fenetre(t, A.fin - 0.3, A.fin))})`;
+    const s = $("#souligne"), L = s.getTotalLength();
+    s.style.strokeDasharray = L; s.style.strokeDashoffset = L * (1 - sortieDouce(fenetre(t, 0.35, 1.1)));
+    s.style.fill = t > 1.1 ? "var(--orange)" : "none";
+    // avion et traînée qui traversent le ciel
+    const x = fenetre(t, 0, A.fin), dx = P.L + 260, ax = -130 + dx * x, ay = P.H * 0.80 - P.H * 0.42 * x;
+    const ang = Math.atan2(-P.H * 0.42, dx), qx = ax - Math.cos(ang) * 900, qy = ay - Math.sin(ang) * 900;
+    $("#avion").setAttribute("transform", `translate(${ax} ${ay}) rotate(${ang * 180 / Math.PI + 90}) scale(1.3)`);
+    $("#sillage").setAttribute("d", `M${qx} ${qy} L${ax - Math.cos(ang) * 30} ${ay - Math.sin(ang) * 30}`);
+    const g = $("#dg"); g.setAttribute("x1", qx); g.setAttribute("y1", qy); g.setAttribute("x2", ax); g.setAttribute("y2", ay);
+    $("#trainee").style.opacity = r2(vis * 0.9);
+    cle.push(t < A.fin ? Math.round(t * 30) : "a");
+  } else {
+    $("#trainee").style.opacity = 0;
+  }
+
+  // générique
+  const localI = t - I.debut;
+  const vIdent = (t >= I.debut && t < I.fin + 0.01) ? animerIdent(localI, I.fin - I.debut, I.impact) : 0;
+  $("#ident").style.opacity = r2(vIdent);
+  if (t >= I.debut && t < I.fin) cle.push("i" + Math.round(localI * 30));
+
+  // téléphone
+  const entree = sortieDouce(fenetre(t, T.debut - 0.15, T.debut + 0.65));
+  const sortie = entreeSortie(fenetre(t, F.debut - 0.1, F.debut + 0.55));
+  const zEtape = E[E.length - 1];
+  const z = entreeSortie(fenetre(t, zEtape.debut + 0.55, zEtape.debut + 1.35)) * (1 - entreeSortie(fenetre(t, F.debut - 0.5, F.debut)));
+  const pose = P.pose, s0 = pose.s, s = s0 * (1 + (P.zoom.facteur - 1) * z);
+  const Q = { x: 207, y: 12 + 46 + 50 + VISEE };
+  const depart = { x: pose.x + s0 * Q.x, y: pose.y + s0 * Q.y };
+  const ici = { x: depart.x + (P.zoom.x - depart.x) * z, y: depart.y + (P.zoom.y - depart.y) * z };
+  const flotte = 5 * Math.sin(t * 1.4) * (1 - z);
+  const tx = ici.x - s * Q.x, ty = ici.y - s * Q.y + (1 - entree) * P.H * 0.55 + sortie * P.H * 0.7 + flotte;
+  const tel = $("#tel");
+  tel.style.opacity = r2(Math.min(entree * 1.6, 1 - sortie));
+  tel.style.transform = `translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px) scale(${s.toFixed(4)})`;
+  const telVisible = t > T.debut - 0.15 && t < F.debut + 0.6;
+
+  // légendes
+  $$(".legende").forEach((b, k) => {
+    const e = E[k];
+    const v = Math.min(sortieDouce(fenetre(t, e.debut + 0.1, e.debut + 0.55)), 1 - fenetre(t, e.fin - 0.25, e.fin));
+    b.style.opacity = r2(v);
+    b.style.transform = `translateY(${r2((1 - sortieDouce(fenetre(t, e.debut + 0.1, e.debut + 0.6))) * 50)}px)`;
+  });
+  const kEtape = E.findIndex(e => t >= e.debut && t < e.fin);
+  $$("#points i").forEach((p, k) => p.className = k === kEtape ? "on" : "");
+  const vCadre = Math.min(fenetre(t, T.debut, T.debut + 0.5), 1 - fenetre(t, F.debut - 0.1, F.debut + 0.4));
+  $("#entete").style.opacity = r2(vCadre); $("#points").style.opacity = r2(vCadre);
+
+  // carton de fin
+  const finBloc = $("#fin");
+  const pf = sortieDouce(fenetre(t, F.debut + 0.25, F.debut + 0.95));
+  finBloc.style.opacity = r2(pf);
+  finBloc.style.transform = `translateY(${r2((1 - pf) * 60)}px)`;
+  const cta = $("#fin .cta"), pulse = t > F.debut + 1.4 ? 1 + 0.035 * Math.max(0, Math.sin((t - F.debut - 1.4) * Math.PI / 0.6)) : 1;
+  cta.style.transform = `scale(${r2(pulse)})`;
+
+  const defil = telVisible ? Math.round(defilement(t)) : null;
+  const surligne = r2(fenetre(t, zEtape.debut + 1.2, zEtape.debut + 1.7) * (1 - fenetre(t, F.debut - 0.4, F.debut)));
+  cle.push(r2(entree), r2(sortie), r2(z), tx.toFixed(0), ty.toFixed(0), kEtape, r2(pf), r2(pulse), defil, surligne,
+           $$(".legende").map(b => b.style.opacity + b.style.transform).join(""));
+  // le ciel bouge en continu : on arrondit sa position pour réutiliser les images identiques
+  cle.push(Math.round(t * P.L / P.duree / 2));
+  return { cle: cle.join("|"), defil, surligne };
+}
+
+// --- Générique (même animation que la vidéo de la semaine) ---
+let JET = null, TRAINEES = null, ANNEAU = null, CIEL = [], LONG_ANNEAU = 691, LONG_TRAIT = 1100;
+function preparerIdent() {
+  const svg = $("#ident .emb svg"), ns = "http://www.w3.org/2000/svg";
+  const jet = svg && svg.querySelector(".jet");
+  if (!jet || !svg.querySelector(".anneau")) return;
+  JET = document.createElementNS(ns, "g"); jet.parentNode.insertBefore(JET, jet); JET.appendChild(jet);
+  TRAINEES = svg.querySelector(".trainees");
+  ANNEAU = svg.querySelector(".anneau");
+  LONG_ANNEAU = ANNEAU.getTotalLength();
+  CIEL = [svg.querySelector(".ciel"), svg.querySelector(".horizon"), svg.querySelector(".fond")].filter(Boolean);
+  CIEL.forEach(e => { e.style.transformOrigin = "128px 128px"; e.style.transformBox = "view-box"; });
+  const trait = $("#trait"); LONG_TRAIT = trait.getTotalLength(); trait.style.strokeDasharray = LONG_TRAIT;
+}
+function animerIdent(t, duree, IMPACT) {
+  const p = (a, b) => fenetre(t, a, b);
+  const fin = p(duree - 0.45, duree);
+  $("#ident").style.transform = `scale(${1 + 0.08 * fin})`;
+  if (!JET) return Math.min(p(0, 0.4), 1 - fin);
+  const trace = p(0.05, IMPACT - 0.1);
+  ANNEAU.style.strokeDasharray = trace >= 1 ? "none" : `${LONG_ANNEAU} ${LONG_ANNEAU}`;
+  ANNEAU.style.strokeDashoffset = LONG_ANNEAU * (1 - sortieDouce(trace));
+  const ouverture = sortieDouce(p(0.1, 0.9));
+  CIEL.forEach(e => { e.style.transform = `scale(${0.55 + 0.45 * ouverture})`; e.style.opacity = ouverture; });
+  const vol = sortieDouce(p(0.3, IMPACT));
+  JET.setAttribute("transform", `translate(${-210 * (1 - vol)} ${210 * (1 - vol)})`);
+  JET.style.opacity = p(0.3, 0.45);
+  TRAINEES.style.opacity = p(IMPACT - 0.4, IMPACT + 0.3);
+  const onde = p(IMPACT, IMPACT + 0.7), o = $("#ident .onde");
+  o.style.opacity = onde > 0 && onde < 1 ? (1 - onde) * 0.9 : 0;
+  o.style.transform = `scale(${1 + 0.55 * sortieDouce(onde)})`;
+  const nom = sortieDouce(p(IMPACT + 0.08, IMPACT + 0.6)), span = $("#ident .nom span");
+  span.style.clipPath = `inset(-20% ${100 - 100 * nom}% -20% -5%)`;
+  span.style.transform = `skewX(-9deg) translateX(${-40 * (1 - nom)}px)`;
+  const trait = $("#trait");
+  trait.style.fill = p(IMPACT + 0.85, IMPACT + 0.9) >= 1 ? "var(--orange)" : "none";
+  trait.style.stroke = "var(--orange)"; trait.style.strokeWidth = 3;
+  trait.style.strokeDashoffset = LONG_TRAIT * (1 - sortieDouce(p(IMPACT + 0.35, IMPACT + 0.85)));
+  const t1 = sortieDouce(p(IMPACT + 0.55, IMPACT + 1.0)), tag = $("#ident .tag");
+  tag.style.opacity = t1; tag.style.transform = `translateY(${24 * (1 - t1)}px)`;
+  return Math.min(p(0, 0.25), 1 - fin);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+{#- Corps de l'e-mail du dimanche. Kit l'insère dans son modèle « Classic », qui ajoute le lien de désinscription
+    et l'adresse postale exigés par la loi. Styles en ligne et tableaux : c'est ce que les messageries lisent le mieux. -#}
+{% set police = "Arial, Helvetica, sans-serif" %}
+<div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent">{{ apercu }}</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;margin:0 auto;font-family:{{ police }};color:#0E1E33;border-collapse:separate">
+  <tr>
+    <td style="background:#0B1A2E;border-radius:14px 14px 0 0;padding:22px 26px 20px">
+      <a href="{{ url_site }}"><img src="{{ logo }}" width="178" height="48" alt="{{ site.nom }}" style="display:block;border:0;outline:none"></a>
+      <p style="margin:14px 0 0;color:#C9D6E6;font-size:14px;line-height:1.4"><span style="background:#FF6A1F;color:#0B1A2E;font-weight:bold;padding:2px 10px;border-radius:999px">N° {{ n.numero }}</span>&nbsp;&nbsp;Semaine du {{ n.periode }}</p>
+    </td>
+  </tr>
+  <tr>
+    <td style="background:#FFFFFF;padding:26px 26px 20px">
+      <h1 style="font-family:{{ police }};font-size:26px;line-height:1.18;margin:0 0 14px;color:#0E1E33">{{ n.titre }}</h1>
+      <p style="font-size:16px;line-height:1.6;margin:0;color:#33475F">{{ n.edito }}</p>
+    </td>
+  </tr>
+  {% if n.chiffre %}
+  <tr>
+    <td style="background:#FFFFFF;padding:0 26px 22px">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0B1A2E;border-radius:12px;border-top:5px solid #FFB627">
+        <tr><td style="padding:16px 20px 18px">
+          <p style="margin:0;color:#C9D6E6;font-size:13px">Le chiffre de la semaine</p>
+          <p style="margin:6px 0 8px;color:#FFB627;font-size:40px;font-weight:bold;line-height:1">{{ n.chiffre.valeur }}</p>
+          <p style="margin:0;color:#E6EDF6;font-size:15px;line-height:1.5">{{ n.chiffre.legende }}</p>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+  {% endif %}
+  {% if partenaire %}
+  <tr>
+    <td style="background:#FFFFFF;padding:0 26px 24px">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #DCE3EB;border-radius:12px;background:#F7F9FC">
+        <tr><td style="padding:14px 18px 18px">
+          <p style="margin:0 0 10px;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#4B5D73;font-weight:bold">Publicité · Partenaire de la semaine</p>
+          {% if partenaire.logo_url %}<img src="{{ partenaire.logo_url }}" width="56" height="56" alt="" style="display:block;border:0;border-radius:10px;margin:0 0 10px;background:#fff">{% endif %}
+          <p style="margin:0 0 4px;font-size:18px;font-weight:bold;color:#0E1E33">{{ partenaire.nom }}</p>
+          {% if partenaire.texte %}<p style="margin:0 0 14px;font-size:15px;line-height:1.5;color:#33475F">{{ partenaire.texte }}</p>{% endif %}
+          <a href="{{ partenaire.lien_email }}" style="display:inline-block;background:#FF6A1F;color:#0B1A2E;font-weight:bold;font-size:15px;text-decoration:none;padding:10px 18px;border-radius:999px">{{ partenaire.bouton }} →</a>
+        </td></tr>
+      </table>
+    </td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td style="background:#FFFFFF;padding:4px 26px 4px">
+      <h2 style="font-family:{{ police }};font-size:21px;line-height:1.2;margin:0;border-left:5px solid #FF6A1F;padding-left:10px;color:#0E1E33">À la une</h2>
+    </td>
+  </tr>
+  {% for s in n.une %}
+  <tr>
+    <td style="background:#FFFFFF;padding:16px 26px 8px">
+      <p style="margin:0 0 6px;font-size:12px;color:{{ s.couleur }};text-transform:uppercase;letter-spacing:.5px;font-weight:bold">{{ s.categorie }} · <span style="color:#4B5D73">{{ s.region }}</span></p>
+      <h3 style="font-family:{{ police }};font-size:19px;line-height:1.28;margin:0 0 8px;color:#0E1E33">{{ s.titre }}</h3>
+      <p style="font-size:15px;line-height:1.6;margin:0 0 8px;color:#33475F">{{ s.resume }}</p>
+      <p style="font-size:13px;margin:0;color:#4B5D73">Source{{ "s" if s.sources|length > 1 }} : {% for src in s.sources %}<a href="{{ src.url }}" style="color:#1667A8">{{ src.nom }}</a>{{ ", " if not loop.last }}{% endfor %}</p>
+    </td>
+  </tr>
+  {% endfor %}
+  {% if affiche %}
+  <tr>
+    <td style="background:#FFFFFF;padding:22px 26px 6px">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#0B1A2E;border-radius:12px">
+        <tr>
+          <td width="120" style="padding:14px 0 14px 14px;vertical-align:middle"><a href="{{ url_numero }}#video"><img src="{{ affiche }}" width="106" alt="La vidéo de la semaine" style="display:block;border:0;border-radius:10px"></a></td>
+          <td style="padding:14px 18px;vertical-align:middle">
+            <p style="margin:0 0 6px;color:#FFB627;font-size:13px;font-weight:bold;text-transform:uppercase;letter-spacing:.5px">La vidéo de la semaine</p>
+            <p style="margin:0 0 12px;color:#E6EDF6;font-size:15px;line-height:1.45">Les sujets qui ont compté, résumés en moins de 90 secondes.</p>
+            <a href="{{ url_numero }}#video" style="color:#FFFFFF;font-size:14px;font-weight:bold">Regarder ▶</a>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  {% endif %}
+  {% if n.rubriques %}
+  <tr>
+    <td style="background:#FFFFFF;padding:24px 26px 2px">
+      <h2 style="font-family:{{ police }};font-size:21px;line-height:1.2;margin:0;border-left:5px solid #FF6A1F;padding-left:10px;color:#0E1E33">En bref</h2>
+    </td>
+  </tr>
+  {% for r in n.rubriques %}
+  <tr>
+    <td style="background:#FFFFFF;padding:12px 26px 2px">
+      <p style="margin:0 0 6px;font-weight:bold;font-size:14px;color:{{ r.couleur }}">{{ r.nom }}</p>
+      <ul style="margin:0;padding:0 0 0 18px">
+        {% for b in r.breves %}<li style="margin:0 0 6px;font-size:15px;line-height:1.45;color:#0E1E33"><a href="{{ url_numero }}#{{ r.ancre }}" style="color:#0E1E33;text-decoration:none">{{ b.titre }}</a></li>{% endfor %}
+      </ul>
+    </td>
+  </tr>
+  {% endfor %}
+  {% endif %}
+  <tr>
+    <td style="background:#FFFFFF;padding:22px 26px 30px;text-align:center">
+      <a href="{{ url_numero }}" style="display:inline-block;background:#FF6A1F;color:#0B1A2E;font-weight:bold;font-size:16px;text-decoration:none;padding:13px 24px;border-radius:999px">Lire le numéro complet sur le site</a>
+    </td>
+  </tr>
+  {% if soutien.active %}
+  <tr>
+    <td style="background:#F2F5F9;padding:18px 26px;text-align:center;font-size:14px;line-height:1.5;color:#33475F">
+      {{ site.nom }} est gratuit. Si la revue vous est utile, <a href="{{ soutien.url }}" style="color:#C2410C;font-weight:bold">soutenez-la{% if soutien.plateforme %} sur {{ soutien.plateforme }}{% endif %}</a>.
+    </td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td style="background:#0B1A2E;border-radius:0 0 14px 14px;padding:18px 26px 20px;color:#A9BBD0;font-size:12px;line-height:1.55">
+      Résumés rédigés par une intelligence artificielle à partir des articles cités, qui font foi. Une erreur ? Répondez simplement à cet e-mail.
+      {% if profils %}<br>Suivez-nous : {% for nom, url in profils %}<a href="{{ url }}" style="color:#FFFFFF">{{ nom }}</a>{{ " · " if not loop.last }}{% endfor %}{% endif %}
+    </td>
+  </tr>
+</table>

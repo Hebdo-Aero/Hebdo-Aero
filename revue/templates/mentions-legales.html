@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block titre %}Mentions légales et confidentialité, {{ site.nom }}{% endblock %}
+{% block description %}Éditeur, hébergeur, publicité et données personnelles sur {{ site.nom }}.{% endblock %}
+{% block contenu %}
+<div class="cadre"><div class="page">
+  <h1>Mentions légales et confidentialité</h1>
+
+  <h2>Éditeur</h2>
+  {% if editeur.nom %}
+  <p>{{ site.nom }} est édité par <b>{{ editeur.nom }}</b>{% if editeur.statut %}, {{ editeur.statut }}{% endif %}.</p>
+  <ul>
+    {% if editeur.siret %}<li>SIRET : {{ editeur.siret }}</li>{% endif %}
+    {% if editeur.adresse %}<li>Adresse : {{ editeur.adresse }}</li>{% endif %}
+    {% if editeur.telephone %}<li>Téléphone : {{ editeur.telephone }}</li>{% endif %}
+    {% if site.contact %}<li>E-mail : <a href="mailto:{{ site.contact }}">{{ site.contact }}</a></li>{% endif %}
+  </ul>
+  {% if editeur.directeur_publication %}<p>Directeur ou directrice de la publication : {{ editeur.directeur_publication }}.</p>{% endif %}
+  {% elif revenus %}
+  <p>{{ site.nom }}{% if site.contact %}, joignable à <a href="mailto:{{ site.contact }}">{{ site.contact }}</a>{% endif %}.</p>
+  {% else %}
+  <p>Ce site est édité par un particulier, à titre non professionnel.{% if editeur.france %} Conformément à l'article 6, III, 2 de la loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique, ses coordonnées ont été communiquées à l'hébergeur.{% endif %}{% if site.contact %} Contact : <a href="mailto:{{ site.contact }}">{{ site.contact }}</a>.{% endif %}</p>
+  {% endif %}
+
+  <h2>Hébergeur</h2>
+  <p>GitHub Pages, service de {{ hebergeur }}.</p>
+
+  <h2>Contenus</h2>
+  <p>Les résumés sont rédigés automatiquement par une intelligence artificielle à partir des articles cités, puis contrôlés par des vérifications automatiques. Chaque information renvoie vers sa source ; les médias cités restent propriétaires de leurs articles, que la revue ne reproduit pas. Les photos d'illustration proviennent de banques d'images libres de droits et sont créditées. Les vidéos utilisent une voix de synthèse.</p>
+
+  <h2>Publicité</h2>
+  <p>Les contenus payés par un partenaire sont toujours signalés comme tels (« Publicité », « Partenaire de la semaine » ou « Collaboration commerciale ») et n'influencent pas le choix des informations. Les liens vers les partenaires sont des liens commerciaux.{% if publicite.active %} Des annonces sont aussi diffusées par Google AdSense ; leur contenu est choisi par Google, pas par la rédaction.{% endif %}</p>
+
+  <h2 id="donnees">Données personnelles</h2>
+  <p>Responsable du traitement : {{ editeur.nom or ("l'éditeur de " ~ site.nom) }}{% if site.contact %}, joignable à <a href="mailto:{{ site.contact }}">{{ site.contact }}</a>{% endif %}.</p>
+  {% if newsletter.active %}
+  <p><b>Newsletter.</b> Si vous vous inscrivez, votre adresse e-mail est utilisée uniquement pour vous envoyer la revue chaque semaine, sur la base de votre consentement, confirmé par un e-mail. Elle est conservée jusqu'à votre désinscription, possible à tout moment grâce au lien présent dans chaque e-mail. L'envoi est assuré par notre prestataire {{ newsletter.prestataire }}, qui traite ces données pour notre compte selon sa propre politique de confidentialité. Votre adresse n'est jamais vendue ni cédée.</p>
+  {% endif %}
+  <p><b>Mesure d'audience.</b> {% if statistiques_nom %}Le site compte ses visites de façon anonyme et sans cookie, avec {{ statistiques_nom }}. Ces statistiques ne permettent pas de vous identifier.{% else %}Le site ne mesure pas son audience.{% endif %}</p>
+  {% if publicite.active %}
+  <p id="cookies"><b>Publicité et cookies.</b> Les annonces sont fournies par Google. Google et ses partenaires peuvent utiliser des cookies pour diffuser des annonces, y compris des annonces personnalisées selon vos visites sur ce site et sur d'autres sites. Dans l'Union européenne, ces cookies ne sont déposés qu'avec votre accord, recueilli par le message affiché lors de votre première visite. Vous pouvez changer d'avis à tout moment avec le lien « Gérer les cookies » en bas de chaque page. Pour en savoir plus : <a href="https://policies.google.com/technologies/partner-sites" rel="noopener">comment Google utilise les données des sites partenaires</a> ; pour désactiver la personnalisation : <a href="https://adssettings.google.com" rel="noopener">paramètres des annonces Google</a>.</p>
+  <p>En dehors de la publicité, le site ne dépose aucun cookie et n'intègre aucun lecteur ou bouton de réseau social tiers : les vidéos sont hébergées sur le site lui-même.</p>
+  {% else %}
+  <p id="cookies"><b>Cookies.</b> Ce site ne dépose aucun cookie et n'intègre aucun lecteur ou bouton de réseau social tiers : les vidéos sont hébergées sur le site lui-même.</p>
+  {% endif %}
+  <p><b>Vos droits.</b> Vous pouvez accéder à vos données, les faire rectifier ou effacer, et vous opposer à leur traitement{% if site.contact %} en écrivant à <a href="mailto:{{ site.contact }}">{{ site.contact }}</a>{% endif %}. Vous pouvez aussi adresser une réclamation à {{ editeur.autorite }} (<a href="{{ editeur.autorite_url }}" rel="noopener">{{ editeur.autorite_site }}</a>).</p>
+</div></div>
+{% endblock %}

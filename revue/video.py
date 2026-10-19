@@ -1,7 +1,7 @@
 """Montage de la vidéo verticale 1080×1920.
 
 Trois couches, assemblées par ffmpeg :
-  1. le fond : plans filmés Pexels (un par scène), sinon le ciel généré qui défile ;
+  1. le fond : plans filmés Pexels ou Pixabay (un par scène), sinon le ciel généré qui défile ;
   2. le calque graphique transparent (titres, route, sous-titres mot à mot), dessiné en HTML
      et capturé image par image ;
   3. le son : voix Google, musique (nappe générée ou votre fichier), souffles aux transitions,
@@ -19,13 +19,16 @@ from pathlib import Path
 
 from jinja2 import Environment, FileSystemLoader
 
-from . import ciel, pexels, son, voix
+from . import ciel, illustrations, son, voix
 from .config import RACINE
 from .reseaux import remplir_liens
 
 GABARITS = Path(__file__).parent / "templates"
 POLICES = RACINE / "assets" / "polices"
 AVANT, APRES, APRES_INTRO = 0.30, 0.55, 0.35
+IMPACT = 1.2          # instant de l'impact du générique (le jet se pose, la musique démarre)
+VOIX_GENERIQUE = 1.5  # la voix commence juste après l'impact
+DUREE_GENERIQUE = 4.2  # durée minimale du générique animé
 FIN_PONCTUATION = re.compile(r"[,;:.!?…]$")
 FIN_PHRASE = re.compile(r"[.!?…]$")
 
@@ -36,12 +39,22 @@ class ErreurVideo(RuntimeError):
 
 # --- Chronologie et sous-titres ---------------------------------------------------------
 
-def chronologie(durees_audio: list[float]) -> list[dict]:
-    """Début et fin de chaque scène, et instant où démarre sa narration."""
+def chronologie(durees_audio: list[float], court: bool = False, generique: bool = False) -> list[dict]:
+    """Début et fin de chaque scène, et instant où démarre sa narration.
+
+    En format court, la voix démarre dès la première image et les silences sont resserrés.
+    Avec `generique`, la première scène est le générique animé : la voix part après l'impact.
+    """
     temps, t = [], 0.0
     for i, d in enumerate(durees_audio):
-        apres = APRES_INTRO if i == 0 else APRES
-        temps.append({"debut": round(t, 3), "voix": round(t + AVANT, 3), "fin": round(t + AVANT + d + apres, 3)})
+        avant = (0.05 if i == 0 else 0.15) if court else AVANT
+        apres = 0.3 if court else (APRES_INTRO if i == 0 else APRES)
+        if generique and i == 0:
+            avant = VOIX_GENERIQUE
+        fin = t + avant + d + apres
+        if generique and i == 0:
+            fin = max(fin, DUREE_GENERIQUE)
+        temps.append({"debut": round(t, 3), "voix": round(t + avant, 3), "fin": round(fin, 3)})
         t = temps[-1]["fin"]
     temps[-1]["fin"] = round(temps[-1]["fin"] + 0.8, 3)          # dernière image tenue un peu plus longtemps
     return temps
@@ -157,22 +170,23 @@ def piste_narration(pistes: list[Path], temps: list[dict], cible: Path) -> None:
 # --- Fonds -----------------------------------------------------------------------------
 
 def preparer_fonds(scenes: list[dict], temps: list[dict], travail: Path) -> list[dict | None]:
-    """Un plan Pexels par scène quand c'est possible ; None = ciel généré."""
+    """Un plan filmé (Pexels ou Pixabay) par scène quand c'est possible ; None = ciel généré."""
     plans: list[dict | None] = []
     pris: set[int] = set()
-    actif = pexels.disponible()
+    actif = illustrations.disponible()
     for s, t in zip(scenes, temps):
         recherche = s.get("recherche_video")
         if not actif or not recherche or s["type"] == "chiffre":
             plans.append(None)
             continue
         duree = t["fin"] - t["debut"]
-        trouve = pexels.chercher_video(recherche, duree, pris) or pexels.chercher_video("airplane flying", duree, pris)
+        trouve = (illustrations.chercher_video(recherche, duree, pris)
+                  or illustrations.chercher_video("airplane flying", duree, pris))
         if not trouve:
             plans.append(None)
             continue
         try:
-            fichier = pexels.telecharger(trouve["lien"], travail / "plans" / f"{len(plans):02d}.mp4")
+            fichier = illustrations.telecharger(trouve["lien"], travail / "plans" / f"{len(plans):02d}.mp4")
         except Exception as e:  # noqa: BLE001 — un plan manquant n'empêche pas la vidéo
             print(f"  plan ignoré ({e})")
             plans.append(None)
@@ -189,11 +203,14 @@ def _page_html() -> str:
     logos = RACINE / "assets" / "logo"
     return env.get_template("video.html").render(polices=POLICES.as_uri(),
                                                  logo=(logos / "logo-sombre.svg").as_uri(),
-                                                 embleme=(logos / "embleme.svg").as_uri())
+                                                 embleme=(logos / "embleme.svg").as_uri(),
+                                                 embleme_svg=(logos / "embleme.svg").read_text(encoding="utf-8"),
+                                                 impact=IMPACT)
 
 
 def commande_ffmpeg(total: float, ips: int, ciel_img: Path, plans: list[dict | None], temps: list[dict],
-                    voix_wav: Path | None, musique: Path, effets: Path, cfg: dict, sortie: Path) -> list[str]:
+                    voix_wav: Path | None, musique: Path, effets: Path, cfg: dict, sortie: Path,
+                    musique_generee: bool = True, generique: bool = False) -> list[str]:
     entrees = ["-f", "image2pipe", "-framerate", str(ips), "-c:v", "png", "-i", "-",
                "-loop", "1", "-framerate", str(ips), "-t", f"{total:.3f}", "-i", str(ciel_img)]
     filtres = [f"[1:v]crop=1080:1920:x='(in_w-1080)*t/{total:.3f}':y=0,setsar=1,format=yuva420p[f0]"]
@@ -222,8 +239,7 @@ def commande_ffmpeg(total: float, ips: int, ciel_img: Path, plans: list[dict | N
     filtres += [
         f"[{iv}:a]{stereo},highpass=f=70,acompressor=threshold=0.08:ratio=3:attack=5:release=150:makeup=1.6,"
         f"asplit=2[voix][cle]",
-        f"[{iv + 1}:a]{stereo},volume={cfg.get('volume_musique', 0.32)},afade=t=in:d=1.5,"
-        f"afade=t=out:st={max(0, total - 2.5):.2f}:d=2.5[mus0]",
+        f"[{iv + 1}:a]{stereo},{_reglage_musique(cfg, total, musique_generee, generique)}[mus0]",
         "[mus0][cle]sidechaincompress=threshold=0.035:ratio=7:attack=25:release=450[mus]",
         f"[{iv + 2}:a]{stereo},volume={cfg.get('volume_transitions', 0.35)}[fx]",
         "[voix][mus][fx]amix=inputs=3:duration=first:normalize=0,loudnorm=I=-14:TP=-1.5:LRA=11,"
@@ -238,26 +254,54 @@ def commande_ffmpeg(total: float, ips: int, ciel_img: Path, plans: list[dict | N
             "-movflags", "+faststart", "-t", f"{total:.3f}", str(sortie)]
 
 
+def _reglage_musique(cfg: dict, total: float, generee: bool, generique: bool) -> str:
+    """Volume de la musique : plus fort pendant le générique (avant la voix), puis en retrait.
+
+    La musique générée a son propre début (montée, impact) et sa propre fin (accord final) ;
+    une musique personnelle est décalée pour démarrer sur l'impact, avec fondus.
+    """
+    base = cfg.get("volume_musique", 0.32)
+    filtres = []
+    if not generee:
+        if generique:
+            ms = int(IMPACT * 1000)
+            filtres.append(f"adelay={ms}|{ms}")
+        filtres += [f"afade=t=in:st={IMPACT if generique else 0}:d=1.0",
+                    f"afade=t=out:st={max(0, total - 2.5):.2f}:d=2.5"]
+    if generique:
+        bascule = VOIX_GENERIQUE + 0.1
+        filtres.append(f"volume='{base}+{max(0.0, 0.8 - base):.2f}*clip(({bascule}-t)/0.3,0,1)':eval=frame")
+    else:
+        filtres.append(f"volume={base}")
+    return ",".join(filtres)
+
+
 def rendre(config: dict, script: dict, sortie: Path, *, avec_voix: bool = True,
-           dossier_travail: Path | None = None) -> dict:
-    """Produit `sortie` (MP4) et son affiche (JPG). Renvoie les métadonnées, dont les crédits."""
+           dossier_travail: Path | None = None, scenes: list[dict] | None = None,
+           court: bool = False) -> dict:
+    """Produit `sortie` (MP4) et son affiche (JPG). Renvoie les métadonnées, dont les crédits.
+
+    `court=True` : short d'accroche (texte plein écran dès la première image, rythme plus vif).
+    """
     from playwright.sync_api import sync_playwright
 
     cfg = config["video"]
     ips = int(cfg.get("images_par_seconde", 30))
+    vitesse = cfg.get("vitesse", 1.0) * (1.06 if court else 1.0)
+    duree_max = 35 if court else cfg.get("duree_max", 88)
     scenes = [dict(s, texte_ecran=remplir_liens(s["texte_ecran"], config, script["numero"]))
-              for s in script["video"]["scenes"]]
+              for s in (scenes or script["video"]["scenes"])]
     travail = Path(dossier_travail or tempfile.mkdtemp(prefix="video-"))
     travail.mkdir(parents=True, exist_ok=True)
 
     if avec_voix:
-        pistes = voix.synthetiser([s["narration"] for s in scenes], travail / "voix", cfg["voix"], cfg.get("vitesse", 1.0))
+        pistes = voix.synthetiser([s["narration"] for s in scenes], travail / "voix", cfg["voix"], vitesse)
         durees = [voix.duree(p) for p in pistes]
     else:
-        pistes, durees = [], [voix.estimer_duree(s["narration"], cfg.get("vitesse", 1.0)) for s in scenes]
+        pistes, durees = [], [voix.estimer_duree(s["narration"], vitesse) for s in scenes]
 
     # Garde-fou : on retire des sujets tant que la vidéo dépasse la durée maximale.
-    while sum(durees) + len(durees) * (AVANT + APRES) + 0.8 > cfg.get("duree_max", 88):
+    while not court and sum(durees) + len(durees) * (AVANT + APRES) + 0.8 > duree_max:
         sujets = [i for i, s in enumerate(scenes) if s["type"] == "sujet"]
         if len(sujets) <= 2:
             raise ErreurVideo("Narration trop longue, même réduite à deux sujets.")
@@ -265,14 +309,17 @@ def rendre(config: dict, script: dict, sortie: Path, *, avec_voix: bool = True,
         scenes, durees = scenes[:i] + scenes[i + 1:], durees[:i] + durees[i + 1:]
         pistes = pistes[:i] + pistes[i + 1:] if pistes else pistes
 
-    temps = chronologie(durees)
+    generique = (not court) and scenes and scenes[0]["type"] == "intro"
+    temps = chronologie(durees, court=court, generique=generique)
     total = temps[-1]["fin"]
+    if total > duree_max:
+        raise ErreurVideo(f"Vidéo trop longue ({total:.0f} s pour {duree_max} s au plus).")
     segments = [voix.segments_parole(p) for p in pistes] if pistes else [None] * len(scenes)
     minutages = [minutage_mots(s["narration"], d, seg) for s, d, seg in zip(scenes, durees, segments)]
 
     plans = preparer_fonds(scenes, temps, travail)
     for s, plan in zip(scenes, plans):
-        s["credit"] = f"Image d'illustration : {plan['auteur']} / Pexels" if plan else ""
+        s["credit"] = f"Image d'illustration : {plan['auteur']} / {plan.get('source', 'Pexels')}" if plan else ""
     ciel_img = ciel.enregistrer(travail / "ciel.jpg", 1700, 1920, graine=int(script["numero"]))
 
     voix_wav = None
@@ -280,16 +327,23 @@ def rendre(config: dict, script: dict, sortie: Path, *, avec_voix: bool = True,
         voix_wav = travail / "narration.wav"
         piste_narration(pistes, temps, voix_wav)
     musique = RACINE / cfg.get("musique", "assets/musique.mp3")
-    if not (cfg.get("musique") and musique.is_file()):
-        musique = son.nappe(total + 1, travail / "nappe.wav", graine=int(script["numero"]))
-    effets = son.souffles([t["debut"] for t in temps[1:]], total, travail / "souffles.wav")
+    musique_generee = not (cfg.get("musique") and musique.is_file())
+    if musique_generee:
+        musique = son.musique(total + 0.5, travail / "musique.wav", graine=int(script["numero"]) + (7 if court else 0),
+                              tempo=100.0 if court else 92.0, impact=IMPACT if generique else None, energique=court)
+    effets = son.souffles([t["debut"] for t in temps[1:]], total, travail / "souffles.wav",
+                          impact=IMPACT if (generique and not musique_generee) else None)
 
     donnees = {"scenes": scenes, "temps": temps, "soustitres": sous_titres(scenes, temps, minutages),
-               "marque": f"N° {script['numero']}"}
+               "marque": f"N° {script['numero']}", "direct": court,
+               "sous_titre": config["site"].get("sous_titre", ""),
+               # mention légale d'un partenaire, visible pendant toute la vidéo (récap seulement)
+               "publicite": "" if court else (script.get("video") or {}).get("publicite", "")}
     page_html = travail / "video.html"
     page_html.write_text(_page_html(), encoding="utf-8")
     sortie.parent.mkdir(parents=True, exist_ok=True)
-    commande = commande_ffmpeg(total, ips, ciel_img, plans, temps, voix_wav, musique, effets, cfg, sortie)
+    commande = commande_ffmpeg(total, ips, ciel_img, plans, temps, voix_wav, musique, effets, cfg, sortie,
+                               musique_generee=musique_generee, generique=generique)
 
     nb_images, captures = int(total * ips), 0
     with sync_playwright() as p:
@@ -317,13 +371,14 @@ def rendre(config: dict, script: dict, sortie: Path, *, avec_voix: bool = True,
         navigateur.close()
 
     # Affiche : une image de l'ouverture, extraite de la vidéo finale.
-    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", f"{min(1.6, temps[0]['fin'] - 0.3):.2f}",
+    instant_affiche = 0.4 if court else min(1.6, temps[0]["fin"] - 0.3)
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-ss", f"{instant_affiche:.2f}",
                     "-i", str(sortie), "-frames:v", "1", "-q:v", "3", str(sortie.with_suffix(".jpg"))], check=True)
     if not dossier_travail:
         shutil.rmtree(travail, ignore_errors=True)
-    credits = sorted({p["auteur"] for p in plans if p})
+    credits = sorted({f"{p['auteur']} ({p.get('source', 'Pexels')})" for p in plans if p})
     return {"duree": round(total, 2), "images": nb_images, "captures": captures, "scenes": len(scenes),
-            "voix": avec_voix, "plans_pexels": sum(1 for p in plans if p), "credits": credits}
+            "voix": avec_voix, "plans_filmes": sum(1 for p in plans if p), "credits": credits}
 
 
 def image_partage(config: dict, numero: dict, sortie: Path) -> None:

@@ -13,11 +13,12 @@
     </linearGradient>
     <clipPath id="f-disque"><circle cx="128" cy="128" r="101"/></clipPath>
   </defs>
-  <circle cx="128" cy="128" r="124" fill="#0B1A2E"/>
-  <circle cx="128" cy="128" r="101" fill="url(#f-ciel)"/>
+  <circle class="fond" cx="128" cy="128" r="124" fill="#0B1A2E"/>
+  <circle class="ciel" cx="128" cy="128" r="101" fill="url(#f-ciel)"/>
   
   
-  <circle cx="128" cy="128" r="110" fill="none" stroke="#FF6A1F" stroke-width="12"/>
-  <path transform="translate(151 102) rotate(42) scale(0.8)" d="M0 -104 L5 -92 L8 -74 L8 -14 L99 37 L99 48 L8 24 L6 70 L38 93 L38 102 L5 93 L2 104 L0 106 L-5 93 L-38 102 L-38 93 L-6 70 L-8 24 L-99 48 L-99 37 L-8 -14 L-8 -74 L-5 -92 Z M26 -5 Q26 -8 29 -8 L34 -8 Q37 -8 37 -5 L37 17 L26 17 Z M-37 -5 Q-37 -8 -34 -8 L-29 -8 Q-26 -8 -26 -5 L-26 17 L-37 17 Z" fill="#FFFFFF"
+  <circle class="anneau" cx="128" cy="128" r="110" fill="none" stroke="#FF6A1F" stroke-width="12"
+          transform="rotate(-90 128 128)"/>
+  <path class="jet" transform="translate(151 102) rotate(42) scale(0.8)" d="M0 -104 L5 -92 L8 -74 L8 -14 L99 37 L99 48 L8 24 L6 70 L38 93 L38 102 L5 93 L2 104 L0 106 L-5 93 L-38 102 L-38 93 L-6 70 L-8 24 L-99 48 L-99 37 L-8 -14 L-8 -74 L-5 -92 Z M26 -5 Q26 -8 29 -8 L34 -8 Q37 -8 37 -5 L37 17 L26 17 Z M-37 -5 Q-37 -8 -34 -8 L-29 -8 Q-26 -8 -26 -5 L-26 17 L-37 17 Z" fill="#FFFFFF"
         stroke="#0B1A2E" stroke-width="7" stroke-linejoin="round" paint-order="stroke" fill-rule="nonzero"/>
 </svg>
