@@ -218,6 +218,12 @@ def construire(sortie: Path = DOSSIER_SITE) -> Path:
                     ignore=shutil.ignore_patterns("banniere-*"))
     if (RACINE / "assets" / "partenaires").is_dir():
         shutil.copytree(RACINE / "assets" / "partenaires", sortie / "assets" / "partenaires")
+    # Images du jour pour les réseaux (data/cartes), publiées sur le site pour que Metricool les récupère
+    cartes = RACINE / "data" / "cartes"
+    if cartes.is_dir():
+        (sortie / "cartes").mkdir(exist_ok=True)
+        for image in cartes.glob("*.jpg"):
+            shutil.copy2(image, sortie / "cartes" / image.name)
     # Vidéos de présentation du site, en ligne pour les publier sur les réseaux (Metricool lit une adresse publique)
     if (RACINE / "assets" / "promo").is_dir():
         shutil.copytree(RACINE / "assets" / "promo", sortie / "assets" / "promo")

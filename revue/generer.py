@@ -4,6 +4,7 @@
   python -m revue.generer reseaux [--date …]     script vidéo et textes des réseaux (Claude)
   python -m revue.generer video [--sans-voix]    narration Google TTS + rendu MP4
   python -m revue.generer annonce                vidéo d'annonce de la sortie (sans voix, pour TikTok et Reels)
+  python -m revue.generer cartes                 images du jour pour Instagram et TikTok (lundi → samedi)
   python -m revue.generer photos                 photos d'illustration du dernier numéro
   python -m revue.generer voix                   échantillons des voix, pour choisir à l'oreille
   python -m revue.generer apercu                 affiche les articles collectés, sans appeler Claude
@@ -152,6 +153,15 @@ def etape_annonce(config: dict, date_: str | None) -> int:
     return 0
 
 
+def etape_cartes(config: dict, date_: str | None) -> int:
+    """Images du jour (Instagram, TikTok) tirées du numéro, du lundi au samedi."""
+    from .cartes import rendre
+    numero = _numero_vise(date_)
+    cartes = rendre(config, numero)
+    print(f"{len(cartes)} image(s) du jour prête(s) : " + ", ".join(f"{c['jour']} ({c['type']})" for c in cartes))
+    return 0
+
+
 def etape_photos(config: dict, date_: str | None) -> int:
     """Photos d'illustration d'un numéro déjà rédigé (utile pour le numéro 1)."""
     from .illustrations import disponible, illustrer_numero
@@ -233,6 +243,8 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--sans-voix", action="store_true", help="aperçu muet, sans appel à Google TTS")
     p = sous.add_parser("annonce")
     p.add_argument("--date")
+    p = sous.add_parser("cartes")
+    p.add_argument("--date")
     p = sous.add_parser("photos")
     p.add_argument("--date")
     sous.add_parser("voix")
@@ -260,6 +272,8 @@ def main(argv: list[str] | None = None) -> int:
             return 1
     if args.etape == "annonce":
         return etape_annonce(config, args.date)
+    if args.etape == "cartes":
+        return etape_cartes(config, args.date)
     if args.etape == "photos":
         return etape_photos(config, args.date)
     if args.etape == "voix":

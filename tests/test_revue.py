@@ -334,6 +334,23 @@ class TestPixabay(unittest.TestCase):
                 self.assertEqual(illustrations.chercher_video("airplane", 8, {2})["lien"], "m1")
 
 
+class TestCartes(unittest.TestCase):
+    def test_une_carte_par_jour_sans_sujet_sensible(self):
+        from revue import cartes
+        c = charger_config()
+        c["site"]["url"] = "https://hebdo-aero.github.io/Hebdo-Aero/"
+        numero = lire_json(RACINE / "data" / "numeros" / "2026-10-11.json")
+        liste = cartes.contenus(c, numero)
+        self.assertEqual([x["jour"] for x in liste], ["lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"][:len(liste) - 1] + ["samedi"])
+        self.assertEqual(liste[0]["type"], "chiffre")
+        self.assertEqual(liste[-1]["type"], "demain")
+        tout = " ".join(x.get("titre", "") + x["texte_post"] for x in liste)
+        self.assertNotIn("missile", tout)                       # l'attaque de Riyad n'est pas mise en avant
+        for x in liste:
+            self.assertIn("lien en bio", x["texte_post"].lower())
+            self.assertLessEqual(len(x["texte_post"]), 2200)
+
+
 class TestImagesSansMarque(unittest.TestCase):
     def test_marques_ecartees(self):
         from revue import pixabay
