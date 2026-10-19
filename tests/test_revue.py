@@ -656,6 +656,15 @@ class TestErreursClaude(unittest.TestCase):
         self.assertIn("ANTHROPIC_API_KEY", expliquer(ErreurHTTP(401, "Unauthorized", "invalid x-api-key")))
         self.assertIn("modele", expliquer(ErreurHTTP(404, "Not Found", '{"error": {"message": "model: x not found"}}')))
         self.assertIn("manquante", expliquer(ErreurClaude("ANTHROPIC_API_KEY manquante (secret GitHub à créer).")))
+        self.assertIn("espace de travail", expliquer(ErreurHTTP(400, "Bad Request", "anthropic-workspace-id header is required")))
+
+    def test_espace_de_travail_facultatif(self):
+        from revue import claude
+        envoye = {}
+        with mock.patch.dict(os.environ, {"ANTHROPIC_API_KEY": "k", "ANTHROPIC_WORKSPACE_ID": "wrkspc_1"}), \
+             mock.patch.object(claude, "post_json", side_effect=lambda url, charge, entetes=None, **kw: envoye.update(entetes) or {}):
+            claude.appeler({"model": "m"})
+        self.assertEqual(envoye["anthropic-workspace-id"], "wrkspc_1")
 
     def test_l_etape_numero_echoue_proprement(self):
         from revue import generer

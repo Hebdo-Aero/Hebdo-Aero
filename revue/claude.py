@@ -31,6 +31,9 @@ def expliquer(e: Exception) -> str:
     code = getattr(e, "code", None)
     if isinstance(e, ErreurClaude):
         return str(e)
+    if "workspace" in corps:
+        return ("La clé Claude n'est liée à aucun espace de travail : recréez-la dans la Console en choisissant "
+                "un espace de travail (par exemple « Default ») comme portée, puis mettez-la dans ANTHROPIC_API_KEY.")
     if "credit balance" in corps or "billing" in corps:
         return ("Crédit Anthropic épuisé : ajoutez du crédit sur console.anthropic.com (Billing), "
                 "puis relancez l'action « Numéro de la semaine, vidéo et réseaux ».")
@@ -49,10 +52,11 @@ def appeler(charge: dict, cle: str | None = None) -> dict:
     cle = cle or os.environ.get("ANTHROPIC_API_KEY")
     if not cle:
         raise ErreurClaude("ANTHROPIC_API_KEY manquante (secret GitHub à créer).")
-    return post_json(URL_API, charge, entetes={
-        "x-api-key": cle,
-        "anthropic-version": "2023-06-01",
-    }, delai=600, essais=4)
+    entetes = {"x-api-key": cle, "anthropic-version": "2023-06-01"}
+    # Clé créée avec la portée « Organisation » : il faut alors préciser l'espace de travail.
+    if os.environ.get("ANTHROPIC_WORKSPACE_ID"):
+        entetes["anthropic-workspace-id"] = os.environ["ANTHROPIC_WORKSPACE_ID"].strip()
+    return post_json(URL_API, charge, entetes=entetes, delai=600, essais=4)
 
 
 def executer_avec_outil(*, modele: str, systeme: str, consigne: str, outil_final: dict,

@@ -50,6 +50,7 @@ jobs:
       nouveau: ${{ steps.numero.outputs.nouveau }}
     env:
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      ANTHROPIC_WORKSPACE_ID: ${{ secrets.ANTHROPIC_WORKSPACE_ID }}
       KIT_API_KEY: ${{ secrets.KIT_API_KEY }}
       GOOGLE_TTS_API_KEY: ${{ secrets.GOOGLE_TTS_API_KEY }}
       PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
