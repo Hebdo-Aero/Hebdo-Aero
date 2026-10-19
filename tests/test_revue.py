@@ -350,6 +350,28 @@ class TestCartes(unittest.TestCase):
             self.assertIn("lien en bio", x["texte_post"].lower())
             self.assertLessEqual(len(x["texte_post"]), 2200)
 
+    def test_titre_coupe_pas_en_image(self):
+        from revue import cartes
+        c = charger_config()
+        numero = lire_json(RACINE / "data" / "numeros" / "2026-10-11.json")
+        numero["breves"][0]["titre"] = "Un titre trop long coupé en plein milieu de la…"
+        numero["une"][0]["titre"] = "Un autre titre coupé…"
+        tout = " ".join(x.get("titre", "") + x["texte_post"] for x in cartes.contenus(c, numero))
+        self.assertNotIn("…", tout)
+
+    def test_format_story(self):
+        from jinja2 import Environment, FileSystemLoader
+        from revue import cartes
+        gabarit = Environment(loader=FileSystemLoader(cartes.GABARITS), autoescape=True).get_template("carte.html")
+        commun = dict(type="chiffre", valeur="42", legende="L", source="S", couleur="soleil", numero=2,
+                      adresse="exemple.org", compte="hebdoaeronews", ciel="", polices="", logo="")
+        story = gabarit.render(**commun, story=True)
+        self.assertIn("const STORY = true", story)
+        self.assertIn("Touchez @hebdoaeronews", story)
+        publication = gabarit.render(**commun, story=False)
+        self.assertIn("const STORY = false", publication)
+        self.assertNotIn("Touchez @", publication)
+
 
 class TestImagesSansMarque(unittest.TestCase):
     def test_marques_ecartees(self):

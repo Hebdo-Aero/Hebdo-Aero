@@ -17,7 +17,7 @@ from . import monetisation
 from .config import (CATEGORIES, RUBRIQUES, DOSSIER_MEDIAS, DOSSIER_RESEAUX, DOSSIER_SITE, RACINE, charger_config,
                      lire_json, lister_numeros, periode_fr)
 
-NOMS_RESEAUX = {"youtube": "YouTube", "instagram": "Instagram", "facebook": "Facebook", "threads": "Threads"}
+NOMS_RESEAUX = {"youtube": "YouTube", "instagram": "Instagram", "tiktok": "TikTok", "facebook": "Facebook", "threads": "Threads"}
 
 
 def preparer_numero(n: dict, config: dict, sortie: Path, voisins: tuple[int | None, int | None]) -> dict:

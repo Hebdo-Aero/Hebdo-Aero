@@ -64,7 +64,7 @@ _SOURCE = {
 _SUJET = {
     "type": "object",
     "properties": {
-        "titre": {"type": "string", "description": "Titre informatif, 110 caractères au plus."},
+        "titre": {"type": "string", "description": "Titre informatif et complet, 90 caractères au plus."},
         "resume": {"type": "string", "description": "2 à 4 phrases reformulées, 650 caractères au plus."},
         "categorie": {"type": "string", "enum": CATEGORIES},
         "region": {"type": "string", "enum": REGIONS},
@@ -236,7 +236,7 @@ def valider(brut: dict, articles: list[Article], urls_recherche: set[str], minim
             rejets.append(f"résumé trop proche d'un article : {s.get('titre')}")
             return None
         propre = {
-            "titre": _couper(s.get("titre"), 110),
+            "titre": _couper(s.get("titre"), 130),
             "resume": _couper(s.get("resume"), 650),
             "categorie": s["categorie"],
             "region": s["region"],

@@ -1,9 +1,10 @@
-"""Images du jour pour Instagram et TikTok (1080 × 1350), tirées du numéro de la semaine.
+"""Images du jour pour Instagram et TikTok, tirées du numéro de la semaine.
 
 Une image par jour, du lundi au samedi : le chiffre de la semaine, les trois sujets « À la une »,
 les brèves, puis l'annonce du numéro du lendemain. Le dimanche, c'est la vidéo d'annonce.
-Les images et leur légende sont enregistrées dans data/cartes/ et publiées sur le site (/cartes/),
-d'où Metricool les récupère pour les programmer aux heures de pointe.
+Chaque image existe en deux formats : publication (1080 × 1350) et story Instagram (1080 × 1920,
+fichier « -story.jpg »). Les images et leur légende sont enregistrées dans data/cartes/ et publiées
+sur le site (/cartes/), d'où Metricool les récupère pour les programmer aux heures de pointe.
 
 Usage : python -m revue.generer cartes [--date AAAA-MM-JJ]
 """
@@ -54,13 +55,14 @@ def contenus(config: dict, numero: dict) -> list[dict]:
                        "couleur": "soleil",
                        "texte_post": f"{c['valeur']} : {c['legende']}\n\nC'est le chiffre de la semaine ✈️\n\n{appel}\n\n{tags}"})
     for s in numero.get("une", []):
-        if _sensible(s):          # pas d'accident ni d'attentat en image promotionnelle
+        if _sensible(s) or s["titre"].endswith("…"):   # ni drame ni titre coupé en image promotionnelle
             continue
         r = RUBRIQUES.get(s["categorie"], {})
         cartes.append({"type": "une", "titre": s["titre"], "texte": _phrases(s["resume"]), "categorie": s["categorie"],
                        "sources": [x["nom"] for x in s["sources"]], "couleur": r.get("couleur", "orange"),
                        "texte_post": f"{s['titre']}\n\n{_phrases(s['resume'], 3, 420)}\n\n{appel}\n\n{MENTION_IA}\n\n{tags}"})
-    breves = [b for b in numero.get("breves", []) if not _sensible(b)][:4]
+    # pas de titre coupé (« … ») en image : il laisserait la phrase en suspens
+    breves = [b for b in numero.get("breves", []) if not _sensible(b) and not b["titre"].endswith("…")][:4]
     if len(breves) >= 2:
         cartes.append({"type": "breves", "couleur": "ciel",
                        "breves": [{"titre": b["titre"], "categorie": b["categorie"],
@@ -89,26 +91,33 @@ def rendre(config: dict, numero: dict, dossier: Path = DOSSIER) -> list[dict]:
     env = Environment(loader=FileSystemLoader(GABARITS), autoescape=True)
     gabarit = env.get_template("carte.html")
     base = config["site"].get("url") or ""
+    compte = config["reseaux"].get("compte") or "hebdoaeronews"
     cartes = contenus(config, numero)
     with sync_playwright() as p:
         navigateur = p.chromium.launch()
         page = navigateur.new_page(viewport={"width": 1080, "height": 1350}, device_scale_factor=1)
         for k, carte in enumerate(cartes, start=1):
-            html = travail / f"carte-{k}.html"
-            html.write_text(gabarit.render(
-                **carte, ciel=fond.as_uri(), polices=(RACINE / "assets" / "polices").as_uri(),
-                logo=(RACINE / "assets" / "logo" / "logo-sombre.svg").as_uri()), encoding="utf-8")
-            page.goto(html.as_uri(), wait_until="load")
-            page.evaluate("document.fonts.ready")
-            page.evaluate("preparer()")
-            fichier = f"{numero['date']}-{k}.jpg"
-            page.screenshot(path=str(dossier / fichier), type="jpeg", quality=88)
-            carte["fichier"] = fichier
-            carte["url"] = f"{base}cartes/{fichier}" if base else ""
+            # même contenu en deux formats : publication (4:5) et story Instagram (9:16)
+            for story, hauteur, suffixe in [(False, 1350, ""), (True, 1920, "-story")]:
+                page.set_viewport_size({"width": 1080, "height": hauteur})
+                html = travail / f"carte-{k}{suffixe}.html"
+                html.write_text(gabarit.render(
+                    **carte, story=story, compte=compte, ciel=fond.as_uri(),
+                    polices=(RACINE / "assets" / "polices").as_uri(),
+                    logo=(RACINE / "assets" / "logo" / "logo-sombre.svg").as_uri()), encoding="utf-8")
+                page.goto(html.as_uri(), wait_until="load")
+                page.evaluate("document.fonts.ready")
+                page.evaluate("preparer()")
+                fichier = f"{numero['date']}-{k}{suffixe}.jpg"
+                page.screenshot(path=str(dossier / fichier), type="jpeg", quality=88)
+                cle = "story" if story else "fichier"
+                carte[cle] = fichier
+                carte[f"url_{cle}"] = f"{base}cartes/{fichier}" if base else ""
         navigateur.close()
     manifeste = {"numero": numero["numero"], "date": numero["date"],
                  "periode": periode_fr(numero["debut"], numero["fin"]),
-                 "cartes": [{"jour": c["jour"], "type": c["type"], "fichier": c["fichier"], "url": c["url"],
-                             "legende": c["texte_post"]} for c in cartes]}
+                 "cartes": [{"jour": c["jour"], "type": c["type"], "fichier": c["fichier"], "url": c["url_fichier"],
+                             "story": c["story"], "url_story": c["url_story"], "legende": c["texte_post"]}
+                            for c in cartes]}
     ecrire_json(dossier / f"{numero['date']}.json", manifeste)
     return manifeste["cartes"]

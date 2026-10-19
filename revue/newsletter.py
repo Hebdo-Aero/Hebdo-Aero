@@ -28,7 +28,7 @@ DOSSIER_ENVOIS = RACINE / "data" / "newsletter"
 # Couleurs des rubriques lisibles sur fond blanc
 COULEURS = {"orange": "#C2410C", "ciel": "#1667A8", "soleil": "#A16207", "violet": "#7C3AED",
             "rouge": "#DC2626", "vert": "#15803D"}
-NOMS_RESEAUX = {"youtube": "YouTube", "instagram": "Instagram", "facebook": "Facebook", "threads": "Threads"}
+NOMS_RESEAUX = {"youtube": "YouTube", "instagram": "Instagram", "tiktok": "TikTok", "facebook": "Facebook", "threads": "Threads"}
 
 
 class ErreurNewsletter(RuntimeError):

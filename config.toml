@@ -92,13 +92,16 @@ youtube_visibilite = "public"
 # Signale à YouTube que la vidéo utilise une voix de synthèse.
 youtube_contenu_synthetique = true
 hashtags = ["aviation", "aeronautique", "avgeek", "compagniesaeriennes", "transportaerien"]
+# Nom du compte Instagram et TikTok, rappelé sur les stories (« Touchez @… puis le lien en bio »).
+compte = "hebdoaeronews"
 # Version de l'API Graph de Meta (Instagram et Facebook).
 meta_version_api = "v25.0"
 
 # Adresses de vos pages, affichées sur le site (laissez vide pour masquer).
 [reseaux.profils]
 youtube = ""
-instagram = ""
+instagram = "https://www.instagram.com/hebdoaeronews/"
+tiktok = "https://www.tiktok.com/@hebdoaeronews"
 facebook = ""
 threads = ""
 
