@@ -218,6 +218,9 @@ def construire(sortie: Path = DOSSIER_SITE) -> Path:
                     ignore=shutil.ignore_patterns("banniere-*"))
     if (RACINE / "assets" / "partenaires").is_dir():
         shutil.copytree(RACINE / "assets" / "partenaires", sortie / "assets" / "partenaires")
+    # Vidéos de présentation du site, en ligne pour les publier sur les réseaux (Metricool lit une adresse publique)
+    if (RACINE / "assets" / "promo").is_dir():
+        shutil.copytree(RACINE / "assets" / "promo", sortie / "assets" / "promo")
     contenu_ads, alerte_ads = monetisation.ads_txt(config)
     if contenu_ads:
         (sortie / "ads.txt").write_text(contenu_ads, encoding="utf-8")
