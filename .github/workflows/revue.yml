@@ -42,7 +42,7 @@ jobs:
     if: >-
       github.event.schedule != '17 16 * * 2,4'
       && inputs.action != 'Publier le short d''accroche suivant'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # version figée : Playwright et ffmpeg y sont testés
     timeout-minutes: 45
     outputs:
       video: ${{ steps.video.outputs.video }}
@@ -150,7 +150,7 @@ jobs:
   deploiement:
     name: Mise en ligne
     needs: production
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # version figée : Playwright et ffmpeg y sont testés
     environment:
       name: github-pages
       url: ${{ steps.deploiement.outputs.page_url }}
@@ -164,7 +164,7 @@ jobs:
     name: Publication sur les réseaux
     needs: [production, deploiement]
     if: needs.production.outputs.video == 'true'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # version figée : Playwright et ffmpeg y sont testés
     timeout-minutes: 40
     env:
       SITE_URL: ${{ needs.deploiement.outputs.url }}
@@ -220,7 +220,7 @@ jobs:
       always() && needs.deploiement.result == 'success'
       && (needs.production.outputs.nouveau == 'true'
           || inputs.action == 'Envoyer la newsletter du dernier numéro')
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # version figée : Playwright et ffmpeg y sont testés
     timeout-minutes: 10
     env:
       SITE_URL: ${{ needs.deploiement.outputs.url }}
@@ -257,7 +257,7 @@ jobs:
     if: >-
       github.event.schedule == '17 16 * * 2,4'
       || inputs.action == 'Publier le short d''accroche suivant'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04   # version figée : Playwright et ffmpeg y sont testés
     timeout-minutes: 25
     steps:
       - uses: actions/checkout@v7
