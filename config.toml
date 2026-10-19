@@ -130,6 +130,17 @@ vues_videos_par_mois = 0
 [annonceurs]
 tarif = ""                       # ex. "à partir de 50 € le numéro" ; vide : « sur demande »
 
+[publicite]
+# Google AdSense. Votre identifiant d'éditeur « ca-pub-… » (AdSense > Compte > Informations sur le compte).
+# Les annonces automatiques s'activent dans AdSense (Annonces > Par site). Elles ne s'affichent que sur les pages
+# éditoriales (accueil, numéros, archives, à propos), jamais sur les pages de service.
+adsense = ""                     # ex. "ca-pub-1234567890123456"
+# Blocs placés à la main, facultatifs : identifiant « data-ad-slot » d'un bloc créé dans AdSense > Annonces > Par bloc.
+bloc_numero = ""                 # après « À la une »
+bloc_breves = ""                 # au milieu des brèves
+# Pas d'annonces Google sur les pages d'un numéro qui a un partenaire de la semaine (exclusivité vendue au sponsor).
+masquer_avec_partenaire = true
+
 [editeur]
 # Mentions légales : obligatoires dès que le site rapporte de l'argent.
 nom = ""                         # vos prénom et nom, ou le nom de votre entreprise
@@ -138,6 +149,7 @@ siret = ""
 adresse = ""                     # adresse postale (une domiciliation est possible)
 telephone = ""
 directeur_publication = ""       # en général vous-même
+pays = "France"                  # pays où vous résidez : France, Luxembourg, Belgique ou Suisse
 
 # Partenaires (sponsors) : un bloc par partenaire. Il apparaît, signalé comme publicité,
 # dans les numéros dont la date (le dimanche) est comprise entre « du » et « au ».

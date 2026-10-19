@@ -21,6 +21,12 @@ La musique est composée automatiquement à chaque vidéo, sans droits d'auteur 
 
 Pour utiliser votre propre musique (par exemple un morceau libre de droits de Pixabay Music), déposez-la dans `assets/musique.mp3` : elle démarrera sur l'impact du générique, qui garde son effet sonore.
 
+## Vidéo d'annonce de la sortie (TikTok et Reels)
+
+Chaque dimanche, juste après la rédaction du numéro, une **vidéo de 17 secondes sans voix** annonce sa sortie : « Le N° 2 est en ligne », l'écusson, les trois titres du sommaire, puis « Lien en bio ». Le fond montre de vrais avions filmés (Pixabay ou Pexels, crédités dans la légende) quand une clé est configurée, sinon un ciel de coucher de soleil où passent des avions dessinés aux couleurs de la revue. Les sujets de la rubrique « Sécurité & sûreté » (accidents, attaques) ne sont jamais mis en avant sur cette musique entraînante.
+
+Elle n'a pas besoin de la voix Google : elle est produite même sans la clé `GOOGLE_TTS_API_KEY`. Elle apparaît en tête de la page **`/shorts/`** du site, avec sa légende prête à copier. Pour la refaire à la main : `python -m revue.generer annonce`.
+
 ## Shorts d'accroche (TikTok et Instagram)
 
 En plus du récapitulatif de 80 secondes, trois **shorts de 20 secondes** sont produits chaque semaine, un par grand sujet. Chacun s'ouvre sur une accroche plein écran (« 250 avions d'un coup »), raconte un seul fait, puis laisse une question ouverte et renvoie vers le site (« lien en bio »). Claude a pour consigne de ne jamais faire de piège à clics ni de prendre un drame humain comme accroche.
@@ -140,7 +146,7 @@ Le jeton Threads dure 60 jours ; la publication hebdomadaire le prolonge automat
 Dans l'onglet **Actions** du dépôt : **Revue hebdomadaire → Run workflow**, puis choisissez :
 
 - **« Vidéo et réseaux du dernier numéro »** : monte la vidéo du numéro 1 et la publie partout. Le meilleur test de bout en bout.
-- **« Numéro de la semaine, vidéo et réseaux »** : ce qui tourne chaque dimanche. Si la semaine est déjà couverte, rien n'est rédigé, sauf en cochant « forcer ».
+- **« Numéro de la semaine, vidéo et réseaux »** : ce qui tourne chaque dimanche. Lancé un autre jour (après un échec, par exemple), il rédige le numéro de la semaine terminée le dimanche précédent, sans décaler le rythme. Si ce numéro existe déjà, rien n'est rédigé, sauf en cochant « forcer », qui le réécrit.
 - **« Publier le short d'accroche suivant »** : publie tout de suite sur Instagram le prochain short pas encore publié.
 - **« Écouter les voix disponibles »** : enregistre la même phrase avec dix voix françaises et les publie sur la page `/voix/` de votre site. Écoutez-les, puis recopiez le nom choisi dans `config.toml` (ligne `voix =`).
 - **« Envoyer la newsletter du dernier numéro »** : si l'envoi du dimanche n'est pas parti (clé ajoutée après coup, par exemple).
@@ -169,6 +175,14 @@ Un logo se dépose dans `assets/partenaires/`. La page `/annoncer/` présente l'
 **Dons** : créez une page Tipeee, Ko-fi ou Buy Me a Coffee et recopiez son adresse dans `[soutien]`. Un bouton apparaît en bas des numéros, dans le pied de page et dans la newsletter.
 
 **Statistiques de visite** : [Cloudflare Web Analytics](https://www.cloudflare.com/web-analytics/) est gratuit et sans cookie, donc sans bandeau de consentement. Créez un site (**Web Analytics → Add a site**, en choisissant la mise en place manuelle « JS snippet »), puis recopiez le jeton (`token`) dans `[statistiques]` avec `fournisseur = "cloudflare"`. GoatCounter et Umami sont aussi pris en charge. Reportez de temps en temps vos chiffres (`visites_par_mois`, `abonnes_reseaux`…) : ils s'affichent sur la page `/annoncer/`, comme le nombre d'abonnés à la newsletter dès qu'il dépasse 100.
+
+**Publicité Google AdSense** (`[publicite]`)
+1. **Mettre le site à la racine de son adresse.** Google lit le fichier `ads.txt` uniquement à la racine (`https://…/ads.txt`). Deux possibilités : renommer le dépôt en `hebdo-aero.github.io` (gratuit, le site passe à `https://hebdo-aero.github.io/` ; pensez à mettre à jour les liens déjà partagés) ou, mieux pour la crédibilité, acheter un nom de domaine (environ 10 € par an) et le déclarer dans **Settings → Pages → Custom domain** et dans `url` de `config.toml`.
+2. **Demander un compte** sur [adsense.google.com](https://adsense.google.com) avec l'adresse du site, puis recopier l'identifiant `ca-pub-…` dans `adsense =`. Le site publie alors la balise de vérification et `ads.txt` : lancez la vérification dans AdSense. L'examen prend de quelques jours à quelques semaines ; un site très récent est souvent refusé pour « contenu insuffisant » : refaites la demande après quelques numéros.
+3. **Consentement (obligatoire en Europe)** : AdSense → **Confidentialité et messages → Réglementations européennes** : créez et publiez le message de consentement de Google, avec le lien de révocation. Le lien « Gérer les cookies » du pied de page l'ouvre.
+4. **Annonces automatiques** : AdSense → **Annonces → Par site** → activez-les. Vous pouvez en plus créer deux blocs « display » et recopier leurs identifiants dans `bloc_numero` et `bloc_breves`.
+
+Les annonces n'apparaissent que sur les pages éditoriales (accueil, numéros, archives, à propos), jamais sur les pages de service, ni sur les numéros qui ont un partenaire de la semaine (`masquer_avec_partenaire`). Les mentions légales se mettent à jour automatiquement (cookies publicitaires, liens Google). Ordre de grandeur : quelques euros par mois pour mille visites ; la publicité ne devient intéressante qu'avec beaucoup de trafic, le partenaire de la semaine rapporte bien plus par lecteur.
 
 **Mentions légales** : la page `/mentions-legales/` (avec la partie données personnelles) est générée automatiquement. Dès que le site rapporte de l'argent, remplissez `[editeur]` (nom, adresse, téléphone, directeur de la publication) : un avertissement le rappelle dans GitHub Actions tant que ce n'est pas fait.
 
@@ -245,6 +259,7 @@ config.toml              réglages
 data/numeros/            un fichier JSON par numéro (la source du site)
 data/reseaux/            script vidéo, textes et liens des publications
 data/newsletter/         trace des envois de la newsletter (un fichier par numéro)
+data/annonces/           légende de la vidéo d'annonce de chaque numéro
 assets/partenaires/      logos des partenaires (facultatif)
 revue/                   le programme (rédaction, vidéo, site, publication)
 revue/templates/         gabarits du site et de la vidéo
