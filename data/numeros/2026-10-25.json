@@ -1,0 +1,174 @@
+{
+  "titre": "Kérosène et taxes pèsent sur les compagnies ; Western Sydney International ouvre ses portes",
+  "edito": "La question des coûts domine la semaine : American Airlines prévoit une perte annuelle sous l'effet d'une facture de carburant en forte hausse, Southwest et Delta abaissent leurs objectifs, et les transporteurs envisagent de freiner la croissance de leur offre en 2027. Le carburant pose aussi un problème d'approvisionnement, comme le montrent le recours de la Suisse à ses stocks stratégiques pour Zurich et l'escale de ravitaillement d'un vol easyJet en provenance de Bari. La fiscalité pèse également sur les réseaux, Ryanair réduisant son offre en Belgique en réaction à la hausse de la taxe d'embarquement prévue en janvier 2027.",
+  "illustration": "airplane sunset sky",
+  "chiffre": {
+    "valeur": "+67,5 %",
+    "legende": "Hausse de la facture de carburant d'American Airlines au troisième trimestre 2026, à 4,6 Md$, qui la conduit à prévoir une perte annuelle.",
+    "source": {
+      "nom": "AeroTime",
+      "url": "https://www.aerotime.aero/articles/american-airlines-third-quarter-results-2026"
+    }
+  },
+  "une": [
+    {
+      "titre": "Kérosène : American Airlines prévoit une perte annuelle, ses concurrents abaissent leurs objectifs",
+      "resume": "American Airlines a publié le 22 octobre ses résultats du troisième trimestre : un chiffre d'affaires record de 16,3 Md$ (+19,3 %) mais une perte nette de 269 M$, la facture de carburant atteignant 4,6 Md$, en hausse de 67,5 %. La compagnie table désormais sur une perte ajustée de 1,00 à 1,60 $ par action pour 2026. Southwest a réduit ses prévisions annuelles, avec un coût du carburant attendu autour de 4,55 $ le gallon au quatrième trimestre, et Delta a également abaissé les siennes. Les transporteurs envisagent de freiner la croissance de leur offre en 2027.",
+      "categorie": "Résultats & marchés",
+      "region": "Amérique du Nord",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/american-airlines-third-quarter-results-2026"
+        },
+        {
+          "nom": "Aviation24.be",
+          "url": "https://www.aviation24.be/airlines/american-airlines/american-posts-record-revenue-but-fuel-costs-drive-third-quarter-loss/"
+        },
+        {
+          "nom": "Air Journal",
+          "url": "https://www.air-journal.fr/2026-10-23-kerosene-cher-les-compagnies-americaines-pourraient-freiner-leur-croissance-en-2027-5278431.html"
+        }
+      ],
+      "illustration": "fuel truck airplane refueling"
+    },
+    {
+      "titre": "Western Sydney International ouvre le 25 octobre ; Qatar Airways annonce Doha–Sydney Ouest",
+      "resume": "Le second aéroport international de Sydney a accueilli ses premiers passagers le 25 octobre 2026, avec le vol inaugural de Jetstar. Qatar Airways y desservira Doha à partir du 15 décembre 2027, avec trois vols hebdomadaires en Boeing 777-300ER et un objectif de vol quotidien fin 2028. Le projet représente un investissement de 5,6 milliards de dollars australiens, selon Air Journal.",
+      "categorie": "Aéroports & maintenance",
+      "region": "Asie-Pacifique",
+      "sources": [
+        {
+          "nom": "Simple Flying",
+          "url": "https://simpleflying.com/western-sydney-international-airport-opens-first-jetstar-flight/"
+        },
+        {
+          "nom": "Air Journal",
+          "url": "https://www.air-journal.fr/2026-10-22-qatar-airways-soffre-une-deuxieme-porte-dentree-a-sydney-5278425.html"
+        }
+      ],
+      "illustration": "new airport terminal passengers"
+    },
+    {
+      "titre": "Ryanair supprime 20 lignes et 1,1 million de sièges en Belgique face à la hausse de la taxe",
+      "resume": "Ryanair a annoncé le 20 octobre une réduction de son activité belge pour l'hiver 2026-2027 : 20 liaisons supprimées, soit 1,1 million de sièges, et six avions retirés de ses bases pour être redéployés ailleurs. La compagnie proteste contre le relèvement de la taxe fédérale d'embarquement, de 2 à 7 euros en janvier 2027. L'aéroport de Charleroi dit avoir anticipé ces coupes et appelle à une fiscalité stable.",
+      "categorie": "Compagnies & réseaux",
+      "region": "Europe",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/ryanair-axes-20-routes-six-aircraft-in-belgium-in-row-over-aviation-taxes"
+        },
+        {
+          "nom": "Air Journal",
+          "url": "https://www.air-journal.fr/2026-10-22-ryanair-reduit-la-voilure-en-belgique-charleroi-reclame-un-cap-fiscal-stable-5278413.html"
+        }
+      ],
+      "illustration": "low cost airplane parked airport"
+    }
+  ],
+  "breves": [
+    {
+      "titre": "Aéroport de Dammam : le bilan de l'attaque ciblée passe à deux morts",
+      "resume": "L'autorité saoudienne de l'aviation civile (GACA) a confirmé le 22 octobre un deuxième décès après l'attaque visant l'aéroport international King Fahd de Dammam. Un premier communiqué, le 21 octobre, faisait état d'un mort et de huit blessés, légers à graves. Les victimes sont un ressortissant saoudien et un résident indien.",
+      "categorie": "Sécurité & sûreté",
+      "region": "Moyen-Orient",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/king-fahd-airport-death-toll-rises-to-two-following-latest-attack"
+        }
+      ],
+      "illustration": "airport terminal exterior night"
+    },
+    {
+      "titre": "Les quatre aéroports de Moscou fermés par des attaques de drones le 23 octobre",
+      "resume": "Rosaviatsia a suspendu les arrivées et départs à Cheremetievo, Domodedovo, Vnoukovo et Joukovski dans l'après-midi du 23 octobre 2026, alors que la défense aérienne russe traitait des drones approchant la capitale. La fermeture totale faisait suite à des restrictions partielles et constituait la seconde de ce type en deux jours.",
+      "categorie": "Sécurité & sûreté",
+      "region": "Europe",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/moscow-airports-shut-down-drone-attacks-october-23"
+        }
+      ],
+      "illustration": "airport control tower"
+    },
+    {
+      "titre": "Embraer atteint un carnet de commandes record de 35,7 Md$ au troisième trimestre",
+      "resume": "Le constructeur brésilien affiche un carnet global de 35,7 milliards de dollars, en hausse de 3 % sur le trimestre. Dans l'aviation commerciale, il a enregistré 36 commandes fermes et 30 droits d'achat ou options pour la famille E2, notamment auprès d'Abra Group et d'ANA Holdings.",
+      "categorie": "Constructeurs & commandes",
+      "region": "Amérique latine",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/embraer-reaches-record-company-wide-backlog-of-35-7-billion"
+        }
+      ],
+      "illustration": "regional jet aircraft"
+    },
+    {
+      "titre": "Airbus prévoit une flotte cargo de 3 460 avions en 2045, contre 2 360 en 2026",
+      "resume": "Dans son Global Market Forecast fret publié le 21 octobre, Airbus anticipe une hausse de 46 % de la flotte mondiale d'avions dédiés au transport de fret d'ici 2045. Les besoins sont estimés à 2 670 appareils neufs ou convertis, surtout pour remplacer des avions vieillissants. L'Amérique du Nord devrait tirer la demande, suivie de près par l'Asie-Pacifique.",
+      "categorie": "Constructeurs & commandes",
+      "region": "Monde",
+      "sources": [
+        {
+          "nom": "AeroTime",
+          "url": "https://www.aerotime.aero/articles/airbus-north-america-drive-freighter-cargo-demand"
+        },
+        {
+          "nom": "Journal de l'Aviation",
+          "url": "https://www.journal-aviation.com/actualites-industrie-aeronautique/avions-commerciaux/airbus-prevoit-un-besoin-mondial-de-2670-avions-cargo-dici-2045-dont-670-gros-porteurs-de-grande-capacite-20261022.html"
+        }
+      ],
+      "illustration": "cargo plane loading"
+    },
+    {
+      "titre": "Kérosène : la Suisse puise dans ses réserves pour Zurich, escale de ravitaillement d'easyJet pour Bari",
+      "resume": "Les autorités suisses ont autorisé le prélèvement de jusqu'à 30 000 m³ de kérosène dans les stocks stratégiques, soit 6,5 % des réserves, jusqu'au 1er novembre 2026, pour prévenir une pénurie à Zurich. En Italie, le blocage de camions-citernes a contraint un vol easyJet Bari–Londres Gatwick à faire escale à Paris-Charles de Gaulle le 22 octobre pour se ravitailler.",
+      "categorie": "Aéroports & maintenance",
+      "region": "Europe",
+      "sources": [
+        {
+          "nom": "Aerobuzz",
+          "url": "https://www.aerobuzz.fr/breves-transport-aerien/la-suisse-craint-les-penuries-de-kerosene-pour-laeroport-de-zurich/"
+        },
+        {
+          "nom": "Air Journal",
+          "url": "https://www.air-journal.fr/2026-10-23-bari-londres-via-paris-les-blocages-routiers-italiens-imposent-une-escale-a-easyjet-5278443.html"
+        }
+      ],
+      "illustration": "fuel tanker airport"
+    },
+    {
+      "titre": "Air Algérie reçoit son sixième A330neo et ouvre Alger–Shanghai le 26 octobre",
+      "resume": "La compagnie nationale a réceptionné le 17 octobre son sixième A330neo, baptisé « Ras El Afia », qui renouvelle sa flotte long-courrier. Avec le passage au programme d'hiver 2026-2027, elle annonce sa première liaison directe entre Alger et Shanghai, prévue le 26 octobre en A330neo.",
+      "categorie": "Compagnies & réseaux",
+      "region": "Afrique",
+      "sources": [
+        {
+          "nom": "Air Journal",
+          "url": "https://www.air-journal.fr/2026-10-20-air-algerie-annonce-la-reception-de-son-sixieme-airbus-a330-900-5278367.html"
+        },
+        {
+          "nom": "Air Journal",
+          "url": "https://www.air-journal.fr/2026-10-24-air-algerie-etoffe-son-reseau-international-cap-sur-shanghai-en-airbus-a330neo-5278457.html"
+        }
+      ],
+      "illustration": "airliner landing sunset"
+    }
+  ],
+  "numero": 3,
+  "date": "2026-10-25",
+  "debut": "2026-10-19",
+  "fin": "2026-10-25",
+  "genere_par": "claude-sonnet-5-5",
+  "genere_le": "2026-10-25T05:42:55+00:00",
+  "image": {
+    "fichier": "2026-10-25-couverture.jpg",
+    "auteur": "cocoparisienne",
+    "page": "https://pixabay.com/photos/aircraft-double-decker-biplane-1813731/",
+    "source": "Pixabay"
+  }
+}
