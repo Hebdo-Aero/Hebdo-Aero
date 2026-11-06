@@ -162,6 +162,25 @@ def etape_cartes(config: dict, date_: str | None) -> int:
     return 0
 
 
+def etape_quiz(config: dict, date_: str | None, force: bool) -> int:
+    """Questions d'actualité du quiz de la semaine (le reste du quiz vient de la banque de culture)."""
+    from .quiz import DOSSIER, rediger
+    numero = _numero_vise(date_)
+    chemin = DOSSIER / f"{numero['date']}.json"
+    if chemin.exists() and not force:
+        print(f"Quiz déjà prêt : {chemin.relative_to(RACINE)}")
+        return 0
+    quiz = rediger(config, numero)
+    if not quiz["questions"]:
+        print("::warning title=Quiz::Aucune question d'actualité valide : le quiz utilisera la culture aéro seule.")
+        return 0
+    ecrire_json(chemin, quiz)
+    par_niveau = {k: sum(q["niveau"] == k for q in quiz["questions"]) for k in ("curieux", "passionne")}
+    print(f"Quiz enregistré : {chemin.relative_to(RACINE)} "
+          f"({par_niveau['curieux']} questions curieux, {par_niveau['passionne']} passionné)")
+    return 0
+
+
 def etape_photos(config: dict, date_: str | None) -> int:
     """Photos d'illustration d'un numéro déjà rédigé (utile pour le numéro 1)."""
     from .illustrations import disponible, illustrer_numero
@@ -247,6 +266,9 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--date")
     p = sous.add_parser("photos")
     p.add_argument("--date")
+    p = sous.add_parser("quiz")
+    p.add_argument("--date")
+    p.add_argument("--force", action="store_true", help="réécrire le quiz s'il existe déjà")
     sous.add_parser("voix")
     sous.add_parser("recuperer")
     sous.add_parser("apercu")
@@ -269,6 +291,14 @@ def main(argv: list[str] | None = None) -> int:
             return etape_video(config, args.date, args.sans_voix)
         except ErreurVoix as e:      # message clair dans GitHub plutôt qu'une pile d'appels
             print(f"::error title=Voix-off::{e}")
+            return 1
+    if args.etape == "quiz":
+        from .claude import ErreurClaude, expliquer
+        from .http import ErreurHTTP
+        try:
+            return etape_quiz(config, args.date, args.force)
+        except (ErreurClaude, ErreurHTTP) as e:   # le site reste jouable avec la banque de culture
+            print(f"::warning title=Quiz (Claude)::{expliquer(e)}")
             return 1
     if args.etape == "annonce":
         return etape_annonce(config, args.date)

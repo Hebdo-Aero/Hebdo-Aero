@@ -2,6 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>{{ site.url }}</loc>{% if numeros %}<lastmod>{{ numeros[0].date }}</lastmod>{% endif %}</url>
   <url><loc>{{ site.url }}archives/</loc></url>
+  <url><loc>{{ site.url }}quiz/</loc>{% if numeros %}<lastmod>{{ numeros[0].date }}</lastmod>{% endif %}</url>
   <url><loc>{{ site.url }}a-propos/</loc></url>
   {% if newsletter.active %}<url><loc>{{ site.url }}newsletter/</loc></url>{% endif %}
   <url><loc>{{ site.url }}annoncer/</loc></url>

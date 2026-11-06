@@ -1,0 +1,164 @@
+{
+  "numero": 4,
+  "date": "2026-11-01",
+  "questions": [
+    {
+      "niveau": "curieux",
+      "sujet": "une-1",
+      "question": "Combien de livraisons Airbus vise-t-il toujours pour l'ensemble de l'année 2026 ?",
+      "options": [
+        "Environ 870",
+        "Environ 500",
+        "Environ 1 200",
+        "Environ 650"
+      ],
+      "bonne": 0,
+      "explication": "Airbus maintient son objectif d'environ 870 livraisons, ce qui suppose 323 avions au dernier trimestre."
+    },
+    {
+      "niveau": "curieux",
+      "sujet": "une-2",
+      "question": "Comment a évolué la demande mondiale de fret aérien en septembre, selon l'IATA ?",
+      "options": [
+        "Elle a progressé de 7,7 %",
+        "Elle a reculé de 0,5 %",
+        "Elle est restée stable",
+        "Elle a chuté de 12 %"
+      ],
+      "bonne": 0,
+      "explication": "Le fret a progressé de 7,7 % sur un an, dans toutes les régions, alors que la demande de passagers reculait de 0,5 %."
+    },
+    {
+      "niveau": "curieux",
+      "sujet": "une-3",
+      "question": "Vers quelle ville les compagnies du groupe Lufthansa ont-elles de nouveau reporté la reprise de leurs vols ?",
+      "options": [
+        "Dubaï",
+        "Doha",
+        "Riyad",
+        "Abou Dhabi"
+      ],
+      "bonne": 0,
+      "explication": "Lufthansa, SWISS et Eurowings visent désormais fin novembre pour revenir à Dubaï, en invoquant l'instabilité au Moyen-Orient."
+    },
+    {
+      "niveau": "curieux",
+      "sujet": "breve-3",
+      "question": "Qu'est-ce que Singapore Airlines s'est engagée à acheter auprès d'Aether Fuels ?",
+      "options": [
+        "Du carburant d'aviation durable (SAF)",
+        "De l'hydrogène liquide",
+        "Du kérosène classique à prix fixe",
+        "Des moteurs électriques"
+      ],
+      "bonne": 0,
+      "explication": "La compagnie achètera jusqu'à 4 800 tonnes de SAF de nouvelle génération sur trois ans, avec des livraisons à partir de 2028."
+    },
+    {
+      "niveau": "curieux",
+      "sujet": "breve-4",
+      "question": "Quelle nouvelle destination la compagnie sud-africaine FlySafair prépare-t-elle au départ de Johannesburg ?",
+      "options": [
+        "Lusaka, en Zambie",
+        "Nairobi, au Kenya",
+        "Lagos, au Nigeria",
+        "Maputo, au Mozambique"
+      ],
+      "bonne": 0,
+      "explication": "La liaison Johannesburg–Lusaka doit ouvrir le 1er février 2027, avec cinq vols par semaine."
+    },
+    {
+      "niveau": "curieux",
+      "sujet": "breve-2",
+      "question": "Quelle compagnie américaine affirme ne pas négocier de restructuration avec ses créanciers ?",
+      "options": [
+        "JetBlue",
+        "Delta",
+        "Southwest",
+        "Alaska Airlines"
+      ],
+      "bonne": 0,
+      "explication": "Sa directrice générale l'a assuré à Reuters le 27 octobre, après des informations sur des créanciers ayant recruté des conseillers."
+    },
+    {
+      "niveau": "passionne",
+      "sujet": "une-1",
+      "question": "Combien d'avions Airbus avait-il livrés à fin septembre 2026 ?",
+      "options": [
+        "547",
+        "323",
+        "870",
+        "612"
+      ],
+      "bonne": 0,
+      "explication": "Avec 547 livraisons à fin septembre, Airbus doit en réaliser 323 au dernier trimestre pour atteindre son objectif."
+    },
+    {
+      "niveau": "passionne",
+      "sujet": "une-1",
+      "question": "Sur quels programmes Airbus signale-t-il des difficultés au troisième trimestre ?",
+      "options": [
+        "A330neo et A321neo",
+        "A350 et A220",
+        "A380 et A340",
+        "A320neo et A350F"
+      ],
+      "bonne": 0,
+      "explication": "Le résultat d'exploitation ajusté du trimestre recule de 9 %, à 1,77 Md€, avec des difficultés sur ces deux programmes."
+    },
+    {
+      "niveau": "passionne",
+      "sujet": "une-2",
+      "question": "Combien de passagers internationaux les compagnies d'Asie-Pacifique ont-elles transportés en septembre, selon l'AAPA ?",
+      "options": [
+        "30,4 millions",
+        "3,04 millions",
+        "304 millions",
+        "13,4 millions"
+      ],
+      "bonne": 0,
+      "explication": "Ces 30,4 millions de passagers, en hausse de 0,7 %, mettent fin à cinq mois de baisse consécutifs."
+    },
+    {
+      "niveau": "passionne",
+      "sujet": "breve-1",
+      "question": "À combien s'élève le financement de la Banque européenne d'investissement à Airbus qui inquiète Washington ?",
+      "options": [
+        "Environ 3,4 milliards de dollars",
+        "Environ 340 millions de dollars",
+        "Environ 34 milliards de dollars",
+        "Environ 1,8 milliard de dollars"
+      ],
+      "bonne": 0,
+      "explication": "La BEI a approuvé jusqu'à 3 Md€, soit environ 3,4 Md$ ; les États-Unis y voient une menace pour la trêve aéronautique."
+    },
+    {
+      "niveau": "passionne",
+      "sujet": "une-3",
+      "question": "À quelle date le groupe Lufthansa prévoit-il désormais de reprendre ses vols vers Dubaï ?",
+      "options": [
+        "Le 25 novembre 2026",
+        "Le 1er novembre 2026",
+        "Le 15 décembre 2026",
+        "Le 1er février 2027"
+      ],
+      "bonne": 0,
+      "explication": "La reprise a de nouveau été repoussée, au 25 novembre ; Eurowings adopte en parallèle un programme d'hiver allégé."
+    },
+    {
+      "niveau": "passionne",
+      "sujet": "breve-4",
+      "question": "Avec quel avion FlySafair exploitera-t-elle sa ligne vers Lusaka ?",
+      "options": [
+        "Boeing 737-800",
+        "Airbus A320neo",
+        "Embraer 190",
+        "ATR 72"
+      ],
+      "bonne": 0,
+      "explication": "La compagnie prévoit cinq vols par semaine en Boeing 737-800, selon les horaires déposés."
+    }
+  ],
+  "genere_par": "claude (rédigé en session)",
+  "genere_le": "2026-11-06T12:04:57+00:00"
+}

@@ -785,14 +785,22 @@ class TestNewsletter(unittest.TestCase):
 
     def test_contenu_de_l_email(self):
         m = self.nl.contenu(self.config, self.numero, verifier_en_ligne=False)
-        self.assertTrue(m["sujet"].startswith("N° 1 · "))
+        self.assertTrue(m["sujet"].startswith("Le N° 1 est en ligne · "))
         self.assertLessEqual(len(m["sujet"]), 120)
         self.assertIn("https://moi.github.io/hebdo-aero/numeros/1/", m["html"])
+        self.assertIn("https://moi.github.io/hebdo-aero/numeros/1/#une-1", m["html"])   # lien direct vers le sujet
+        self.assertIn("https://moi.github.io/hebdo-aero/quiz/", m["html"])              # le quiz de la semaine
         self.assertIn("assets/logo/logo-email.png", m["html"])
         self.assertIn("Publicité · Partenaire de la semaine", m["html"])
         self.assertIn("utm_medium=newsletter", m["html"])
-        self.assertIn("Airbus livre 72 avions", m["html"])       # titres des brèves
         self.assertEqual(m["partenaire"], "École Exemple")
+
+    def test_email_court_qui_renvoie_vers_le_site(self):
+        m = self.nl.contenu(self.config, self.numero, verifier_en_ligne=False)
+        self.assertIn("est en ligne", m["html"])
+        for s in self.numero["une"]:
+            self.assertIn(s["titre"].replace("'", "&#39;"), m["html"])
+            self.assertNotIn(s["resume"].replace("'", "&#39;"), m["html"])   # le résumé complet reste sur le site
 
     def test_heure_d_envoi(self):
         from datetime import timedelta
@@ -887,3 +895,67 @@ class TestPartenaireVideo(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class TestQuiz(unittest.TestCase):
+    def setUp(self):
+        from revue import quiz
+        self.quiz = quiz
+        self.numero = lire_json(RACINE / "data" / "numeros" / "2026-10-11.json")
+        s = self.numero["une"][1]          # le sujet « une-1 » du N° 1 est dramatique : écarté d'office
+        self.bonne = {"niveau": "curieux", "sujet": "une-2", "question": "De quoi parle le premier sujet ?",
+                      "options": ["A", "B", "C", "D"], "bonne": 0, "explication": "Parce que c'est écrit dans le sujet."}
+        self.sujet = s
+
+    def test_banque_de_culture(self):
+        for niveau in self.quiz.NIVEAUX:
+            self.assertGreaterEqual(sum(q["niveau"] == niveau for q in self.quiz.CULTURE), 10)
+        for q in self.quiz.CULTURE:
+            self.assertEqual(len(q["options"]), 4, q["question"])
+            self.assertEqual(len({o.lower() for o in q["options"]}), 4, q["question"])
+            self.assertIn(q["bonne"], range(4))
+            self.assertTrue(q["question"].endswith("?"), q["question"])
+            self.assertLessEqual(len(q["explication"]), 320, q["question"])
+        self.assertEqual(len({q["question"] for q in self.quiz.CULTURE}), len(self.quiz.CULTURE))
+
+    def test_question_valide_gardee(self):
+        gardees = self.quiz.valider({"questions": [self.bonne]}, self.numero)
+        self.assertEqual(len(gardees), 1)
+        self.assertEqual(self.quiz.valider([dict(self.bonne, sujet="une-1")], self.numero), [])   # frappe meurtrière
+
+    def test_questions_douteuses_ecartees(self):
+        chiffre_invente = dict(self.bonne, options=["123456 avions", "B", "C", "D"])
+        cas = [dict(self.bonne, sujet="une-9"), dict(self.bonne, bonne=4), dict(self.bonne, options=["A", "A", "B", "C"]),
+               dict(self.bonne, options=["A", "B", "C"]), dict(self.bonne, niveau="expert"),
+               dict(self.bonne, question="Pas de point d'interrogation"), chiffre_invente]
+        self.assertEqual(self.quiz.valider(cas, self.numero), [])
+
+    def test_chiffre_present_dans_le_sujet_accepte(self):
+        import re
+        nombre = re.findall(r"\d+", self.sujet["titre"] + " " + self.sujet["resume"])[0]
+        q = dict(self.bonne, options=[f"{nombre} exactement", "1", "2", "3"])
+        self.assertEqual(len(self.quiz.valider([q], self.numero)), 1)
+
+    def test_sujet_dramatique_ecarte(self):
+        numero = json.loads(json.dumps(self.numero))
+        numero["une"][1]["resume"] += " L'accident a fait trois blessés."
+        self.assertEqual(self.quiz.valider([self.bonne], numero), [])
+
+    def test_redaction_avec_claude_simule(self):
+        reponse = {"content": [{"type": "tool_use", "name": "publier_quiz", "input": {"questions": [self.bonne]}}],
+                   "stop_reason": "tool_use", "usage": {"input_tokens": 10, "output_tokens": 5}}
+        q = self.quiz.rediger(charger_config(), self.numero, appelant=lambda charge: reponse)
+        self.assertEqual(q["numero"], self.numero["numero"])
+        self.assertEqual(len(q["questions"]), 1)
+
+    def test_page_du_quiz(self):
+        from revue import construire
+        with tempfile.TemporaryDirectory() as d:
+            sortie = construire.construire(Path(d) / "_site")
+            page = (sortie / "quiz" / "index.html").read_text(encoding="utf-8")
+            self.assertIn('id="donnees-quiz"', page)
+            self.assertIn("Curieux", page)
+            self.assertIn("Passionné", page)
+            accueil = (sortie / "index.html").read_text(encoding="utf-8")
+            self.assertIn('href="quiz/"', accueil)              # lien dans le menu
+            self.assertIn('id="une-1"', accueil)               # ancres des sujets

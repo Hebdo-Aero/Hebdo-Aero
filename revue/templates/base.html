@@ -33,8 +33,9 @@
   <div class="cadre">
     <a class="logo" href="{{ racine }}" aria-label="{{ site.nom }}, accueil"><img src="{{ racine }}assets/logo/logo-sombre.svg" alt="{{ site.nom }}" width="200" height="44"></a>
     <nav aria-label="Navigation principale">
-      <a href="{{ racine }}"{% if page == "accueil" %} aria-current="page"{% endif %}>Ce numéro</a>
+      <a class="accueil" href="{{ racine }}"{% if page == "accueil" %} aria-current="page"{% endif %}>Ce numéro</a>
       <a href="{{ racine }}archives/"{% if page == "archives" %} aria-current="page"{% endif %}>Archives</a>
+      <a href="{{ racine }}quiz/"{% if page == "quiz" %} aria-current="page"{% endif %}>Quiz</a>
       <a class="facultatif" href="{{ racine }}a-propos/"{% if page == "a-propos" %} aria-current="page"{% endif %}>À propos</a>
       {% if newsletter.active %}<a class="facultatif abonner" href="{{ racine }}newsletter/"{% if page == "newsletter" %} aria-current="page"{% endif %}>S'abonner</a>{% endif %}
     </nav>
@@ -55,6 +56,7 @@
       <ul>
         <li><a href="{{ racine }}">Dernier numéro</a></li>
         <li><a href="{{ racine }}archives/">Tous les numéros</a></li>
+        <li><a href="{{ racine }}quiz/">Le quiz de la semaine</a></li>
         <li><a href="{{ racine }}a-propos/">Comment elle est faite</a></li>
         {% if newsletter.active %}<li><a href="{{ racine }}newsletter/">Recevoir la newsletter</a></li>{% endif %}
         <li><a href="{{ racine }}flux.xml">Flux RSS</a></li>

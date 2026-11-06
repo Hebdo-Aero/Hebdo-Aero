@@ -43,6 +43,7 @@
       {% for nom, sujets in n.rubriques %}{% set r = rubriques[nom] %}
       <li class="c-{{ r.couleur }}"><a href="#{{ r.ancre }}">{{ icone(r.icone, 16) }}{{ nom }} <span class="nb">{{ sujets|length }}</span></a></li>
       {% endfor %}
+      {% if n.quiz %}<li class="c-violet"><a href="#quiz">{{ icone("quiz", 16) }}Le quiz</a></li>{% endif %}
       {% if newsletter.active %}<li class="c-ciel"><a href="#newsletter">{{ icone("mail", 16) }}Recevoir par e-mail</a></li>{% endif %}
     </ul>
     {% if n.couverture and n.couverture.auteur %}<p class="credit-ouverture">Photo : <a href="{{ n.couverture.page }}" rel="noopener">{{ n.couverture.auteur }}</a> / {{ n.couverture.source }}</p>{% endif %}
@@ -54,7 +55,7 @@
     <div class="entete-section"><h2 id="une-titre">À la une</h2></div>
     <div class="une">
       {% for s in n.une %}{% set r = rubriques[s.categorie] %}
-      <article class="sujet c-{{ r.couleur }}">
+      <article class="sujet c-{{ r.couleur }}" id="{{ s.ancre }}">
         {% if s.visuel %}
         <figure class="visuel{{ ' dessine' if s.visuel.dessine }}">
           <img src="{{ racine }}{{ s.visuel.src }}" alt="" loading="lazy"{% if s.visuel.position %} style="object-position: {{ s.visuel.position }}"{% endif %}>
@@ -130,7 +131,7 @@
       </div>
       <div class="breves">
         {% for s in sujets %}
-        <article class="breve">
+        <article class="breve" id="{{ s.ancre }}">
           <span class="region">{{ s.region }}</span>
           <h4>{{ s.titre }}</h4>
           <p class="resume">{{ s.resume }}</p>
@@ -140,6 +141,22 @@
       </div>
     </div>
     {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if n.quiz %}
+<section class="section bande-quiz" id="quiz" aria-labelledby="quiz-titre-{{ n.numero }}">
+  <div class="cadre">
+    <div class="appel-quiz">
+      <span class="pictos" aria-hidden="true"><span>?</span><span>!</span></span>
+      <div class="texte">
+        <p class="surtitre">{{ icone("quiz", 18) }}Le quiz de la semaine</p>
+        <h2 id="quiz-titre-{{ n.numero }}">Curieux ou passionné ? Testez-vous sur le N° {{ n.numero }}</h2>
+        <p>8 questions sur l'actualité de la semaine et la culture aéronautique, avec les réponses expliquées.</p>
+      </div>
+      <a class="bouton plein" href="{{ racine }}{{ n.quiz }}">Jouer au quiz{{ icone("fleche", 16) }}</a>
+    </div>
   </div>
 </section>
 {% endif %}

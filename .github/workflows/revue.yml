@@ -127,6 +127,11 @@ jobs:
         continue-on-error: true
         run: python -m revue.generer cartes
 
+      - name: Quiz de la semaine
+        if: steps.numero.outputs.nouveau == 'true'
+        continue-on-error: true
+        run: python -m revue.generer quiz
+
       - name: Enregistrer des échantillons de voix
         if: steps.mode.outputs.mode == 'voix' && env.GOOGLE_TTS_API_KEY != ''
         run: python -m revue.generer voix

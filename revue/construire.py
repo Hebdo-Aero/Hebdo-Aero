@@ -13,7 +13,7 @@ from zoneinfo import ZoneInfo
 
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 
-from . import monetisation
+from . import monetisation, quiz
 from .config import (CATEGORIES, RUBRIQUES, DOSSIER_MEDIAS, DOSSIER_RESEAUX, DOSSIER_SITE, RACINE, charger_config,
                      lire_json, lister_numeros, periode_fr)
 
@@ -28,6 +28,12 @@ def preparer_numero(n: dict, config: dict, sortie: Path, voisins: tuple[int | No
         rubriques.setdefault(s["categorie"], []).append(s)
     n["rubriques"] = [(c, sujets) for c, sujets in rubriques.items() if sujets]
     n["precedent"], n["suivant"] = voisins
+    # Ancres des sujets (« une-1 », « breve-3 »…) : le quiz renvoie vers le sujet de chaque question.
+    for i, s in enumerate(n.get("une", []), start=1):
+        s["ancre"] = f"une-{i}"
+    for i, s in enumerate(n.get("breves", []), start=1):
+        s["ancre"] = f"breve-{i}"
+    n["quiz_donnees"] = lire_json(quiz.DOSSIER / f"{n['date']}.json") or None
     parution = datetime.combine(datetime.fromisoformat(n["date"]).date(), time(7, 0),
                                 ZoneInfo(config["site"].get("fuseau", "Europe/Paris")))
     n["date_rss"] = format_datetime(parution)
@@ -150,6 +156,10 @@ def construire(sortie: Path = DOSSIER_SITE) -> Path:
         suivant = nums[i - 1] if i > 0 else None
         precedent = nums[i + 1] if i + 1 < len(bruts) else None
         numeros.append(preparer_numero(b, config, sortie, (precedent, suivant)))
+    # Quiz : celui du dernier numéro sur /quiz/, les précédents sur /quiz/<n>/ (s'ils ont des questions d'actualité)
+    for i, n in enumerate(numeros):
+        a_des_questions = bool(n["quiz_donnees"] and n["quiz_donnees"].get("questions"))
+        n["quiz"] = ("quiz/" if i == 0 else f"quiz/{n['numero']}/") if a_des_questions else None
 
     def ecrire(chemin: str, gabarit: str, racine: str, pub: bool = False, **contexte) -> None:
         """`pub` : la page peut afficher des annonces (pages éditoriales seulement, jamais les pages de service)."""
@@ -196,6 +206,13 @@ def construire(sortie: Path = DOSSIER_SITE) -> Path:
            annonceurs=config.get("annonceurs") or {})
     ecrire("mentions-legales/index.html", "mentions-legales.html", "../", page="mentions",
            editeur=editeur, hebergeur=monetisation.HEBERGEUR, revenus=monetisation.revenus_actifs(config))
+    precedents_quiz = [n for n in numeros[1:] if n["quiz"]]
+    ecrire("quiz/index.html", "quiz.html", "../", pub=True, page="quiz", n=dernier, precedents=precedents_quiz,
+           donnees=quiz.donnees_page(dernier, dernier and dernier["quiz_donnees"],
+                                     f"../numeros/{dernier['numero']}/" if dernier else "../"))
+    for n in precedents_quiz:
+        ecrire(f"quiz/{n['numero']}/index.html", "quiz.html", "../../", pub=True, page="quiz", n=n,
+               precedents=[], donnees=quiz.donnees_page(n, n["quiz_donnees"], f"../../numeros/{n['numero']}/"))
     if newsletter["active"]:
         ecrire("newsletter/index.html", "newsletter.html", "../", page="newsletter", dernier=dernier)
         ecrire("newsletter/merci/index.html", "newsletter-merci.html", "../../", page="newsletter", dernier=dernier)

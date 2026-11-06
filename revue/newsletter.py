@@ -1,4 +1,7 @@
-"""Newsletter du dimanche : envoie le numéro de la semaine aux abonnés, via Kit (secret KIT_API_KEY).
+"""Newsletter du dimanche : rappelle aux abonnés que le numéro de la semaine est en ligne, via Kit (secret KIT_API_KEY).
+
+L'e-mail est volontairement court : les trois titres « À la une » avec une phrase d'accroche, le chiffre de la
+semaine, les rubriques des brèves et le quiz, avec des liens vers le site.
 
 Usage :
   python -m revue.newsletter                       envoie le dernier numéro (une seule fois par numéro)
@@ -77,8 +80,14 @@ def contenu(config: dict, numero: dict, verifier_en_ligne: bool = True) -> dict:
     base = site["url"]
     n = dict(numero)
     n["periode"] = periode_fr(n["debut"], n["fin"])
-    n["une"] = [dict(s, couleur=COULEURS.get(RUBRIQUES.get(s["categorie"], {}).get("couleur"), "#4B5D73"))
-                for s in n.get("une", [])]
+    url_numero = f"{base}numeros/{n['numero']}/"
+    n["une"] = [dict(s, couleur=COULEURS.get(RUBRIQUES.get(s["categorie"], {}).get("couleur"), "#4B5D73"),
+                     accroche=_premiere_phrase(s["resume"], 180), lien=f"{url_numero}#une-{i}")
+                for i, s in enumerate(n.get("une", []), start=1)]
+    phrases = re.split(r"(?<=[.!?])\s", (n.get("edito") or "").strip())
+    n["chapo"] = " ".join(phrases[:2])
+    mots = len(" ".join([n.get("edito", "")] + [x["resume"] for x in numero.get("une", []) + numero.get("breves", [])]).split())
+    n["lecture"] = max(1, round(mots / 220))
     rubriques = []
     for c in CATEGORIES:
         breves = [b for b in n.get("breves", []) if b["categorie"] == c]
@@ -88,7 +97,6 @@ def contenu(config: dict, numero: dict, verifier_en_ligne: bool = True) -> dict:
                               "breves": breves})
     n["rubriques"] = rubriques
 
-    url_numero = f"{base}numeros/{n['numero']}/"
     affiche = f"{base}videos/{n['date']}.jpg"
     if not verifier_en_ligne or not _existe_en_ligne(affiche):
         affiche = ""
@@ -108,8 +116,8 @@ def contenu(config: dict, numero: dict, verifier_en_ligne: bool = True) -> dict:
     html = env.get_template("email.html").render(
         site=site, n=n, url_site=base, url_numero=url_numero, logo=f"{base}assets/logo/logo-email.png",
         affiche=affiche, partenaire=partenaire, soutien=monetisation.soutien(config),
-        profils=profils, apercu=apercu)
-    sujet = f"N° {n['numero']} · {n['titre']}"
+        profils=profils, apercu=apercu, url_quiz=f"{base}quiz/")
+    sujet = f"Le N° {n['numero']} est en ligne · {n['titre']}"
     if len(sujet) > 120:
         sujet = sujet[:119].rsplit(" ", 1)[0] + "…"
     return {"sujet": sujet, "apercu": apercu, "html": html, "partenaire": partenaire["nom"] if partenaire else None}

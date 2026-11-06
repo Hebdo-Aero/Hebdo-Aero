@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+{% from "_icones.html" import icone %}
+{% from "_abonnement.html" import formulaire %}
+{% block titre %}{% if donnees.actu %}Le quiz du N° {{ n.numero }}{% else %}Le quiz de l'aviation{% endif %}, {{ site.nom }}{% endblock %}
+{% block description %}Curieux ou passionné ? 8 questions sur l'actualité de l'aviation commerciale de la semaine et la culture aéronautique, avec les réponses expliquées.{% endblock %}
+{% block contenu %}
+<section class="ouverture page-quiz" aria-labelledby="quiz-titre">
+  <div class="cadre">
+    <p class="reperes">
+      {% if donnees.actu %}<span class="pastille">N° {{ n.numero }}</span><span class="periode">Semaine du {{ donnees.periode }}</span>
+      {% else %}<span class="pastille">Quiz</span>{% endif %}
+      <span class="lecture">8 questions · 3 minutes</span>
+    </p>
+    <h1 id="quiz-titre">Curieux ou passionné&#8239;?</h1>
+    <p class="edito">{% if donnees.actu %}L'actualité de l'aviation commerciale de la semaine et la culture aéronautique en 8 questions.{% else %}La culture aéronautique en 8 questions.{% endif %} Choisissez votre niveau : chaque réponse est expliquée{% if donnees.actu %}, avec un lien vers le sujet du numéro{% endif %}.</p>
+    <div class="niveaux" role="group" aria-label="Choisir un niveau">
+      <button class="niveau c-ciel" type="button" data-niveau="curieux">
+        <span class="nom">Curieux</span>
+        <span class="desc">Les grandes infos de la semaine et les bases de l'aviation, pour découvrir en s'amusant.</span>
+        <span class="record" data-record="curieux"></span>
+        <span class="go">Commencer{{ icone("fleche", 16) }}</span>
+      </button>
+      <button class="niveau c-orange" type="button" data-niveau="passionne">
+        <span class="nom">Passionné</span>
+        <span class="desc">Les chiffres, les modèles et les sigles qui font la différence. Pour les vrais avgeeks.</span>
+        <span class="record" data-record="passionne"></span>
+        <span class="go">Commencer{{ icone("fleche", 16) }}</span>
+      </button>
+    </div>
+    <noscript><p class="edito">Le quiz a besoin de JavaScript. {% if donnees.actu %}<a href="{{ donnees.lien_numero }}">Lire le N° {{ n.numero }}</a>{% endif %}</p></noscript>
+  </div>
+</section>
+
+<section class="section zone-quiz" id="jeu" aria-label="Questions du quiz" hidden>
+  <div class="cadre">
+    <div class="carte-quiz">
+      <div class="progression">
+        <p class="etape">Question <b data-num>1</b> sur <span data-total>8</span></p>
+        <p class="type" data-type></p>
+      </div>
+      <div class="barre" aria-hidden="true"><span data-barre></span></div>
+      <h2 class="question" data-question tabindex="-1"></h2>
+      <div class="options" data-options></div>
+      <div class="retour" data-retour aria-live="polite" hidden>
+        <p class="verdict" data-verdict></p>
+        <p class="explication" data-explication></p>
+        <p class="lien-sujet" data-lien-zone hidden><a data-lien href="#">Lire le sujet dans le N° {{ n.numero if n else "" }}{{ icone("fleche", 14) }}</a></p>
+        <button class="bouton-plein" type="button" data-suivante>Question suivante</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section zone-quiz" id="resultat" aria-labelledby="resultat-titre" hidden>
+  <div class="cadre">
+    <div class="carte-quiz fin">
+      <p class="niveau-fin" data-niveau-fin></p>
+      <p class="score"><b data-score>0</b><span>/<span data-sur>8</span></span></p>
+      <h2 id="resultat-titre" data-message tabindex="-1"></h2>
+      <p class="record-fin" data-record-fin></p>
+      <div class="boutons-fin">
+        <button class="bouton-plein" type="button" data-partager>{{ icone("partager", 16) }}Partager mon score</button>
+        <button class="secondaire" type="button" data-rejouer>{{ icone("rejouer", 16) }}Rejouer</button>
+        <button class="secondaire" type="button" data-autre></button>
+      </div>
+      <p class="copie" data-copie aria-live="polite" hidden></p>
+      {% if donnees.actu %}<p class="reviser"><a href="{{ donnees.lien_numero }}">Lire le N° {{ n.numero }} en entier{{ icone("fleche", 14) }}</a></p>{% endif %}
+    </div>
+    {% if newsletter.active %}
+    <div class="carte-quiz abo-quiz">
+      <h3>{{ icone("mail", 20) }}Un nouveau quiz chaque dimanche</h3>
+      <p>Recevez le numéro de la semaine et son quiz par e-mail, chaque dimanche matin. C'est gratuit.</p>
+      {{ formulaire(newsletter, racine, "quiz", sombre=false) }}
+    </div>
+    {% elif profils %}
+    <div class="carte-quiz abo-quiz">
+      <h3>Un nouveau quiz chaque dimanche</h3>
+      <p>Suivez {{ site.nom }} pour ne pas manquer le prochain numéro.</p>
+      <p class="suivre">{% for nom, url in profils %}<a href="{{ url }}" rel="noopener">{{ nom }}</a>{% endfor %}</p>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+{% if precedents %}
+<section class="section precedents-quiz" aria-labelledby="precedents-titre">
+  <div class="cadre">
+    <div class="entete-section"><h2 id="precedents-titre">Les quiz précédents</h2></div>
+    <ul>
+      {% for p in precedents %}<li><a href="{{ racine }}{{ p.quiz }}"><b>N° {{ p.numero }}</b> Semaine du {{ p.periode }}{{ icone("fleche", 14) }}</a></li>{% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}
+
+<script type="application/json" id="donnees-quiz">{{ donnees|tojson }}</script>
+<script>
+(() => {
+  const D = JSON.parse(document.getElementById("donnees-quiz").textContent);
+  const NOM = {{ site.nom|tojson }};
+  const LONGUEUR = 8, ACTU_MAX = 5;
+  const $ = (s) => document.querySelector(s);
+  const reduit = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const jeu = $("#jeu"), resultat = $("#resultat");
+  let niveau = null, questions = [], i = 0, score = 0;
+
+  const melange = (t) => {
+    t = t.slice();
+    for (let k = t.length - 1; k > 0; k--) { const j = Math.floor(Math.random() * (k + 1)); [t[k], t[j]] = [t[j], t[k]]; }
+    return t;
+  };
+  // jusqu'à 5 questions d'actualité, complétées par la culture aéro, réparties dans la partie
+  const tirage = (niv) => {
+    const actu = melange(D.actu.filter((q) => q.niveau === niv)).slice(0, ACTU_MAX).map((q) => ({ ...q, actu: true }));
+    const culture = melange(D.culture.filter((q) => q.niveau === niv)).slice(0, LONGUEUR - actu.length);
+    const places = new Set(culture.map((_, k) => Math.round(((k + 1) * LONGUEUR) / culture.length) - 1));
+    const liste = [];
+    let a = 0, c = 0;
+    for (let k = 0; k < LONGUEUR; k++) {
+      if ((places.has(k) && c < culture.length) || a >= actu.length) liste.push(culture[c++]);
+      else liste.push(actu[a++]);
+    }
+    return liste.filter(Boolean);
+  };
+
+  // meilleur score de ce navigateur (simple confort : la page marche sans)
+  const cle = (niv) => `hebdo-aero-quiz-${D.numero || "culture"}-${niv}`;
+  const lireRecord = (niv) => { try { return JSON.parse(localStorage.getItem(cle(niv)) || "null"); } catch (e) { return null; } };
+  const ecrireRecord = (niv, s, sur) => {
+    try { const r = lireRecord(niv); if (!r || s > r.score) localStorage.setItem(cle(niv), JSON.stringify({ score: s, sur })); } catch (e) { /* stockage indisponible */ }
+  };
+  const afficherRecords = () => document.querySelectorAll("[data-record]").forEach((el) => {
+    const r = lireRecord(el.dataset.record);
+    el.textContent = r ? `Votre record : ${r.score}/${r.sur}` : "";
+  });
+
+  const defiler = (el) => el.scrollIntoView({ block: "start", behavior: reduit ? "auto" : "smooth" });
+
+  function commencer(niv) {
+    niveau = niv; questions = tirage(niv); i = 0; score = 0;
+    resultat.hidden = true; jeu.hidden = false;
+    afficher(); defiler(jeu);
+  }
+
+  function afficher() {
+    const q = questions[i];
+    $("[data-num]").textContent = i + 1;
+    $("[data-total]").textContent = questions.length;
+    const type = $("[data-type]");
+    type.textContent = q.actu ? "Actu de la semaine" : "Culture aéro";
+    type.className = "type " + (q.actu ? "actu" : "culture");
+    $("[data-barre]").style.width = `${(i / questions.length) * 100}%`;
+    const titre = $("[data-question]");
+    titre.textContent = q.question;
+    const zone = $("[data-options]");
+    zone.replaceChildren();
+    melange([0, 1, 2, 3]).forEach((idx, pos) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = "option"; b.dataset.idx = idx;
+      const lettre = document.createElement("span");
+      lettre.className = "lettre"; lettre.textContent = "ABCD"[pos]; lettre.setAttribute("aria-hidden", "true");
+      const texte = document.createElement("span");
+      texte.textContent = q.options[idx];
+      b.append(lettre, texte);
+      b.addEventListener("click", () => repondre(b, idx));
+      zone.append(b);
+    });
+    $("[data-retour]").hidden = true;
+    titre.focus({ preventScroll: true });
+  }
+
+  function repondre(bouton, idx) {
+    const q = questions[i];
+    const juste = idx === q.bonne;
+    if (juste) score++;
+    document.querySelectorAll(".option").forEach((b) => {
+      b.disabled = true;
+      if (Number(b.dataset.idx) === q.bonne) b.classList.add("juste");
+      else if (b === bouton) b.classList.add("faux");
+      else b.classList.add("ecartee");
+    });
+    const verdict = $("[data-verdict]");
+    verdict.textContent = juste ? "Bonne réponse !" : `Raté ! La bonne réponse : ${q.options[q.bonne]}.`;
+    verdict.className = "verdict " + (juste ? "ok" : "ko");
+    $("[data-explication]").textContent = q.explication;
+    const lien = $("[data-lien]");
+    $("[data-lien-zone]").hidden = !(q.actu && q.lien);
+    if (q.actu && q.lien) lien.href = q.lien;
+    const suivante = $("[data-suivante]");
+    suivante.textContent = i + 1 < questions.length ? "Question suivante" : "Voir mon score";
+    $("[data-barre]").style.width = `${((i + 1) / questions.length) * 100}%`;
+    const retour = $("[data-retour]");
+    retour.hidden = false;
+    suivante.focus({ preventScroll: true });
+    retour.scrollIntoView({ block: "nearest", behavior: reduit ? "auto" : "smooth" });
+  }
+
+  function terminer() {
+    const total = questions.length, ratio = score / total;
+    jeu.hidden = true; resultat.hidden = false;
+    $("[data-niveau-fin]").textContent = `Niveau ${D.niveaux[niveau]}`;
+    $("[data-score]").textContent = score;
+    $("[data-sur]").textContent = total;
+    $("[data-message]").textContent =
+      ratio === 1 ? "Sans-faute : les commandes sont à vous, commandant !"
+      : ratio >= 0.75 ? "Excellent ! Vous avez l'œil d'un vrai spotter."
+      : ratio >= 0.5 ? "Pas mal ! Encore quelques heures de vol et ce sera parfait."
+      : "Décollage difficile… Le numéro de la semaine est là pour réviser.";
+    const avant = lireRecord(niveau);
+    ecrireRecord(niveau, score, total);
+    $("[data-record-fin]").textContent = !avant ? ""
+      : score > avant.score ? "Nouveau record personnel !"
+      : `Votre record à ce niveau : ${avant.score}/${avant.sur}.`;
+    const autre = niveau === "curieux" ? "passionne" : "curieux";
+    const bouton = $("[data-autre]");
+    bouton.textContent = autre === "passionne" ? "Passer au niveau Passionné" : "Essayer le niveau Curieux";
+    bouton.dataset.niveau = autre;
+    $("[data-copie]").hidden = true;
+    afficherRecords();
+    defiler(resultat);
+    $("[data-message]").focus({ preventScroll: true });
+  }
+
+  async function partager() {
+    const texte = `J'ai eu ${score}/${questions.length} au quiz ${D.niveaux[niveau]} de ${NOM}`
+      + (D.numero ? ` (N° ${D.numero})` : "") + " ✈️ Et vous ?";
+    const url = location.href.split("#")[0];
+    if (navigator.share) {
+      try { await navigator.share({ title: document.title, text: texte, url }); return; }
+      catch (e) { if (e && e.name === "AbortError") return; }
+    }
+    const copie = $("[data-copie]");
+    try {
+      await navigator.clipboard.writeText(`${texte} ${url}`);
+      copie.textContent = "Score copié : il ne reste qu'à le coller où vous voulez !";
+    } catch (e) {
+      copie.textContent = `${texte} ${url}`;
+    }
+    copie.hidden = false;
+  }
+
+  document.querySelectorAll(".niveau[data-niveau]").forEach((b) => b.addEventListener("click", () => commencer(b.dataset.niveau)));
+  $("[data-suivante]").addEventListener("click", () => { i++; if (i < questions.length) afficher(); else terminer(); });
+  $("[data-rejouer]").addEventListener("click", () => commencer(niveau));
+  $("[data-autre]").addEventListener("click", (e) => commencer(e.currentTarget.dataset.niveau));
+  $("[data-partager]").addEventListener("click", partager);
+  afficherRecords();
+})();
+</script>
+{% endblock %}

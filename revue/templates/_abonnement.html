@@ -8,7 +8,7 @@
          placeholder="votre@email.fr" autocomplete="email" inputmode="email">
   <button type="submit" class="bouton plein">S'inscrire{{ icone("fleche", 16) }}</button>
 </form>
-<p class="petit">Gratuit, désinscription en un clic. Votre adresse sert uniquement à l'envoi de la revue, via {{ newsletter.prestataire }}. <a href="{{ racine }}mentions-legales/#donnees">Données personnelles</a></p>
+<p class="petit">Gratuit, désinscription en un clic. Votre adresse sert uniquement à l'envoi de ce rappel hebdomadaire, via {{ newsletter.prestataire }}. <a href="{{ racine }}mentions-legales/#donnees">Données personnelles</a></p>
 {%- endmacro %}
 
 {# Bandeau de fin de numéro : newsletter et soutien #}
@@ -20,7 +20,7 @@
     <div class="abo">
       <p class="surtitre">{{ icone("mail", 18) }}La newsletter du dimanche</p>
       <h2 id="abo-titre">Recevez {{ site.nom }} chaque dimanche matin</h2>
-      <p>Les infos clés, le chiffre de la semaine et toutes les brèves, directement dans votre boîte mail.</p>
+      <p>Un e-mail le dimanche matin, dès la sortie du numéro : les titres de la semaine, le chiffre et le quiz.</p>
       {{ formulaire(newsletter, racine, "bandeau") }}
     </div>
     {% endif %}
