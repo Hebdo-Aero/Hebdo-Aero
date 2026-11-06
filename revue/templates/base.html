@@ -32,12 +32,12 @@
 <header class="bandeau">
   <div class="cadre">
     <a class="logo" href="{{ racine }}" aria-label="{{ site.nom }}, accueil"><img src="{{ racine }}assets/logo/logo-sombre.svg" alt="{{ site.nom }}" width="200" height="44"></a>
-    <nav aria-label="Navigation principale">
+    <nav aria-label="Navigation principale"{% if newsletter.active %} class="avec-abo"{% endif %}>
       <a class="accueil" href="{{ racine }}"{% if page == "accueil" %} aria-current="page"{% endif %}>Ce numéro</a>
-      <a href="{{ racine }}archives/"{% if page == "archives" %} aria-current="page"{% endif %}>Archives</a>
+      <a class="archives" href="{{ racine }}archives/"{% if page == "archives" %} aria-current="page"{% endif %}>Archives</a>
       <a href="{{ racine }}quiz/"{% if page == "quiz" %} aria-current="page"{% endif %}>Quiz</a>
       <a class="facultatif" href="{{ racine }}a-propos/"{% if page == "a-propos" %} aria-current="page"{% endif %}>À propos</a>
-      {% if newsletter.active %}<a class="facultatif abonner" href="{{ racine }}newsletter/"{% if page == "newsletter" %} aria-current="page"{% endif %}>S'abonner</a>{% endif %}
+      {% if newsletter.active %}<a class="abonner" href="{{ racine }}newsletter/"{% if page == "newsletter" %} aria-current="page"{% endif %}>S'abonner</a>{% endif %}
     </nav>
   </div>
 </header>
